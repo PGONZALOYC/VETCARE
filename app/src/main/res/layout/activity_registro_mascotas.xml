@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".actividades.RegistroMascotas_activity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:orientation="vertical">
+
+        <!-- Título principal -->
+
+        <!-- Subtítulo -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/regLblTitulodos"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/regLblMascotas"
+            android:textSize="15sp"
+            android:layout_marginVertical="10dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp">
+            <EditText
+                android:id="@+id/regTxtNombreM"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/regTxtNombre"
+                android:maxLength="100"
+                android:inputType="text"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Edad"
+            android:textSize="18sp"
+            android:layout_marginTop="10dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="5dp">
+                <EditText
+                    android:id="@+id/regTxtAnos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Años"
+                    android:inputType="number"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <EditText
+                    android:id="@+id/regTxtMeses"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Meses"
+                    android:inputType="number"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <!-- Spinner para el tipo de mascota -->
+        <Spinner
+            android:id="@+id/regCboTipoMascota"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingVertical="8dp" />
+
+        <!-- Spinner para la raza de la mascota -->
+        <Spinner
+            android:id="@+id/regCboRazaMascota"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingVertical="8dp" />
+
+        <!-- ProgressBar al final de la pantalla -->
+        <ImageButton
+            android:id="@+id/imageButtonNext2"
+            android:layout_width="118dp"
+            android:layout_height="57dp"
+            android:layout_marginHorizontal="240dp"
+            android:layout_marginVertical="260dp"
+            android:src="@drawable/flechita2" />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="false"
+            android:layout_marginTop="-240dp"
+            android:max="100"
+            android:progress="70"
+            android:progressTint="@color/barra"/>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

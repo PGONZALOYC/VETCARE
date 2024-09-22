@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".actividades.fragmentos.ReservaCitaFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/lblReservTitulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reservar cita"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_gravity="top|left" />
+
+        <!-- Servicio -->
+        <CalendarView
+            android:id="@+id/calendReserva"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:layout_weight="1"
+            />
+        <TextView
+            android:id="@+id/lblReservServicio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:text="Servicio"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            tools:ignore="TextSizeCheck" />
+        <Spinner
+            android:id="@+id/spinReservServicio"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="15dp"
+            android:minHeight="48dp" />
+
+        <!-- Reserva -->
+        <TextView
+            android:id="@+id/lblReservHora"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hora"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:layout_marginLeft="25dp"/>
+        <Spinner
+            android:id="@+id/spinReservHora"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="15dp"
+            android:minHeight="48dp" />
+
+        <!-- Sede -->
+        <TextView
+            android:id="@+id/lblReservSede"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sede"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:layout_marginLeft="25dp"/>
+        <Spinner
+            android:id="@+id/spinReservSede"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="15dp"
+            android:minHeight="48dp" />
+
+        <Button
+            android:id="@+id/btnReservarCita"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reservar Cita"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"/>
+    </LinearLayout>
+
+</FrameLayout>

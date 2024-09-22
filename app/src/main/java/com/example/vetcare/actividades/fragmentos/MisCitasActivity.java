@@ -68,7 +68,7 @@ public class MisCitasActivity extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.activity_mis_citas, container, false);
+        View view = inflater.inflate(R.layout.fragment_mis_citas_activity, container, false);
 
         calendMisCitas = view.findViewById(R.id.calendMisCitas);
         lblfechaCita = view.findViewById(R.id.lblfechaCita);

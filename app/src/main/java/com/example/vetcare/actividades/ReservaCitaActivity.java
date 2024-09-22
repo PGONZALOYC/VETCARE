@@ -58,10 +58,10 @@ public class ReservaCitaActivity extends AppCompatActivity implements View.OnCli
         horas.add("--Seleccione Hora--");
 
         // Generar horas desde las 7:30 hasta las 17:00
-        for (int hora = 7; hora <= 17; hora++) {
+        for (int hora = 9; hora <= 18; hora++) {
             String horaStr = (hora < 10) ? "0" + hora : String.valueOf(hora);
             horas.add(horaStr + ":00");
-            if (hora != 17) { // Agregar solo hasta las 16:30
+            if (hora != 18) { // Agregar solo hasta las 16:30
                 horas.add(horaStr + ":30");
             }
         }

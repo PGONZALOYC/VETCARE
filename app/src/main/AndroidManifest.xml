@@ -13,11 +13,16 @@
         android:theme="@style/Theme.VETCARE"
         tools:targetApi="31">
         <activity
+<<<<<<< HEAD
             android:name=".actividades.RegistroMascotas_activity"
             android:exported="true" />
         <activity
             android:name=".actividades.Registro_activity"
             android:exported="true" />
+=======
+            android:name=".actividades.SeleccionarMascotaActivity"
+            android:exported="false" />
+>>>>>>> 117d9a27fa615dbf6b0b4d0e2e616da07a71f45e
         <activity
             android:name=".actividades.ReservaCitaActivity"
             android:exported="false" />

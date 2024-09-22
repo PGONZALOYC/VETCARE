@@ -34,4 +34,33 @@
     <string name="cfrTxtInstruccionCodigo">Ingresa el código de seis digitos</string>
     <string name="cfrTxtCodigo">Codigo</string>
     <string name="cfrBtnVerificar">Verificar</string>
+    <!--Registro y Registro Mascotas-->
+    <string name="logTxtCorreo2">Correo</string>
+    <string name="logTxtClave2">Clave</string>
+    <string name="logBtnAceptar">Aceptar</string>
+    <string name="logBtnSalir">Salir</string>
+    <string name="logBtnIngresar2">Ingresar</string>
+    <string name="logChkRecordar2">Recordar sesión</string>
+    <string name="logLblRegistro">¿Eres nuev@? ¡Registrate!</string>
+    <string name="logLblCopyRight">Derechos Reservados - UPN 2024</string>
+    <string name="regLblTitulo">Empecemos Registrando tus Datos </string>
+    <string name="regLblTitulodos">Cuéntanos Sobre Tu Mascota </string>
+    <string name="regLblMascotas">Si tienes más de una no te preocupes, luego podrás registrar otra. </string>
+    <string name="regTxtTelefono2">Telefono</string>
+    <string name="regTxtNombre2">Nombre(s)</string>
+    <string name="regTxtNombreM">Nombre(s)</string>
+    <string name="regTxtApellido2">Apellido</string>
+    <string name="regTxtFechaNac">Fecha de Nacimiento</string>
+    <string name="regTxtCorreo2">Correo</string>
+    <string name="regRbtSinDefinir">Sin Definir</string>
+    <string name="regRbtFemenino">Femenino</string>
+    <string name="regRbtMasculino">Masculino</string>
+    <string name="regTxtClave">Clave</string>
+    <string name="regTxtClave2">Clave</string>
+    <string name="regTxtTerminos">Términos y Condiciones</string>
+    <string name="regBtnCrear">Crear</string>
+    <string name="regBtnRegresar">Regresar</string>
+    <string name="regTxtEdad">Edad</string>
+    <string name="regTxtAnos">Años</string>
+    <string name="regTxtMeses">Meses</string>
 </resources>

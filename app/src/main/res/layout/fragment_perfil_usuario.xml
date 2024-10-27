@@ -132,7 +132,7 @@
 
                 android:layout_marginEnd="16dp">
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/btnInfoMascota"
                     android:layout_width="100dp"
                     android:layout_height="80dp"

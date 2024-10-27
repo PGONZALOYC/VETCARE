@@ -25,7 +25,7 @@
     <string name="confBtnConfirmarCodigoVerificar">Verificar</string>
 
     <!--Cambiar contraseña-->
-    <string name="camLblCambiarContrasenaTitulo">Verifica tu identidad</string>
+    <string name="camLblCambiarContrasenaTitulo">Cambia tu contraseña</string>
     <string name="camLblCambiarContrasenaInstrucciones">Para mayor seguridad, deberás crear una nueva contraseña.</string>
     <string name="camTxtCambiarContrasenaNueva">Nueva contraseña</string>
     <string name="camTxtCambiarContrasenaConfirmarNueva">Confirmar contraseña</string>
@@ -38,6 +38,7 @@
     <string name="regTxtRegistroApellido">Apellidos</string>
     <string name="regTxtRegistroDni">DNI</string>
     <string name="regTxtRegistroFechaNacimiento">Fecha de nacimiento</string>
+    <string name="regTxtRegistroTelefono">Teléfono</string>
     <string name="regTxtRegistroCorreo">Correo electrónico</string>
     <string name="regRbtRegistroSinDefinir">Sin definir</string>
     <string name="regRbtRegistroFemenino">Femenino</string>
@@ -56,6 +57,11 @@
     <string name="regTxtRegistroPrimMascotaMeses">Meses</string>
     <string name="mascDescIconoRegistroPrimMascota">Icono mascota</string>
 
+    <!--Bienvenida-->
+    <string name="bieLblQuienesSomos">¿Quiénes somos?</string>
+    <string name="bieLblInformacion">En Vetcare, somos un equipo de profesionales dedicados al bienestar y salud de tus mascotas. Con años de experiencia en el cuidado veterinario, ofrecemos una amplia gama de servicios, desde consultas y atención de urgencias hasta procedimientos especializados y tratamientos preventivos."\n"Nos enorgullecemos de tratar a cada mascota como si fuera nuestra, brindando un entorno seguro, confiable y acogedor para ellos y sus dueños. Creemos en una atención integral y personalizada, entendiendo las necesidades específicas de cada mascota.</string>
+
+
 
     <!--FRAGMENTOS-->
     <!--    Reserva de cita-->
@@ -66,7 +72,7 @@
     <string name="resBtnReservarCita">Reservar cita</string>
 
     <!--Categorias de Productos-->
-    <string name="proLblCategProductosTitulo" >Productos</string>
+    <string name="proLblCategProductosTitulo">Productos</string>
     <string name="proLblComida">Comida</string>
     <string name="proLblHigiene">Higiene</string>
     <string name="proLblJuguete">Juguetes</string>
@@ -96,11 +102,17 @@
     <string name="citLblFechaProximaCita">28 junio</string>
     <string name="citLblDetalleProximaCita">Vacunación / Perro</string>
 
+    <!--Nosotros-->
+    <string name="nosLblNumeroVetcare">+51 902 458 162</string>
+    <string name="nosLblDescripcion">Nuestro equipo de veterinarios está dedicado a proporcionar servicios integrales de salud y bienestar animal, desde consultas preventivas y vacunación hasta tratamientos especializados y emergencias. Nos enorgullece contar con instalaciones modernas y equipadas para la atención de pequeños animales, con áreas exclusivas para cirugía, cuidados intensivos y diagnósticos avanzados.</string>
+    <string name="nosBtnEncuentranos">Encuéntranos</string>
+
+
     <!--Perfil usuario-->
     <string name="perLblPerfilTitulo">Perfil</string>
     <string name="perTxtNombre">Nombres</string>
     <string name="perTxtApellido">Apellidos</string>
-    <string name="perTxtTelefono">Número de teléfono</string>
+    <string name="perTxtTelefono">Teléfono</string>
     <string name="perTxtCorreo">Correo electrónico</string>
     <string name="perLblMisMascotas">Mis mascotas</string>
     <string name="perDescIconoUsuario">Icono usuario</string>

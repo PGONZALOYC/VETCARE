@@ -25,7 +25,7 @@ import com.example.vetcare.R;
 import java.util.Calendar;
 
 public class RegistroActivity extends AppCompatActivity implements View.OnClickListener{
-    EditText regTxtRegistroNombre, regTxtRegistroApellido, regTxtRegistroDni, regTxtRegistroFechaNacimiento, regTxtRegistroCorreo, regTxtRegistroContrasena, regTxtRegistroConfirmarContrasena;
+    EditText regTxtRegistroNombre, regTxtRegistroApellido, regTxtRegistroDni,regTxtRegistroFechaNacimiento, regTxtRegistroTelefono, regTxtRegistroCorreo, regTxtRegistroContrasena, regTxtRegistroConfirmarContrasena;
     RadioGroup regGrpRegistroSexo;
     RadioButton regRbtRegistroSinDefinir, regRbtRegistroFemenino, regRbtRegistroMasculino;
     CheckBox regChkRegistroTerminos;
@@ -45,6 +45,7 @@ public class RegistroActivity extends AppCompatActivity implements View.OnClickL
         regTxtRegistroApellido = findViewById(R.id.regTxtRegistroApellido);
         regTxtRegistroDni = findViewById(R.id.regTxtRegistroDni);
         regTxtRegistroFechaNacimiento = findViewById(R.id.regTxtRegistroFechaNacimiento);
+        regTxtRegistroTelefono = findViewById(R.id.regTxtRegistroTelefono);
         regTxtRegistroCorreo = findViewById(R.id.regTxtRegistroCorreo);
         regTxtRegistroContrasena = findViewById(R.id.regTxtRegistroContrasena);
         regTxtRegistroConfirmarContrasena = findViewById(R.id.regTxtRegistroConfirmarContrasena);

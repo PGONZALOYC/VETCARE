@@ -25,9 +25,9 @@ public class BienvenidaActivity extends AppCompatActivity implements Menu {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        lblSaludo = findViewById(R.id.bieLblSaludo);
-        String nombre = getIntent().getStringExtra("nombre");
-        lblSaludo.setText("Bienvenido: " +nombre);
+//        lblSaludo = findViewById(R.id.bieLblSaludo);
+//        String nombre = getIntent().getStringExtra("nombre");
+//        lblSaludo.setText("Bienvenido: " +nombre);
     }
 
     @Override

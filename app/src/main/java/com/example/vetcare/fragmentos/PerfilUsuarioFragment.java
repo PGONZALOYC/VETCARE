@@ -1,6 +1,7 @@
 package com.example.vetcare.fragmentos;
 
 import android.app.Activity;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,9 +9,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.example.vetcare.R;
 import com.example.vetcare.clases.Menu;
+import com.example.vetcare.sqlite.Vetcare;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +22,7 @@ import com.example.vetcare.clases.Menu;
  */
 public class PerfilUsuarioFragment extends Fragment {
 
+    EditText perTxtNombre,perTxtApellido,perTxtTelefono,perTxtCorreo;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -66,7 +70,15 @@ public class PerfilUsuarioFragment extends Fragment {
         //return inflater.inflate(R.layout.fragment_perfil_usuario, container, false);
 
         // Inflate the layout for this fragment
+
+
         View vista = inflater.inflate(R.layout.fragment_perfil_usuario, container, false);
+
+        perTxtNombre = vista.findViewById(R.id.perTxtNombre);
+        perTxtApellido= vista.findViewById(R.id.perTxtApellido);
+        perTxtTelefono = vista.findViewById(R.id.perTxtTelefono);
+        perTxtCorreo = vista.findViewById(R.id.perTxtCorreo);
+
         View infoMastoca = vista.findViewById(R.id.btnInfoMascota);
         View agreMascota= vista.findViewById(R.id.btnAgregarMascota);
 
@@ -84,6 +96,25 @@ public class PerfilUsuarioFragment extends Fragment {
                 ((Menu)activity).onClickMenu(7);
             }
         });
+
+        //mostrarInformacion();
+
+        // Obtener los datos del usuario
+        Vetcare vt = new Vetcare(getContext());
+        Cursor cursor = vt.obtenerDatosUsuario();
+        if (cursor != null && cursor.moveToFirst()) {
+            // Colocar los datos en los campos correspondientes
+            perTxtCorreo.setText(cursor.getString(0));   // Correo
+            perTxtNombre.setText(cursor.getString(1));  // Nombres
+            perTxtApellido.setText(cursor.getString(2)); // Apellidos
+            perTxtTelefono.setText(cursor.getString(3)); // Teléfono
+        }
+        cursor.close();
+
         return vista;
+    }
+
+    private void mostrarInformacion() {
+
     }
 }

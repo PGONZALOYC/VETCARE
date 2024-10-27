@@ -1,6 +1,7 @@
 package com.example.vetcare.actividades;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.vetcare.R;
+import com.example.vetcare.clases.Hash;
+import com.example.vetcare.sqlite.Vetcare;
 
 public class SesionActivity extends AppCompatActivity  implements View.OnClickListener {
     EditText txtCorreo, txtClave;
@@ -53,7 +56,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     public void onClick(View v) {
 // Usando if-else if para manejar los clics
         if (v.getId() == R.id.logBtnIngresar) {
-            iniciarSesion(txtCorreo.getText().toString(), txtClave.getText().toString(), chkRecordar.isChecked());
+            iniciarSesion(txtCorreo.getText().toString(), txtClave.getText().toString());
         }
         else if (v.getId() == R.id.logBtnRegistrate) {
             registrar(); // Método para manejar el botón Registrarse
@@ -61,16 +64,47 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         } else if (v.getId() == R.id.logTxtOlvidasteContrasena) {
             olvidasteContrasena(); // Método para manejar el olvido de contraseña
         }
-        //else if (v.getId() == R.id.logBtnSOS) {
-//            mostrarSOS(); // Método para manejar el botón SOS
+        else if (v.getId() == R.id.logBtnSOS) {
+            mostrarSOS(); // Método para manejar el botón SOS
+        }
     }
 
-    private void iniciarSesion(String correo, String clave, boolean recordar) {
+    private void iniciarSesion(String txtCorreo, String txtClave) {
+        //Se creo la BD
+        //objeto de la BD
+        Vetcare vt = new Vetcare(getApplicationContext());
+        //objeto de hash
+        Hash hash = new Hash();
+        //Cifrar la clave
+        txtClave = hash.StringToHash(txtClave,"SHA256").toLowerCase();
+
+//        // Cifrar la clave ingresada
+//        txtClave = hash.StringToHash(txtClave, "SHA256").toLowerCase();
+//
+//        // Validar credenciales en base de datos
+//        String claveGuardada = vt.getValue("clave"); // Obtener la clave guardada para el usuario
+//
+//        // Verificar si el usuario existe y comparar contraseñas
+//        if (vt.usuarioAgregado() && claveGuardada != null && txtCorreo.equals("dinamita@gmail.com") && txtClave.equals(claveGuardada)) {
+//            Intent bienvenida = new Intent(this, BienvenidaActivity.class);
+//            bienvenida.putExtra("nombre", "Dinamita");
+//            startActivity(bienvenida);
+//            finish();
+//        } else {
+//            Toast.makeText(this, "Error: Credenciales incorrectas", Toast.LENGTH_LONG).show();
+//        }
+
         // Validar credenciales en base de datos o lógica específica
-        if (correo.equals("dinamita@gmail.com") && clave.equals("123")) {
+        if (txtCorreo.equals("dinamita@gmail.com") && txtClave.equals("a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3")) {
+
             //Intent bienvenida = new Intent(this, ReservaCitaActivity.class);
             Intent bienvenida = new Intent(this, BienvenidaActivity.class);
             bienvenida.putExtra("nombre", "Dinamita");
+            if(chkRecordar.isChecked()){
+                //Aca se guarda el correo y clave
+                //vt.agregarUsuario(1,txtCorreo,txtClave);
+            }
+            //vt.agregarUsuario(1,txtCorreo,txtClave,"Arturo","Romero Gonzales","78459612","04/09/2003","948156147","Masculino");
             startActivity(bienvenida);
             finish();
         } else {
@@ -83,10 +117,12 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         startActivity(registro);
     }
 //
-//    private void mostrarSOS() {
-//        // Mostrar mensaje de emergencia o realizar alguna acción de emergencia
-//        Toast.makeText(this, "¡Emergencia SOS activada!", Toast.LENGTH_LONG).show();
-//    }
+    private void mostrarSOS() {
+        // Mostrar mensaje de emergencia o realizar alguna acción de emergencia
+        //Toast.makeText(this, "¡Emergencia SOS activada!", Toast.LENGTH_LONG).show();
+
+
+    }
 //
     private void olvidasteContrasena() {
         Intent olvidasteContrasena = new Intent(this, OlvidasteContrasenaActivity.class);

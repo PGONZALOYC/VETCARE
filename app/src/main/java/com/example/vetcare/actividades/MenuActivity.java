@@ -16,6 +16,7 @@ import com.example.vetcare.clases.Menu;
 import com.example.vetcare.fragmentos.AgregarMascotaFragment;
 import com.example.vetcare.fragmentos.DetalleProductosFragment;
 import com.example.vetcare.fragmentos.MisCitasFragment;
+import com.example.vetcare.fragmentos.NosotrosFragment;
 import com.example.vetcare.fragmentos.PerfilMascotaFragment;
 import com.example.vetcare.fragmentos.PerfilUsuarioFragment;
 import com.example.vetcare.fragmentos.CategProductosFragment;
@@ -40,6 +41,7 @@ public class MenuActivity extends AppCompatActivity implements Menu {
         fragments[0] = new ReservarCitaFragment();
         fragments[1] = new CategProductosFragment();
         fragments[2] = new MisCitasFragment();
+        fragments[3] = new NosotrosFragment();
         fragments[4] = new PerfilUsuarioFragment();
         fragments[5] = new PerfilMascotaFragment();
         fragments[6] = new ProductosFragment();

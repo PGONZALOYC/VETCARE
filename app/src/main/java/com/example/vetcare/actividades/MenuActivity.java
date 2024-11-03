@@ -22,6 +22,7 @@ import com.example.vetcare.fragmentos.PerfilUsuarioFragment;
 import com.example.vetcare.fragmentos.CategProductosFragment;
 import com.example.vetcare.fragmentos.ProductosFragment;
 import com.example.vetcare.fragmentos.ReservarCitaFragment;
+import com.example.vetcare.fragmentos.VerMapaFragment;
 
 public class MenuActivity extends AppCompatActivity implements Menu {
     Fragment[] fragments;
@@ -47,6 +48,7 @@ public class MenuActivity extends AppCompatActivity implements Menu {
         fragments[6] = new ProductosFragment();
         fragments[7] = new AgregarMascotaFragment();
         fragments[8] = new DetalleProductosFragment();
+        fragments[9] = new VerMapaFragment();
 
         int id = getIntent().getIntExtra("id", -1);
         onClickMenu(id);

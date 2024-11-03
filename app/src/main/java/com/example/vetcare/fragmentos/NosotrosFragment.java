@@ -1,5 +1,6 @@
 package com.example.vetcare.fragmentos;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.vetcare.R;
+import com.example.vetcare.clases.Menu;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,6 +76,7 @@ public class NosotrosFragment extends Fragment implements View.OnClickListener {
         View vista = inflater.inflate(R.layout.fragment_nosotros, container, false);
 
         nosBtnEncuentranos = vista.findViewById(R.id.nosBtnEncuentranos);
+        //nosBtnEncuentranos.setOnClickListener(this);
         nosBtnEncuentranos.setOnClickListener(this);
         return vista;
     }
@@ -84,6 +87,8 @@ public class NosotrosFragment extends Fragment implements View.OnClickListener {
         if(v.getId()== R.id.nosBtnEncuentranos){
 //            Intent intent = new Intent(getActivity(), VerMapaActivity.class);
 //            startActivity(intent);
+            Activity activity = getActivity();
+            ((Menu)activity).onClickMenu(9);
         }
     }
 }

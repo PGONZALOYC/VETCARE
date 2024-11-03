@@ -2,6 +2,7 @@ package com.example.vetcare.actividades;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.vetcare.R;
 import com.example.vetcare.clases.Hash;
+import com.example.vetcare.clases.MySQLConnector;
 import com.example.vetcare.sqlite.Vetcare;
 
 public class SesionActivity extends AppCompatActivity  implements View.OnClickListener {
@@ -25,11 +27,15 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     Button btnIngresar, btnRegistrarse, btnSOS;
     CheckBox chkRecordar;
     TextView logTxtOlvidasteContrasena;
+    boolean conexionExitosa = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sesion);
+
+        new ConexionTask().execute();
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -98,7 +104,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         if (txtCorreo.equals("dinamita@gmail.com") && txtClave.equals("a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3")) {
 
             //Intent bienvenida = new Intent(this, ReservaCitaActivity.class);
-            Intent bienvenida = new Intent(this, BienvenidaActivity.class);
+            Intent bienvenida = new Intent(SesionActivity.this, BienvenidaActivity.class);
             bienvenida.putExtra("nombre", "Dinamita");
             if(chkRecordar.isChecked()){
                 //Aca se guarda el correo y clave
@@ -108,8 +114,9 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             startActivity(bienvenida);
             finish();
         } else {
-            Toast.makeText(this, "Error: Credenciales incorrectas", Toast.LENGTH_LONG).show();
+            Toast.makeText(SesionActivity.this, "Error: Credenciales incorrectas", Toast.LENGTH_LONG).show();
         }
+
     }
 
         private void registrar() {
@@ -127,5 +134,30 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     private void olvidasteContrasena() {
         Intent olvidasteContrasena = new Intent(this, OlvidasteContrasenaActivity.class);
         startActivity(olvidasteContrasena);
+    }
+
+    // Clase interna para ejecutar la prueba de conexión en un hilo de fondo
+    private class ConexionTask extends AsyncTask<Void, Void, Integer> {
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            MySQLConnector mySQLConnector = new MySQLConnector();
+            int cnx = 0;
+            if(mySQLConnector.conecta() != null){
+                cnx = 1;
+            }
+            return cnx;
+
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            // Muestra un Toast con el resultado de la conexión
+            if (result == 1) {
+                Toast.makeText(SesionActivity.this, "Conexión exitosa", Toast.LENGTH_SHORT).show();
+
+            } else {
+                Toast.makeText(SesionActivity.this, "Error en la conexión", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

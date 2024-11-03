@@ -1,5 +1,6 @@
 package com.example.vetcare.actividades;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -21,6 +22,9 @@ import com.example.vetcare.R;
 import com.example.vetcare.clases.Hash;
 import com.example.vetcare.clases.MySQLConnector;
 import com.example.vetcare.sqlite.Vetcare;
+import com.example.vetcare.modelo.Usuario;
+
+import java.util.concurrent.CountDownLatch;
 
 public class SesionActivity extends AppCompatActivity  implements View.OnClickListener {
     EditText txtCorreo, txtClave;
@@ -28,13 +32,16 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     CheckBox chkRecordar;
     TextView logTxtOlvidasteContrasena;
     boolean conexionExitosa = false;
+    private Toast toastActual;
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sesion);
 
-        new ConexionTask().execute();
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -62,7 +69,33 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     public void onClick(View v) {
 // Usando if-else if para manejar los clics
         if (v.getId() == R.id.logBtnIngresar) {
-            iniciarSesion(txtCorreo.getText().toString(), txtClave.getText().toString());
+            new ConexionTask().execute();
+
+            showLoadingDialog();
+
+            // Ejecutar tareas en un hilo separado
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        // Congelar la ejecución durante 5 segundos
+                        freezeExecution();
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Aquí va el código que deseas ejecutar después de congelar
+                                iniciarSesion();
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
+
+
         }
         else if (v.getId() == R.id.logBtnRegistrate) {
             registrar(); // Método para manejar el botón Registrarse
@@ -75,34 +108,13 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         }
     }
 
-    private void iniciarSesion(String txtCorreo, String txtClave) {
+    private void iniciarSesion() {
         //Se creo la BD
         //objeto de la BD
         Vetcare vt = new Vetcare(getApplicationContext());
-        //objeto de hash
-        Hash hash = new Hash();
-        //Cifrar la clave
-        txtClave = hash.StringToHash(txtClave,"SHA256").toLowerCase();
-
-//        // Cifrar la clave ingresada
-//        txtClave = hash.StringToHash(txtClave, "SHA256").toLowerCase();
-//
-//        // Validar credenciales en base de datos
-//        String claveGuardada = vt.getValue("clave"); // Obtener la clave guardada para el usuario
-//
-//        // Verificar si el usuario existe y comparar contraseñas
-//        if (vt.usuarioAgregado() && claveGuardada != null && txtCorreo.equals("dinamita@gmail.com") && txtClave.equals(claveGuardada)) {
-//            Intent bienvenida = new Intent(this, BienvenidaActivity.class);
-//            bienvenida.putExtra("nombre", "Dinamita");
-//            startActivity(bienvenida);
-//            finish();
-//        } else {
-//            Toast.makeText(this, "Error: Credenciales incorrectas", Toast.LENGTH_LONG).show();
-//        }
 
         // Validar credenciales en base de datos o lógica específica
-        if (txtCorreo.equals("dinamita@gmail.com") && txtClave.equals("a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3")) {
-
+        if (conexionExitosa) {
             //Intent bienvenida = new Intent(this, ReservaCitaActivity.class);
             Intent bienvenida = new Intent(SesionActivity.this, BienvenidaActivity.class);
             bienvenida.putExtra("nombre", "Dinamita");
@@ -113,8 +125,6 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             //vt.agregarUsuario(1,txtCorreo,txtClave,"Arturo","Romero Gonzales","78459612","04/09/2003","948156147","Masculino");
             startActivity(bienvenida);
             finish();
-        } else {
-            Toast.makeText(SesionActivity.this, "Error: Credenciales incorrectas", Toast.LENGTH_LONG).show();
         }
 
     }
@@ -140,9 +150,13 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     private class ConexionTask extends AsyncTask<Void, Void, Integer> {
         @Override
         protected Integer doInBackground(Void... voids) {
-            MySQLConnector mySQLConnector = new MySQLConnector();
+            Usuario usuario = new Usuario();
             int cnx = 0;
-            if(mySQLConnector.conecta() != null){
+            Hash hash = new Hash();
+            String txtClav = txtClave.getText().toString();
+            //Cifrar la clave
+            txtClav = hash.StringToHash(txtClav,"SHA256").toLowerCase();
+            if(usuario.loginUsuario(txtCorreo.getText().toString(), txtClav)){
                 cnx = 1;
             }
             return cnx;
@@ -153,11 +167,40 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         protected void onPostExecute(Integer result) {
             // Muestra un Toast con el resultado de la conexión
             if (result == 1) {
-                Toast.makeText(SesionActivity.this, "Conexión exitosa", Toast.LENGTH_SHORT).show();
-
-            } else {
-                Toast.makeText(SesionActivity.this, "Error en la conexión", Toast.LENGTH_SHORT).show();
+                hideLoadingDialog();
+                conexionExitosa = true;
+            } else{
+                hideLoadingDialog();
+                mostrarToast("Error: Credenciales incorrectas");
             }
+        }
+    }
+
+    private void freezeExecution() throws InterruptedException {
+        while (!conexionExitosa) {
+            Thread.sleep(100); // Esperar un breve periodo antes de volver a comprobar
+        }
+    }
+
+    private void mostrarToast(String message) {
+        if (toastActual != null) {
+            toastActual.cancel();
+        }
+
+        toastActual = Toast.makeText(SesionActivity.this, message, Toast.LENGTH_SHORT);
+        toastActual.show();
+    }
+
+    private void showLoadingDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Logueando...");
+        progressDialog.setCancelable(false); // No se puede cancelar tocando fuera del diálogo
+        progressDialog.show();
+    }
+
+    private void hideLoadingDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
     }
 }

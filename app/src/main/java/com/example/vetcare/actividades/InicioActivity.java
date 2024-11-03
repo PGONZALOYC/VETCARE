@@ -32,7 +32,7 @@ public class InicioActivity extends AppCompatActivity {
                 for (int i = 0; i < barCarga.getMax(); i++) {
                     barCarga.setProgress(i);
                     try{
-                        Thread.sleep(50);
+                        Thread.sleep(1);
                     }catch (InterruptedException e){
                         throw new RuntimeException(e);
                     }

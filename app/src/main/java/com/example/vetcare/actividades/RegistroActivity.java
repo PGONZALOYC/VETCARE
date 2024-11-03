@@ -127,90 +127,70 @@ public class RegistroActivity extends AppCompatActivity implements View.OnClickL
     private void mostrarTerminos() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Términos y Condiciones");
-        builder.setMessage("Términos y Condiciones de Uso" +
+        builder.setMessage("Términos y Condiciones de Uso\n" +
                 "Actualizado el 01-09-2024\n" +
                 "\n" +
-                "Bienvenido a Burros al Volante. Al acceder y utilizar nuestra" +
-                " aplicación móvil, aceptas los siguientes términos y condiciones. " +
-                "Si no estás de acuerdo con estos términos, por favor no utilices" +
-                " la app.\n" +
+                "Bienvenido a Vetcare. Al acceder y utilizar nuestra aplicación móvil, aceptas los siguientes términos y condiciones. " +
+                "Si no estás de acuerdo con estos términos, por favor no utilices la app.\n" +
                 "\n" +
                 "1. Aceptación de los Términos\n" +
                 "\n" +
-                "Al descargar, instalar o usar Burros al Volante, aceptas " +
-                "estos términos y condiciones y nuestra política de privacidad." +
-                " Si no aceptas estos términos, no debes usar la app.\n" +
+                "Al descargar, instalar o usar Vetcare, aceptas estos términos y condiciones y nuestra política de privacidad. " +
+                "Si no aceptas estos términos, no debes usar la app.\n" +
                 "\n" +
                 "2. Uso de la App\n" +
                 "\n" +
-                "2.1 Licencia de Uso: Te otorgamos una licencia no exclusiva, " +
-                "intransferible y revocable para usar la app en tu dispositivo " +
+                "2.1 Licencia de Uso: Te otorgamos una licencia no exclusiva, intransferible y revocable para usar la app en tu dispositivo " +
                 "móvil conforme a estos términos.\n" +
                 "\n" +
-                "2.2 Restricciones: No puedes modificar, reproducir, distribuir, " +
-                "vender, o crear trabajos derivados de la app sin nuestro " +
-                "consentimiento previo por escrito. Tampoco debes usar la app " +
-                "para fines ilegales o no autorizados.\n" +
+                "2.2 Restricciones: No puedes modificar, reproducir, distribuir, vender, o crear trabajos derivados de la app sin nuestro " +
+                "consentimiento previo por escrito. Tampoco debes usar la app para fines ilegales o no autorizados.\n" +
                 "\n" +
                 "3. Registro y Seguridad\n" +
                 "\n" +
-                "3.1 Cuenta de Usuario: Para acceder a ciertas funciones, debes " +
-                "crear una cuenta proporcionando información veraz y completa. " +
-                "Eres responsable de mantener la confidencialidad de tu cuenta " +
-                "y contraseña.\n" +
+                "3.1 Cuenta de Usuario: Para acceder a ciertas funciones, debes crear una cuenta proporcionando información veraz y completa. " +
+                "Eres responsable de mantener la confidencialidad de tu cuenta y contraseña.\n" +
                 "\n" +
-                "3.2 Seguridad: Nos reservamos el derecho de suspender o cancelar " +
-                "tu cuenta si sospechamos que se está utilizando de manera " +
+                "3.2 Seguridad: Nos reservamos el derecho de suspender o cancelar tu cuenta si sospechamos que se está utilizando de manera " +
                 "fraudulenta o en violación de estos términos.\n" +
                 "\n" +
                 "4. Contenido de Usuario\n" +
                 "\n" +
-                "4.1 Responsabilidad del Contenido: Eres el único responsable " +
-                "del contenido que publiques o transmitas a través de la app. " +
-                "No publicaremos ni aprobaremos contenido que sea ilegal, " +
-                "ofensivo o que viole los derechos de terceros.\n" +
+                "4.1 Responsabilidad del Contenido: Eres el único responsable del contenido que publiques o transmitas a través de la app. " +
+                "No publicaremos ni aprobaremos contenido que sea ilegal, ofensivo o que viole los derechos de terceros.\n" +
                 "\n" +
-                "4.2 Licencia de Contenido: Al publicar contenido en la app, " +
-                "nos otorgas una licencia mundial, no exclusiva, libre de regalías " +
+                "4.2 Licencia de Contenido: Al publicar contenido en la app, nos otorgas una licencia mundial, no exclusiva, libre de regalías " +
                 "y sublicenciable para usar, reproducir y distribuir dicho contenido.\n" +
                 "\n" +
                 "5. Propiedad Intelectual\n" +
                 "\n" +
-                "Todos los derechos de propiedad intelectual sobre la app y su contenido, " +
-                "incluyendo marcas registradas, derechos de autor y patentes, pertenecen " +
-                "a Burros Volante o a sus licenciantes.\n" +
+                "Todos los derechos de propiedad intelectual sobre la app y su contenido, incluyendo marcas registradas, derechos de autor y patentes, " +
+                "pertenecen a Vetcare o a sus licenciantes.\n" +
                 "\n" +
                 "6. Modificaciones de la App y Términos\n" +
                 "\n" +
-                "Nos reservamos el derecho de modificar o interrumpir la app en " +
-                "cualquier momento, así como de actualizar estos términos. Las " +
-                "modificaciones entrarán en vigor en cuanto se publiquen en la app." +
-                " Tu uso continuado de la app después de dichas modificaciones implica " +
+                "Nos reservamos el derecho de modificar o interrumpir la app en cualquier momento, así como de actualizar estos términos. Las " +
+                "modificaciones entrarán en vigor en cuanto se publiquen en la app. Tu uso continuado de la app después de dichas modificaciones implica " +
                 "tu aceptación de los nuevos términos.\n" +
                 "\n" +
                 "7. Limitación de Responsabilidad\n" +
                 "\n" +
-                "La app se proporciona \"tal cual\" y \"según disponibilidad\". " +
-                "No garantizamos que la app estará libre de errores o que funcionará" +
-                " sin interrupciones. En la máxima medida permitida por la ley, no " +
-                "seremos responsables de ningún daño indirecto, incidental o consecuente " +
+                "La app se proporciona \"tal cual\" y \"según disponibilidad\". No garantizamos que la app estará libre de errores o que funcionará " +
+                "sin interrupciones. En la máxima medida permitida por la ley, no seremos responsables de ningún daño indirecto, incidental o consecuente " +
                 "que surja del uso o la imposibilidad de uso de la app.\n" +
                 "\n" +
                 "8. Ley Aplicable\n" +
                 "\n" +
-                "Estos términos se rigen por las leyes de Perú. Cualquier disputa que " +
-                "surja en relación con estos términos será resuelta en los tribunales " +
-                "competentes de Lima/Lima.\n" +
+                "Estos términos se rigen por las leyes de Perú. Cualquier disputa que surja en relación con estos términos será resuelta en los tribunales " +
+                "competentes de Lima.\n" +
                 "\n" +
                 "9. Contacto\n" +
                 "\n" +
-                "Si tienes preguntas sobre estos términos, puedes contactarnos en " +
-                "burritos_volante@upn.pe o en Av El Sol 461, San Juan de Lurigancho 15434\n" +
+                "Si tienes preguntas sobre estos términos, puedes contactarnos en vetcare_contact@vetcareapp.com o en Av.El Sol 461 SJL, Lima.\n" +
                 "\n" +
                 "10. Terminación\n" +
                 "\n" +
-                "Podemos suspender o terminar tu acceso a la app si incumples " +
-                "estos términos o por cualquier motivo que consideremos necesario " +
+                "Podemos suspender o terminar tu acceso a la app si incumples estos términos o por cualquier motivo que consideremos necesario " +
                 "para proteger la integridad de la app.\n");
         regChkRegistroTerminos.setChecked(false);
         builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {

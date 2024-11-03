@@ -1,32 +1,16 @@
 package com.example.vetcare.fragmentos;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.vetcare.R;
-import com.example.vetcare.actividades.VerMapaActivity;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-
-import org.osmdroid.api.IMapController;
-import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.Marker;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -98,8 +82,8 @@ public class NosotrosFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if(v.getId()== R.id.nosBtnEncuentranos){
-            Intent intent = new Intent(getActivity(), VerMapaActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent(getActivity(), VerMapaActivity.class);
+//            startActivity(intent);
         }
     }
 }

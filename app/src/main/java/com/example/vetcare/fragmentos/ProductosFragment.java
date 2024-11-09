@@ -3,13 +3,19 @@ package com.example.vetcare.fragmentos;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.vetcare.R;
@@ -72,7 +78,7 @@ public class ProductosFragment extends Fragment {
         SharedPreferences sharedPreferences = context.getSharedPreferences("Sistema", Context.MODE_PRIVATE);
         String valor = sharedPreferences.getString("categoria", "null");
         titulo.setText(valor);
-
+    /*
         View iconoComida1 = vista.findViewById(R.id.proIconoComidaCanbo);
         View iconoComida2 = vista.findViewById(R.id.proIconoComidaCanbo2);
         View iconoComida3 = vista.findViewById(R.id.proIconoComidaWhiskas);
@@ -89,8 +95,79 @@ public class ProductosFragment extends Fragment {
         iconoComida1.setOnClickListener(listener);
         iconoComida2.setOnClickListener(listener);
         iconoComida3.setOnClickListener(listener);
-        iconoComida4.setOnClickListener(listener);
+        iconoComida4.setOnClickListener(listener);*/
+
+        // Referencia al GridLayout
+        GridLayout contenedorEtiquetas = vista.findViewById(R.id.contenedorEtiquetas);
+
+        // Agregar las CardViews
+        agregarCard(contenedorEtiquetas, R.drawable.canbo, getString(R.string.proLblComidaCanbo));
+        agregarCard(contenedorEtiquetas, R.drawable.whiskas, getString(R.string.proLblComidaWhiskas));
+        agregarCard(contenedorEtiquetas, R.drawable.canbo, getString(R.string.proLblComidaCanbo));
+        agregarCard(contenedorEtiquetas, R.drawable.whiskas, getString(R.string.proLblComidaWhiskas));
 
         return vista;
     }
+
+// Método para crear una CardView y agregarla al GridLayout
+private void agregarCard(GridLayout contenedor, int imageResId, String labelText) {
+    // Crear CardView
+    CardView cardView = new CardView(this.getContext());
+    GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+    params.width = GridLayout.LayoutParams.MATCH_PARENT;
+    params.height = GridLayout.LayoutParams.WRAP_CONTENT;
+    cardView.setLayoutParams(params);
+    cardView.setRadius(10);
+    cardView.setCardElevation(5);
+    cardView.setUseCompatPadding(true);
+
+    // Crear LinearLayout
+    LinearLayout linearLayout = new LinearLayout(this.getContext());
+    LinearLayout.LayoutParams linearparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+    linearLayout.setOrientation(LinearLayout.VERTICAL);
+    linearLayout.setLayoutParams(linearparams);
+
+    // Crear ImageView
+    ImageView imageView = new ImageView(this.getContext());
+    LinearLayout.LayoutParams imaparams = new LinearLayout.LayoutParams(dpToPx(150), dpToPx(160));
+    // Luego, establece un margen de 10dp
+    int marginInPx = dpToPx(10);
+    imaparams.setMargins(marginInPx, marginInPx, marginInPx, marginInPx);
+
+// Finalmente, aplica los parámetros a la ImageView
+    imageView.setLayoutParams(imaparams);
+
+    imageView.setImageResource(imageResId);
+    imageView.setContentDescription(labelText);
+
+    // Crear TextView
+    TextView textView = new TextView(this.getContext());
+    textView.setLayoutParams(new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            dpToPx(50)
+    ));
+    textView.setText(labelText);
+    textView.setTextSize(15);
+    textView.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
+    textView.setTextColor(getResources().getColor(R.color.titulo, null));
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        textView.setTypeface(getResources().getFont(R.font.poppins_medium));
+    }
+
+    // Añadir ImageView y TextView al LinearLayout
+    linearLayout.addView(imageView);
+    linearLayout.addView(textView);
+
+    // Añadir LinearLayout al CardView
+    cardView.addView(linearLayout);
+
+    // Añadir CardView al GridLayout
+    contenedor.addView(cardView);
+
 }
+    private int dpToPx(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
+    }
+}
+
+

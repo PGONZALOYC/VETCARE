@@ -41,8 +41,6 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sesion);
 
-
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -78,13 +76,12 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
                 @Override
                 public void run() {
                     try {
-                        // Congelar la ejecución durante 5 segundos
                         freezeExecution();
 
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                // Aquí va el código que deseas ejecutar después de congelar
+                                //CODIGO DESPUES DEL CONGELAMIENTO
                                 iniciarSesion();
                             }
                         });
@@ -137,8 +134,6 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     private void mostrarSOS() {
         // Mostrar mensaje de emergencia o realizar alguna acción de emergencia
         //Toast.makeText(this, "¡Emergencia SOS activada!", Toast.LENGTH_LONG).show();
-
-
     }
 //
     private void olvidasteContrasena() {
@@ -150,6 +145,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     private class ConexionTask extends AsyncTask<Void, Void, Integer> {
         @Override
         protected Integer doInBackground(Void... voids) {
+            //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
             Usuario usuario = new Usuario();
             int cnx = 0;
             Hash hash = new Hash();
@@ -165,7 +161,6 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
 
         @Override
         protected void onPostExecute(Integer result) {
-            // Muestra un Toast con el resultado de la conexión
             if (result == 1) {
                 hideLoadingDialog();
                 conexionExitosa = true;
@@ -176,21 +171,23 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         }
     }
 
+    //Congela los procesos mientras espera que conexionExitosa sea true para continuar con las posteriores instrucciones
     private void freezeExecution() throws InterruptedException {
         while (!conexionExitosa) {
             Thread.sleep(100); // Esperar un breve periodo antes de volver a comprobar
         }
     }
 
+    //Método para desplegar Toasts sin esperar a que termine el anterior toast (lo reemplaza)
     private void mostrarToast(String message) {
         if (toastActual != null) {
             toastActual.cancel();
         }
-
         toastActual = Toast.makeText(SesionActivity.this, message, Toast.LENGTH_SHORT);
         toastActual.show();
     }
 
+    //Dialogo de carga mientras espera al congelamiento -- mostrar
     private void showLoadingDialog() {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Logueando...");
@@ -198,6 +195,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         progressDialog.show();
     }
 
+    //Dialogo de carga mientras espera al congelamiento -- ocultar
     private void hideLoadingDialog() {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();

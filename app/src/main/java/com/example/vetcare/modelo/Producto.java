@@ -149,5 +149,34 @@ public class Producto {
         }
         return ids;
     }
+    public List<Producto> obtenerProductos() {
+        List<Producto> listaProductos = new ArrayList<>();
+        Producto producto = null;
+        try {
+            String sql = "{CALL ObtenerProductos()}";
+
+            try (CallableStatement statement = connection.prepareCall(sql)) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        producto = new Producto();
+                        producto.setId_Producto(resultSet.getInt("id_Producto"));
+                        producto.setNombre(resultSet.getString("Nombre"));
+                        producto.setPrecio(resultSet.getDouble("Precio"));
+                        producto.setCantidad(resultSet.getInt("Cantidad"));
+                        Blob blob = resultSet.getBlob("Imagen");
+                        producto.setImagen(blob.getBytes(1, (int) blob.length()));
+                        producto.setId_Categoria(resultSet.getInt("id_Categoria"));
+                        listaProductos.add(producto);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return listaProductos;
+    }
+
 }
+
 

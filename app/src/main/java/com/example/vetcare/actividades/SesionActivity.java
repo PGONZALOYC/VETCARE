@@ -20,19 +20,19 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.vetcare.R;
 import com.example.vetcare.clases.Hash;
-import com.example.vetcare.clases.MySQLConnector;
+
 import com.example.vetcare.sqlite.Vetcare;
 import com.example.vetcare.modelo.Usuario;
 
 import java.util.concurrent.CountDownLatch;
 
 public class SesionActivity extends AppCompatActivity  implements View.OnClickListener {
-    EditText txtCorreo, txtClave;
+    static EditText txtCorreo, txtClave;
     Button btnIngresar, btnRegistrarse, btnSOS;
     CheckBox chkRecordar;
     TextView logTxtOlvidasteContrasena;
     boolean conexionExitosa = false;
-    private Toast toastActual;
+    private static Toast toastActual;
     private ProgressDialog progressDialog;
 
     @Override
@@ -142,7 +142,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     }
 
     // Clase interna para ejecutar la prueba de conexión en un hilo de fondo
-    private class ConexionTask extends AsyncTask<Void, Void, Integer> {
+    public class ConexionTask extends AsyncTask<Void, Void, Integer> {
         @Override
         protected Integer doInBackground(Void... voids) {
             //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)

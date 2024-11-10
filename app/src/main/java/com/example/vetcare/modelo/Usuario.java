@@ -154,4 +154,29 @@ public class Usuario {
         }
         return existe;
     }
+
+    public Usuario obtenerInformacionUsuario(String correo) {
+        Usuario usuario = null;
+        try {
+            String sql = "{CALL ObtenerUsuarioPorCorreo(?)}";
+            try (CallableStatement statement = connection.prepareCall(sql)) {
+                statement.setString(1, correo);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        usuario = new Usuario();
+                        usuario.setNombres(resultSet.getString("nombres"));
+                        usuario.setApellidos(resultSet.getString("apellidos"));
+                        usuario.setCorreo(resultSet.getString("correo"));
+                        usuario.setTelefono(resultSet.getString("telefono"));
+                        usuario.setImagen(resultSet.getBytes("imagen"));
+                        usuario.setFechaNacimiento(resultSet.getDate("FechaNacimiento"));
+                        usuario.setSexo(resultSet.getString("sexo"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return usuario;
+    }
 }

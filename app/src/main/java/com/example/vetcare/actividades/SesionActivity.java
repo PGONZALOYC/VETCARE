@@ -1,7 +1,9 @@
 package com.example.vetcare.actividades;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -114,7 +116,8 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         if (conexionExitosa) {
             //Intent bienvenida = new Intent(this, ReservaCitaActivity.class);
             Intent bienvenida = new Intent(SesionActivity.this, BienvenidaActivity.class);
-            bienvenida.putExtra("nombre", "Dinamita");
+            //bienvenida.putExtra("nombre", "Dinamita");
+
             if(chkRecordar.isChecked()){
                 //Aca se guarda el correo y clave
                 //vt.agregarUsuario(1,txtCorreo,txtClave);
@@ -153,6 +156,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             //Cifrar la clave
             txtClav = hash.StringToHash(txtClav,"SHA256").toLowerCase();
             if(usuario.loginUsuario(txtCorreo.getText().toString(), txtClav)){
+                guardarCorreoEnSharedPreferences(txtCorreo.getText().toString());
                 cnx = 1;
             }
             return cnx;
@@ -169,6 +173,13 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
                 mostrarToast("Error: Credenciales incorrectas");
             }
         }
+    }
+
+    private void guardarCorreoEnSharedPreferences(String correo) {
+        SharedPreferences sharedPreferences = getSharedPreferences("CorreoGuardado", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("correo_usuario", correo);
+        editor.apply();
     }
 
     //Congela los procesos mientras espera que conexionExitosa sea true para continuar con las posteriores instrucciones

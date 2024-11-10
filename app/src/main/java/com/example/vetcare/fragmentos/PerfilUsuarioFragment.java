@@ -1,7 +1,8 @@
 package com.example.vetcare.fragmentos;
 
 import android.app.Activity;
-import android.database.Cursor;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,9 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+
 import com.example.vetcare.R;
 import com.example.vetcare.clases.Menu;
-import com.example.vetcare.sqlite.Vetcare;
+import com.example.vetcare.modelo.Usuario;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -79,6 +81,43 @@ public class PerfilUsuarioFragment extends Fragment {
         perTxtTelefono = vista.findViewById(R.id.perTxtTelefono);
         perTxtCorreo = vista.findViewById(R.id.perTxtCorreo);
 
+        // Obtener el correo del usuario desde SharedPreferences
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CorreoGuardado", Context.MODE_PRIVATE);
+        String correo = sharedPreferences.getString("correo_usuario", null); // Si no existe, será null
+        Usuario usuario = new Usuario();
+        if (correo != null) {
+            //perTxtNombre.setText(correo);
+
+            // Crear una instancia de Usuario y obtener la información
+            usuario = usuario.obtenerInformacionUsuario(correo);
+
+            // Asignar los valores a los campos de texto del perfil
+            if (usuario != null) {
+                perTxtNombre.setText(usuario.getNombres());
+                perTxtApellido.setText(usuario.getApellidos());
+                perTxtTelefono.setText(usuario.getTelefono());
+                perTxtCorreo.setText(usuario.getCorreo());
+                // Asigna más valores si es necesario
+            }
+        }
+
+
+//        // Obtener el correo del usuario actual (puede ser de un SharedPreference o de otro lugar)
+//        String correo = "roque@upn.pe"; // Este valor debe provenir de tu contexto (ej. SharedPreferences)
+//
+//        // Llamar al método obtenerInformacionUsuario para obtener los datos
+//        Usuario usuario = new Usuario();
+//        usuario = usuario.obtenerInformacionUsuario(correo);
+//
+//        // Si la información del usuario está disponible, actualizar los campos
+//        if (usuario != null) {
+//            perTxtNombre.setText(usuario.getNombres());
+//            perTxtApellido.setText(usuario.getApellidos());
+//            perTxtTelefono.setText(usuario.getTelefono());
+//            perTxtCorreo.setText(usuario.getCorreo());
+//        }
+
+
         View infoMastoca = vista.findViewById(R.id.btnInfoMascota);
         View agreMascota= vista.findViewById(R.id.btnAgregarMascota);
 
@@ -97,24 +136,8 @@ public class PerfilUsuarioFragment extends Fragment {
             }
         });
 
-        //mostrarInformacion();
-
-        // Obtener los datos del usuario
-        Vetcare vt = new Vetcare(getContext());
-        Cursor cursor = vt.obtenerDatosUsuario();
-        if (cursor != null && cursor.moveToFirst()) {
-            // Colocar los datos en los campos correspondientes
-            perTxtCorreo.setText(cursor.getString(0));   // Correo
-            perTxtNombre.setText(cursor.getString(1));  // Nombres
-            perTxtApellido.setText(cursor.getString(2)); // Apellidos
-            perTxtTelefono.setText(cursor.getString(3)); // Teléfono
-        }
-        cursor.close();
-
         return vista;
     }
 
-    private void mostrarInformacion() {
 
-    }
 }

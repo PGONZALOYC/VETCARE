@@ -59,6 +59,7 @@ public class MenuActivity extends AppCompatActivity implements Menu {
         FragmentManager fr = getSupportFragmentManager();
         FragmentTransaction ft = fr.beginTransaction();
         ft.replace(R.id.menRelArea, fragments[id]);
+
         ft.commit();
     }
 

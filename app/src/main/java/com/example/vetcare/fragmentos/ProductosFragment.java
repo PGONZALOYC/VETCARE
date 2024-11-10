@@ -14,6 +14,8 @@ import android.os.Bundle;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -123,6 +125,8 @@ public class ProductosFragment extends Fragment {
         iconoComida2.setOnClickListener(listener);
         iconoComida3.setOnClickListener(listener);
         iconoComida4.setOnClickListener(listener);*/
+        ImageView closeButton = vista.findViewById(R.id.closeButton);
+        closeButton.setOnClickListener(v -> closeFragment());
 
         new ProductosFragment.ConexionTask().execute();
 
@@ -236,8 +240,6 @@ public class ProductosFragment extends Fragment {
             for(int i=0; i < productos.size(); i++){
                 agregarCard(contenedorEtiquetas, BitmapFactory.decodeByteArray(productos.get(i).getImagen(), 0, productos.get(i).getImagen().length), productos.get(i).getNombre(), "S/."+productos.get(i).getPrecio());
             }
-
-
         }
 
     }
@@ -269,6 +271,7 @@ public class ProductosFragment extends Fragment {
                     break;
             }
             //Almacenar todas las variables necesarias antes del cnx 1
+
             productos = producto.obtenerProductos(categoria);
             if(productos != null){
                 cnx = 1;
@@ -318,6 +321,12 @@ public class ProductosFragment extends Fragment {
         }
         toastActual = Toast.makeText(this.getContext(), message, Toast.LENGTH_SHORT);
         toastActual.show();
+    }
+
+    private void closeFragment() {
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .remove(this)
+                .commit();
     }
 }
 

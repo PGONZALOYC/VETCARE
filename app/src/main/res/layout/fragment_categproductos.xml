@@ -22,7 +22,7 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:text="@string/proLblCategProductosTitulo"
-                android:textSize="35sp"
+                android:textSize="32sp"
                 android:fontFamily="@font/poppins_semibold"
                 android:textColor="@color/titulo"/>
 
@@ -30,18 +30,18 @@
                 android:id="@+id/proImagenBuscar"
                 android:layout_width="30dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginStart="60dp"
                 android:layout_height="35dp"
                 android:contentDescription="@string/proDescIconoBuscar"
-                android:src="@drawable/icono_buscar" />
+                android:src="@drawable/icono_buscar"
+                android:layout_marginLeft="80dp"/>
             <ImageView
                 android:id="@+id/proImagenCarrito"
-                android:layout_width="45dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginStart="20dp"
-                android:layout_height="45dp"
+                android:layout_width="35dp"
+                android:layout_marginTop="20dp"
+                android:layout_height="35dp"
                 android:contentDescription="@string/proDescIconoCarrito"
-                android:src="@drawable/icono_carrito" />
+                android:src="@drawable/icono_carrito"
+                android:layout_marginLeft="20dp"/>/>
         </LinearLayout>
 
 

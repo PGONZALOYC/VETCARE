@@ -102,8 +102,7 @@ public class CategProductosFragment extends Fragment {
                         }
                     }
                 }
-                Activity activity = getActivity();
-                ((Menu)activity).onClickMenu(6);
+                openFragment();
             }
         };
         iconoComida.setOnClickListener(listener);
@@ -112,5 +111,11 @@ public class CategProductosFragment extends Fragment {
         iconoAccesorios.setOnClickListener(listener);
 
         return vista;
+    }
+
+    private void openFragment() {
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .add(R.id.menRelArea, new ProductosFragment())
+                .commit();
     }
 }

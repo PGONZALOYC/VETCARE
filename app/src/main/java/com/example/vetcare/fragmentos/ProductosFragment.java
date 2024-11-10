@@ -148,8 +148,6 @@ public class ProductosFragment extends Fragment {
             }
         }).start();
 
-
-
         return vista;
     }
 
@@ -235,36 +233,10 @@ public class ProductosFragment extends Fragment {
         if (conexionExitosa) {
             // Referencia al GridLayout
             GridLayout contenedorEtiquetas = vista.findViewById(R.id.contenedorEtiquetas);
-            switch (valor){
-                case "Comida":
-                    for(int i=0; i < productos.size(); i++){
-                        if(productos.get(i).getId_Categoria() == 1){
-                            agregarCard(contenedorEtiquetas, BitmapFactory.decodeByteArray(productos.get(i).getImagen(), 0, productos.get(i).getImagen().length), productos.get(i).getNombre(), "S/."+productos.get(i).getPrecio());
-                        }
-                    }
-                    break;
-                case "Higiene":
-                    for(int i=0; i < productos.size(); i++){
-                        if(productos.get(i).getId_Categoria() == 2){
-                            agregarCard(contenedorEtiquetas, BitmapFactory.decodeByteArray(productos.get(i).getImagen(), 0, productos.get(i).getImagen().length), productos.get(i).getNombre(), "S/."+productos.get(i).getPrecio());
-                        }
-                    }
-                    break;
-                case "Juguetes":
-                    for(int i=0; i < productos.size(); i++){
-                        if(productos.get(i).getId_Categoria() == 3){
-                            agregarCard(contenedorEtiquetas, BitmapFactory.decodeByteArray(productos.get(i).getImagen(), 0, productos.get(i).getImagen().length), productos.get(i).getNombre(), "S/."+productos.get(i).getPrecio());
-                        }
-                    }
-                    break;
-                case "Accesorios":
-                    for(int i=0; i < productos.size(); i++){
-                        if(productos.get(i).getId_Categoria() == 4){
-                            agregarCard(contenedorEtiquetas, BitmapFactory.decodeByteArray(productos.get(i).getImagen(), 0, productos.get(i).getImagen().length), productos.get(i).getNombre(), "S/."+productos.get(i).getPrecio());
-                        }
-                    }
-                    break;
+            for(int i=0; i < productos.size(); i++){
+                agregarCard(contenedorEtiquetas, BitmapFactory.decodeByteArray(productos.get(i).getImagen(), 0, productos.get(i).getImagen().length), productos.get(i).getNombre(), "S/."+productos.get(i).getPrecio());
             }
+
 
         }
 
@@ -281,9 +253,24 @@ public class ProductosFragment extends Fragment {
             //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
             Producto producto = new Producto();
             int cnx = 0;
-            if(producto.obtenerProductos() != null){
-                //Almacenar todas las variables necesarias antes del cnx 1
-                productos = producto.obtenerProductos();
+            int categoria = 0;
+            switch (valor){
+                case "Comida":
+                    categoria = 1;
+                    break;
+                case "Higiene":
+                    categoria = 2;
+                    break;
+                case "Juguetes":
+                    categoria = 3;
+                    break;
+                case "Accesorios":
+                    categoria = 4;
+                    break;
+            }
+            //Almacenar todas las variables necesarias antes del cnx 1
+            productos = producto.obtenerProductos(categoria);
+            if(productos != null){
                 cnx = 1;
             }
             return cnx;

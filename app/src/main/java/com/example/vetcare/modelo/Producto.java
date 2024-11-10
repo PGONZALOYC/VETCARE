@@ -149,13 +149,14 @@ public class Producto {
         }
         return ids;
     }
-    public List<Producto> obtenerProductos() {
+    public List<Producto> obtenerProductos(int id_Categoria) {
         List<Producto> listaProductos = new ArrayList<>();
         Producto producto = null;
         try {
-            String sql = "{CALL ObtenerProductos()}";
+            String sql = "{CALL ObtenerProductosPorCateg(?)}";
 
             try (CallableStatement statement = connection.prepareCall(sql)) {
+                statement.setInt(1, id_Categoria);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
                         producto = new Producto();

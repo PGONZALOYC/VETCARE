@@ -1,8 +1,10 @@
 package com.example.vetcare.fragmentos;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,12 +12,16 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 import com.example.vetcare.R;
 import com.example.vetcare.clases.Menu;
+import com.example.vetcare.modelo.Producto;
 import com.example.vetcare.modelo.Usuario;
+import com.example.vetcare.sqlite.Vetcare;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +31,12 @@ import com.example.vetcare.modelo.Usuario;
 public class PerfilUsuarioFragment extends Fragment {
 
     EditText perTxtNombre,perTxtApellido,perTxtTelefono,perTxtCorreo;
+    Button perBtnEditar;
+    boolean conexionExitosa = false;
+    private ProgressDialog progressDialog;
+    private Toast toastActual;
+    Usuario usuarioPerfil;
+    boolean campoLectura= true;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -68,12 +80,6 @@ public class PerfilUsuarioFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_perfil_usuario, container, false);
-
-        // Inflate the layout for this fragment
-
-
         View vista = inflater.inflate(R.layout.fragment_perfil_usuario, container, false);
 
         perTxtNombre = vista.findViewById(R.id.perTxtNombre);
@@ -81,43 +87,28 @@ public class PerfilUsuarioFragment extends Fragment {
         perTxtTelefono = vista.findViewById(R.id.perTxtTelefono);
         perTxtCorreo = vista.findViewById(R.id.perTxtCorreo);
 
-        // Obtener el correo del usuario desde SharedPreferences
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CorreoGuardado", Context.MODE_PRIVATE);
-        String correo = sharedPreferences.getString("correo_usuario", null); // Si no existe, será null
-        Usuario usuario = new Usuario();
-        if (correo != null) {
-            //perTxtNombre.setText(correo);
+        new PerfilUsuarioFragment.ConexionTask().execute();
+        showLoadingDialog();
+        // Ejecutar tareas en un hilo separado
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    freezeExecution();
 
-            // Crear una instancia de Usuario y obtener la información
-            usuario = usuario.obtenerInformacionUsuario(correo);
-
-            // Asignar los valores a los campos de texto del perfil
-            if (usuario != null) {
-                perTxtNombre.setText(usuario.getNombres());
-                perTxtApellido.setText(usuario.getApellidos());
-                perTxtTelefono.setText(usuario.getTelefono());
-                perTxtCorreo.setText(usuario.getCorreo());
-                // Asigna más valores si es necesario
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //CODIGO DESPUES DEL CONGELAMIENTO
+                            mostrarInformacionUsuario();
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        }
-
-
-//        // Obtener el correo del usuario actual (puede ser de un SharedPreference o de otro lugar)
-//        String correo = "roque@upn.pe"; // Este valor debe provenir de tu contexto (ej. SharedPreferences)
-//
-//        // Llamar al método obtenerInformacionUsuario para obtener los datos
-//        Usuario usuario = new Usuario();
-//        usuario = usuario.obtenerInformacionUsuario(correo);
-//
-//        // Si la información del usuario está disponible, actualizar los campos
-//        if (usuario != null) {
-//            perTxtNombre.setText(usuario.getNombres());
-//            perTxtApellido.setText(usuario.getApellidos());
-//            perTxtTelefono.setText(usuario.getTelefono());
-//            perTxtCorreo.setText(usuario.getCorreo());
-//        }
-
-
+        }).start();
+        View editarPerfil = vista.findViewById(R.id.perBtnEditar);
         View infoMastoca = vista.findViewById(R.id.btnInfoMascota);
         View agreMascota= vista.findViewById(R.id.btnAgregarMascota);
 
@@ -137,6 +128,98 @@ public class PerfilUsuarioFragment extends Fragment {
         });
 
         return vista;
+    }
+    private void deshabilitarCampos(){
+        perTxtNombre.setFocusable(false);
+        perTxtNombre.setClickable(false);
+        perTxtApellido.setFocusable(false);
+        perTxtApellido.setClickable(false);
+        perTxtTelefono.setFocusable(false);
+        perTxtTelefono.setClickable(false);
+        perTxtCorreo.setFocusable(false);
+        perTxtCorreo.setClickable(false);
+    }
+    private void mostrarInformacionUsuario(){
+        Vetcare vt = new Vetcare(this.getContext());
+
+        if(conexionExitosa){
+
+            perTxtNombre.setText(usuarioPerfil.getNombres());
+            perTxtApellido.setText(usuarioPerfil.getApellidos());
+            perTxtTelefono.setText(usuarioPerfil.getTelefono());
+            perTxtCorreo.setText(usuarioPerfil.getCorreo());
+            if(campoLectura){
+                deshabilitarCampos();
+            }else {
+                //Aca viene para editar la informacion del usuario
+
+            }
+
+        }
+    }
+
+
+    // Clase interna para ejecutar la prueba de conexión en un hilo de fondo
+    private class ConexionTask extends AsyncTask<Void, Void, Integer> {
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
+            Usuario usuario = new Usuario();
+            int cnx = 0;
+            // Obtener el correo del usuario desde SharedPreferences
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CorreoGuardado", Context.MODE_PRIVATE);
+            String correo = sharedPreferences.getString("correo_usuario", null); // Si no existe, será null
+            //Almacenar todas las variables necesarias antes del cnx 1
+
+            usuarioPerfil = usuario.obtenerInformacionUsuario(correo);
+            if(usuario != null){
+                cnx = 1;
+            }
+            return cnx;
+
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            if (result == 1) {
+                hideLoadingDialog();
+                conexionExitosa = true;
+            } else{
+                hideLoadingDialog();
+                mostrarToast("Error: Conexion fallida");
+            }
+        }
+    }
+
+    //Congela los procesos mientras espera que conexionExitosa sea true para continuar con las posteriores instrucciones
+    private void freezeExecution() throws InterruptedException {
+        while (!conexionExitosa) {
+            Thread.sleep(100); // Esperar un breve periodo antes de volver a comprobar
+        }
+    }
+
+    //Dialogo de carga mientras espera al congelamiento -- mostrar
+    private void showLoadingDialog() {
+        progressDialog = new ProgressDialog(this.getContext());
+        progressDialog.setMessage("Cargando Perfil...");
+        progressDialog.setCancelable(false); // No se puede cancelar tocando fuera del diálogo
+        progressDialog.show();
+    }
+
+    //Dialogo de carga mientras espera al congelamiento -- ocultar
+    private void hideLoadingDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    //Método para desplegar Toasts sin esperar a que termine el anterior toast (lo reemplaza)
+    private void mostrarToast(String message) {
+        if (toastActual != null) {
+            toastActual.cancel();
+        }
+        toastActual = Toast.makeText(this.getContext(), message, Toast.LENGTH_SHORT);
+        toastActual.show();
     }
 
 

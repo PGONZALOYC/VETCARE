@@ -1,5 +1,9 @@
 package com.example.vetcare.fragmentos;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.core.graphics.Insets;
@@ -10,12 +14,17 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vetcare.R;
+import com.example.vetcare.modelo.Mascota;
+import com.example.vetcare.modelo.Usuario;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +36,18 @@ import java.util.List;
  */
 public class ReservarCitaFragment extends Fragment implements View.OnClickListener{
     private CalendarView calendReserva;
-    private Spinner cboReservaServicio, cboReservaHora, cboReservaSede;
+    private Spinner cboReservaMascota, cboReservaServicio, cboReservaVeterinario, cboReservaHora, cboReservaSede;
     private Button btnReservarCita;
+    private TextView lblVeterinario;
+    private boolean estadoVeterinario=false;
+
+    boolean conexionExitosa = false;
+    private ProgressDialog progressDialog;
+    private Toast toastActual;
+    View vista;
+    Usuario usuarioPerfil;
+    List<Mascota> mascotasPerfil;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -77,30 +96,90 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
 
         // Inicializar vistas
         calendReserva = view.findViewById(R.id.calendReserva);
+        cboReservaMascota= view.findViewById(R.id.resCboReservaMascota);
         cboReservaServicio = view.findViewById(R.id.resCboReservaServicio);
         cboReservaHora = view.findViewById(R.id.resCboReservaHora);
         cboReservaSede = view.findViewById(R.id.resCboReservaSede);
         btnReservarCita = view.findViewById(R.id.resBtnReservarCita);
-
+        lblVeterinario= view.findViewById(R.id.lblReservarVeterinario);
+        cboReservaVeterinario =view.findViewById(R.id.resCboReservaVeterinario);
         btnReservarCita.setOnClickListener(this);
+
+        cboReservaServicio.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int posicion, long longitud) {
+                String servicioSeleccionado = adapterView.getItemAtPosition(posicion).toString();
+                if (servicioRequiereVeterinario(servicioSeleccionado)) {
+                    estadoVeterinario=true;
+                    mostrarSpinnerVeterinario(estadoVeterinario);
+                } else {
+                    mostrarSpinnerVeterinario(false);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        new ReservarCitaFragment.ConexionTask().execute();
+        showLoadingDialog();
+        // Ejecutar tareas en un hilo separado
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    freezeExecution();
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //CODIGO DESPUES DEL CONGELAMIENTO
+
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+
+
+
+
 
         // Llenar los spinners
         llenarServicios();
+        llenarVeterinarios();
         llenarHora();
         llenarSede();
-
-         //Aplicar insets de la ventana
-//        ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
 
         return view;
     }
 
+    private boolean servicioRequiereVeterinario(String servicio) {
+        return servicio.equals("Consulta MÃ©dica") || servicio.equals("CastraciÃ³n") || servicio.equals("DesparasitaciÃ³n");
+    }
+
+    private void mostrarSpinnerVeterinario(boolean mostrar) {
+        if (mostrar){
+            lblVeterinario.setVisibility(View.VISIBLE);
+            cboReservaVeterinario.setVisibility(View.VISIBLE);
+        }else {
+            lblVeterinario.setVisibility(View.GONE);
+            cboReservaVeterinario.setVisibility(View.GONE);
+        }
+    }
+
+    private void llenarVeterinarios() {
+        String[] veterinarios = {"--Seleccione Servicio--", "Dr. LÃ³pez", "Dra. GarcÃ­a", "Dr. MartÃ­nez"};
+        cboReservaVeterinario.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, veterinarios));
+    }
+
     private void llenarServicios() {
-        String[] servicios = {"--Seleccione Servicio--", "Baño", "Corte", "Consulta Médica", "Castración", "Desparasitación"};
+        String[] servicios = {"--Seleccione Servicio--", "BaÃ±o", "Corte", "Consulta MÃ©dica", "CastraciÃ³n", "DesparasitaciÃ³n"};
         cboReservaServicio.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, servicios));
     }
 
@@ -119,12 +198,92 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
     }
 
     private void llenarSede() {
-        String[] sedes = {"--Seleccione Sede--", "San Juan de Lurigancho", "Breña", "Chorrillos", "Los Olivos"};
+        String[] sedes = {"--Seleccione Sede--", "San Juan de Lurigancho", "BreÃ±a", "Chorrillos", "Los Olivos"};
         cboReservaSede.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, sedes));
     }
 
     @Override
     public void onClick(View view) {
 
+    }
+
+
+    // Clase interna para ejecutar la prueba de conexiÃ³n en un hilo de fondo
+    private class ConexionTask extends AsyncTask<Void, Void, Integer> {
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            //Instancia de usuario para usar su funciÃ³n loginUsuario (verificar Usuario.java)
+            Usuario usuario = new Usuario();
+            Mascota mascota = new Mascota();
+            int cnx = 0;
+            // Obtener el correo del usuario desde SharedPreferences
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CorreoGuardado", Context.MODE_PRIVATE);
+            String correo = sharedPreferences.getString("correo_usuario", null); // Si no existe, serÃ¡ null
+            //Almacenar todas las variables necesarias antes del cnx 1
+            usuarioPerfil = usuario.obtenerInformacionUsuario(correo);
+            mascotasPerfil = mascota.obtenerMascotasPorCorreo(correo);
+            if(usuario != null && mascota != null){
+                cnx = 1;
+            }
+            return cnx;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            if (result == 1) {
+                hideLoadingDialog();
+                conexionExitosa = true;
+                llenarMascotasSpinner(mascotasPerfil);
+            } else{
+                hideLoadingDialog();
+                mostrarToast("Error: Conexion fallida");
+            }
+        }
+    }
+
+    // MÃ©todo para llenar el Spinner de mascotas con la lista de mascotas del usuario
+    private void llenarMascotasSpinner(List<Mascota> mascotas) {
+        List<String> nombresMascotas = new ArrayList<>();
+        nombresMascotas.add("--Seleccione Mascota--"); // OpciÃ³n predeterminada
+
+        for (Mascota mascota : mascotas) {
+            nombresMascotas.add(mascota.getNombre() +" - "+mascota.getTipo()); // Obtener el nombre de cada mascota
+        }
+
+        // Configurar el adapter del Spinner con la lista de nombres de mascotas
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, nombresMascotas);
+        cboReservaMascota.setAdapter(adapter);
+    }
+
+    //METODOS IMPLEMENTADOS PARA LA CARGA DESDE LA BASE DE DATOS
+    //Congela los procesos mientras espera que conexionExitosa sea true para continuar con las posteriores instrucciones
+    private void freezeExecution() throws InterruptedException {
+        while (!conexionExitosa) {
+            Thread.sleep(100); // Esperar un breve periodo antes de volver a comprobar
+        }
+    }
+
+    //Dialogo de carga mientras espera al congelamiento -- mostrar
+    private void showLoadingDialog() {
+        progressDialog = new ProgressDialog(this.getContext());
+        progressDialog.setMessage("Cargando...");
+        progressDialog.setCancelable(false); // No se puede cancelar tocando fuera del diÃ¡logo
+        progressDialog.show();
+    }
+
+    //Dialogo de carga mientras espera al congelamiento -- ocultar
+    private void hideLoadingDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    //MÃ©todo para desplegar Toasts sin esperar a que termine el anterior toast (lo reemplaza)
+    private void mostrarToast(String message) {
+        if (toastActual != null) {
+            toastActual.cancel();
+        }
+        toastActual = Toast.makeText(this.getContext(), message, Toast.LENGTH_SHORT);
+        toastActual.show();
     }
 }

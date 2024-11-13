@@ -2,33 +2,33 @@
     <string name="app_name">Vetcare</string>
     <string name="bieLblSaludo">Hola: </string>
 
-    <!--Sesión-->
+    <!--SesiÃ³n-->
     <string name="logTxtCorreo">Correo</string>
-    <string name="logTxtClave">Contraseña</string>
+    <string name="logTxtClave">ContraseÃ±a</string>
     <string name="logBtnIngresar">Ingresar</string>
     <string name="logBtnRegistrate">Registrate</string>
-    <string name="logChkRecordar">Recordar sesión</string>
+    <string name="logChkRecordar">Recordar sesiÃ³n</string>
     <string name="logBtnSOS">SOS</string>
-    <string name="logTxtOlvidasteContrasena">¿Olvidate tu contraseña</string>
+    <string name="logTxtOlvidasteContrasena">Â¿Olvidate tu contraseÃ±a</string>
     <string name="logLblFamilia">Vetcare</string>
 
-    <!--Olvidaste Contraseña-->
-    <string name="olvLblOlvidasteContrasenaTitulo">¿Olvidaste tu contraseña?</string>
-    <string name="olvLblOlvidasteContrasenaInstrucciones">Ingresa tu correo electrónico.Te enviaremos un código para continuar.</string>
-    <string name="olvTxtOlvidasteContrasenaCorreo">Correo electrónico</string>
+    <!--Olvidaste ContraseÃ±a-->
+    <string name="olvLblOlvidasteContrasenaTitulo">Â¿Olvidaste tu contraseÃ±a?</string>
+    <string name="olvLblOlvidasteContrasenaInstrucciones">Ingresa tu correo electrÃ³nico.Te enviaremos un cÃ³digo para continuar.</string>
+    <string name="olvTxtOlvidasteContrasenaCorreo">Correo electrÃ³nico</string>
     <string name="olvBtnOlvidasteContrasenaEnviar">Enviar</string>
 
     <!--Confirmar Codigo-->
     <string name="confLblConfirmarCodigoTitulo">Verifica tu identidad</string>
-    <string name="confLblConfirmarCodigoInstrucciones">Ingresa el código de seis digitos</string>
-    <string name="confTxtConfirmarCodigo">Código</string>
+    <string name="confLblConfirmarCodigoInstrucciones">Ingresa el cÃ³digo de seis digitos</string>
+    <string name="confTxtConfirmarCodigo">CÃ³digo</string>
     <string name="confBtnConfirmarCodigoVerificar">Verificar</string>
 
-    <!--Cambiar contraseña-->
-    <string name="camLblCambiarContrasenaTitulo">Cambia tu contraseña</string>
-    <string name="camLblCambiarContrasenaInstrucciones">Para mayor seguridad, deberás crear una nueva contraseña.</string>
-    <string name="camTxtCambiarContrasenaNueva">Nueva contraseña</string>
-    <string name="camTxtCambiarContrasenaConfirmarNueva">Confirmar contraseña</string>
+    <!--Cambiar contraseÃ±a-->
+    <string name="camLblCambiarContrasenaTitulo">Cambia tu contraseÃ±a</string>
+    <string name="camLblCambiarContrasenaInstrucciones">Para mayor seguridad, deberÃ¡s crear una nueva contraseÃ±a.</string>
+    <string name="camTxtCambiarContrasenaNueva">Nueva contraseÃ±a</string>
+    <string name="camTxtCambiarContrasenaConfirmarNueva">Confirmar contraseÃ±a</string>
     <string name="camBtnCambiarContrasenaAceptar">Aceptar</string>
 
 
@@ -38,28 +38,28 @@
     <string name="regTxtRegistroApellido">Apellidos</string>
     <string name="regTxtRegistroDni">DNI</string>
     <string name="regTxtRegistroFechaNacimiento">Fecha de nacimiento</string>
-    <string name="regTxtRegistroTelefono">Teléfono</string>
-    <string name="regTxtRegistroCorreo">Correo electrónico</string>
+    <string name="regTxtRegistroTelefono">TelÃ©fono</string>
+    <string name="regTxtRegistroCorreo">Correo electrÃ³nico</string>
     <string name="regRbtRegistroSinDefinir">Sin definir</string>
     <string name="regRbtRegistroFemenino">Femenino</string>
     <string name="regRbtRegistroMasculino">Masculino</string>
-    <string name="regTxtRegistroContrasena">Contraseña</string>
-    <string name="regTxtRegistroConfirmarContrasena">Confirmar contraseña</string>
+    <string name="regTxtRegistroContrasena">ContraseÃ±a</string>
+    <string name="regTxtRegistroConfirmarContrasena">Confirmar contraseÃ±a</string>
     <string name="regTxtRegistroTerminosCondiciones">Terminos y Condiciones</string>
     <string name="regDescIconoSiguiente">Icono siguiente</string>
 
     <!--Registro de primera mascota-->
-    <string name="regLblRegistroPrimMascotaTitulo">Cuéntanos Sobre Tu Mascota </string>
-    <string name="regLblRegistroPrimMascota">Si tienes más de una no te preocupes, luego podrás registrar otra. </string>
+    <string name="regLblRegistroPrimMascotaTitulo">CuÃ©ntanos Sobre Tu Mascota </string>
+    <string name="regLblRegistroPrimMascota">Si tienes mÃ¡s de una no te preocupes, luego podrÃ¡s registrar otra. </string>
     <string name="regTxtRegistroPrimMascotaNombre">Nombre(s)</string>
     <string name="regLblRegistroPrimMascotaEdad">Edad</string>
-    <string name="regTxtRegistroPrimMascotaAnios">Años</string>
+    <string name="regTxtRegistroPrimMascotaAnios">AÃ±os</string>
     <string name="regTxtRegistroPrimMascotaMeses">Meses</string>
     <string name="mascDescIconoRegistroPrimMascota">Icono mascota</string>
 
     <!--Bienvenida-->
-    <string name="bieLblQuienesSomos">¿Quiénes somos?</string>
-    <string name="bieLblInformacion">En Vetcare, somos un equipo de profesionales dedicados al bienestar y salud de tus mascotas. Con años de experiencia en el cuidado veterinario, ofrecemos una amplia gama de servicios, desde consultas y atención de urgencias hasta procedimientos especializados y tratamientos preventivos."\n"Nos enorgullecemos de tratar a cada mascota como si fuera nuestra, brindando un entorno seguro, confiable y acogedor para ellos y sus dueños. Creemos en una atención integral y personalizada, entendiendo las necesidades específicas de cada mascota.</string>
+    <string name="bieLblQuienesSomos">Â¿QuiÃ©nes somos?</string>
+    <string name="bieLblInformacion">En Vetcare, somos un equipo de profesionales dedicados al bienestar y salud de tus mascotas. Con aÃ±os de experiencia en el cuidado veterinario, ofrecemos una amplia gama de servicios, desde consultas y atenciÃ³n de urgencias hasta procedimientos especializados y tratamientos preventivos."\n"Nos enorgullecemos de tratar a cada mascota como si fuera nuestra, brindando un entorno seguro, confiable y acogedor para ellos y sus dueÃ±os. Creemos en una atenciÃ³n integral y personalizada, entendiendo las necesidades especÃ­ficas de cada mascota.</string>
 
 
 
@@ -67,6 +67,8 @@
     <!--    Reserva de cita-->
     <string name="resLblReservaTitulo">Reservar cita</string>
     <string name="resLblReservarServicio">Servicio</string>
+    <string name="resLblReservarVeterinario">Veterinario</string>
+    <string name="resLblReservarMascota">Mascota</string>
     <string name="resLblReservarHora">Hora</string>
     <string name="resLblReservarSede">Sede</string>
     <string name="resBtnReservarCita">Reservar cita</string>
@@ -97,23 +99,23 @@
     <!--Mis citas-->
     <string name="citLblMisCitasTitulo">Mis citas</string>
     <string name="citLblFechaCita">26 junio</string>
-    <string name="citLblDetalleCita">Vacunación / Perro</string>
-    <string name="citLblProximaCita">Próximas citas</string>
+    <string name="citLblDetalleCita">VacunaciÃ³n / Perro</string>
+    <string name="citLblProximaCita">PrÃ³ximas citas</string>
     <string name="citLblFechaProximaCita">28 junio</string>
-    <string name="citLblDetalleProximaCita">Vacunación / Perro</string>
+    <string name="citLblDetalleProximaCita">VacunaciÃ³n / Perro</string>
 
     <!--Nosotros-->
     <string name="nosLblNumeroVetcare">+51 902 458 162</string>
-    <string name="nosLblDescripcion">Nuestro equipo de veterinarios está dedicado a proporcionar servicios integrales de salud y bienestar animal, desde consultas preventivas y vacunación hasta tratamientos especializados y emergencias. Nos enorgullece contar con instalaciones modernas y equipadas para la atención de pequeños animales, con áreas exclusivas para cirugía, cuidados intensivos y diagnósticos avanzados.</string>
-    <string name="nosBtnEncuentranos">Encuéntranos</string>
+    <string name="nosLblDescripcion">Nuestro equipo de veterinarios estÃ¡ dedicado a proporcionar servicios integrales de salud y bienestar animal, desde consultas preventivas y vacunaciÃ³n hasta tratamientos especializados y emergencias. Nos enorgullece contar con instalaciones modernas y equipadas para la atenciÃ³n de pequeÃ±os animales, con Ã¡reas exclusivas para cirugÃ­a, cuidados intensivos y diagnÃ³sticos avanzados.</string>
+    <string name="nosBtnEncuentranos">EncuÃ©ntranos</string>
 
 
     <!--Perfil usuario-->
     <string name="perLblPerfilTitulo">Perfil</string>
     <string name="perTxtNombre">Nombres</string>
     <string name="perTxtApellido">Apellidos</string>
-    <string name="perTxtTelefono">Teléfono</string>
-    <string name="perTxtCorreo">Correo electrónico</string>
+    <string name="perTxtTelefono">TelÃ©fono</string>
+    <string name="perTxtCorreo">Correo electrÃ³nico</string>
     <string name="perLblMisMascotas">Mis mascotas</string>
     <string name="perDescIconoUsuario">Icono usuario</string>
     <string name="perDescIconoEditar">Icono editar</string>
@@ -124,7 +126,7 @@
     <string name="perNombMascota2">Wilson</string>
 
     <!--Mascota-->
-    <string name="mascLblPerfilMascota">Información de la mascota</string>
+    <string name="mascLblPerfilMascota">InformaciÃ³n de la mascota</string>
     <string name="mascDescIconoMascota">Icono mascota</string>
     <string name="mascDescIconoEditar">Icono editar</string>
     <string name="mascTxtNombreMascota">Nombre</string>
@@ -134,7 +136,7 @@
 
     <!--Agregar Mascota-->
     <string name="agremasEdtNombreMascota">Nombre de la mascota</string>
-    <string name="agremasEdtEdadAnios">Años</string>
+    <string name="agremasEdtEdadAnios">AÃ±os</string>
     <string name="agremasEdtEdadMeses">Meses</string>
     <string name="agremasEdtRazaMascota">Raza de la mascota</string>
     <string name="agremascBtnSelecImg">Seleccionar Imagen</string>

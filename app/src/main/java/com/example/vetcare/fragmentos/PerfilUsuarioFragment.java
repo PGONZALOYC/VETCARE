@@ -4,24 +4,36 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.example.vetcare.R;
 import com.example.vetcare.clases.Menu;
+import com.example.vetcare.modelo.Mascota;
 import com.example.vetcare.modelo.Producto;
 import com.example.vetcare.modelo.Usuario;
 import com.example.vetcare.sqlite.Vetcare;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,8 +47,10 @@ public class PerfilUsuarioFragment extends Fragment {
     boolean conexionExitosa = false;
     private ProgressDialog progressDialog;
     private Toast toastActual;
-    Usuario usuarioPerfil;
     boolean campoLectura= true;
+    View vista;
+    Usuario usuarioPerfil;
+    List<Mascota> mascotasPerfil;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -109,26 +123,86 @@ public class PerfilUsuarioFragment extends Fragment {
             }
         }).start();
         View editarPerfil = vista.findViewById(R.id.perBtnEditar);
-        View infoMastoca = vista.findViewById(R.id.btnInfoMascota);
-        View agreMascota= vista.findViewById(R.id.btnAgregarMascota);
+//        View infoMastoca = vista.findViewById(R.id.btnInfoMascota);
+//        View agreMascota= vista.findViewById(R.id.btnAgregarMascota);
 
-        infoMastoca.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Activity activity = getActivity();
-                ((Menu)activity).onClickMenu(5);
-            }
-        });
-        agreMascota.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Activity activity = getActivity();
-                ((Menu)activity).onClickMenu(7);
-            }
-        });
+//        infoMastoca.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Activity activity = getActivity();
+//                ((Menu)activity).onClickMenu(5);
+//            }
+//        });
+//        agreMascota.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Activity activity = getActivity();
+//                ((Menu)activity).onClickMenu(7);
+//            }
+//        });
 
         return vista;
     }
+
+    private void agregarCard(GridLayout contenedor, Bitmap imageBitmap, String labelText) {
+        // Crear CardView
+        CardView cardView = new CardView(this.getContext());
+        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+        params.width = GridLayout.LayoutParams.MATCH_PARENT;
+        params.height = GridLayout.LayoutParams.WRAP_CONTENT;
+        cardView.setLayoutParams(params);
+        cardView.setRadius(10);
+        cardView.setCardElevation(5);
+        cardView.setUseCompatPadding(true);
+
+        // Crear LinearLayout
+        LinearLayout linearLayout = new LinearLayout(this.getContext());
+        LinearLayout.LayoutParams linearparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setLayoutParams(linearparams);
+
+        // Crear ImageView
+        ImageView imageView = new ImageView(this.getContext());
+        LinearLayout.LayoutParams imaparams = new LinearLayout.LayoutParams(dpToPx(150), dpToPx(160));
+        // Luego, establece un margen de 10dp
+        int marginInPx = dpToPx(10);
+        imaparams.setMargins(marginInPx, marginInPx, marginInPx, marginInPx);
+
+        // Finalmente, aplica los parámetros a la ImageView
+        imageView.setLayoutParams(imaparams);
+
+        imageView.setImageBitmap(imageBitmap);
+        imageView.setContentDescription(labelText);
+
+        // Crear TextView
+        TextView textView = new TextView(this.getContext());
+        textView.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dpToPx(10)
+        ));
+        textView.setText(labelText);
+        textView.setTextSize(10);
+        textView.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
+        textView.setTextColor(getResources().getColor(R.color.titulo, null));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            textView.setTypeface(getResources().getFont(R.font.poppins_medium));
+        }
+
+        // Añadir ImageView y TextView al LinearLayout
+        linearLayout.addView(imageView);
+        linearLayout.addView(textView);
+
+        // Añadir LinearLayout al CardView
+        cardView.addView(linearLayout);
+
+        // Añadir CardView al GridLayout
+        contenedor.addView(cardView);
+
+    }
+    private int dpToPx(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
+    }
+
     private void deshabilitarCampos(){
         perTxtNombre.setFocusable(false);
         perTxtNombre.setClickable(false);
@@ -148,6 +222,11 @@ public class PerfilUsuarioFragment extends Fragment {
             perTxtApellido.setText(usuarioPerfil.getApellidos());
             perTxtTelefono.setText(usuarioPerfil.getTelefono());
             perTxtCorreo.setText(usuarioPerfil.getCorreo());
+
+            GridLayout contenedorMisMascotas = vista.findViewById(R.id.contenedorMisMascotas);
+            for(int i=0; i < mascotasPerfil.size(); i++){
+                agregarCard(contenedorMisMascotas, BitmapFactory.decodeByteArray(mascotasPerfil.get(i).getImagen(), 0, mascotasPerfil.get(i).getImagen().length), mascotasPerfil.get(i).getNombre());
+            }
             if(campoLectura){
                 deshabilitarCampos();
             }else {
@@ -165,6 +244,7 @@ public class PerfilUsuarioFragment extends Fragment {
         protected Integer doInBackground(Void... voids) {
             //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
             Usuario usuario = new Usuario();
+            Mascota mascota = new Mascota();
             int cnx = 0;
             // Obtener el correo del usuario desde SharedPreferences
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CorreoGuardado", Context.MODE_PRIVATE);
@@ -172,7 +252,8 @@ public class PerfilUsuarioFragment extends Fragment {
             //Almacenar todas las variables necesarias antes del cnx 1
 
             usuarioPerfil = usuario.obtenerInformacionUsuario(correo);
-            if(usuario != null){
+            mascotasPerfil = mascota.obtenerMascotasPorCorreo(correo);
+            if(usuario != null && mascota != null){
                 cnx = 1;
             }
             return cnx;

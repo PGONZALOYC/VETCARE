@@ -2,18 +2,24 @@ package com.example.vetcare.fragmentos;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 
 import com.example.vetcare.R;
+import com.example.vetcare.actividades.SesionActivity;
 import com.example.vetcare.clases.Menu;
 import com.example.vetcare.modelo.Usuario;
 
@@ -126,8 +132,25 @@ public class PerfilUsuarioFragment extends Fragment {
             }
         });
 
+        LinearLayout closeButton = vista.findViewById(R.id.exit_button);
+        closeButton.setOnClickListener(v -> closeFragment());
+
         return vista;
     }
 
+    private void closeFragment() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.remove("correo");
+        editor.remove("clave");
+
+        editor.apply();
+
+        requireActivity().finish();
+
+        Intent intent = new Intent(requireContext(), SesionActivity.class);
+        startActivity(intent);
+    }
 
 }

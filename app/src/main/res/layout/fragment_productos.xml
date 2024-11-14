@@ -40,21 +40,13 @@
                 android:textColor="@color/titulo"/>
 
             <ImageView
-                android:id="@+id/proImagenBuscar"
-                android:layout_width="30dp"
-                android:layout_marginTop="20dp"
-                android:layout_height="35dp"
-                android:contentDescription="@string/proDescIconoBuscar"
-                android:src="@drawable/icono_buscar"
-                android:layout_marginLeft="30dp"/>
-            <ImageView
                 android:id="@+id/proImagenCarrito"
                 android:layout_width="35dp"
                 android:layout_marginTop="20dp"
                 android:layout_height="35dp"
                 android:contentDescription="@string/proDescIconoCarrito"
                 android:src="@drawable/icono_carrito"
-                android:layout_marginLeft="20dp"/>/>
+                android:layout_marginLeft="80dp"/>/>
         </LinearLayout>
         <android.widget.ScrollView
             android:layout_width="match_parent"

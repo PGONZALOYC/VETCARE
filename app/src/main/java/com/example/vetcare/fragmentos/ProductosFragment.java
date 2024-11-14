@@ -5,8 +5,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +18,9 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import android.view.Gravity;
+import android.widget.ImageButton;
 
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -167,6 +172,7 @@ public class ProductosFragment extends Fragment {
     cardView.setCardElevation(5);
     cardView.setUseCompatPadding(true);
 
+
     // Crear LinearLayout
     LinearLayout linearLayout = new LinearLayout(this.getContext());
     LinearLayout.LayoutParams linearparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -200,7 +206,7 @@ public class ProductosFragment extends Fragment {
         textView.setTypeface(getResources().getFont(R.font.poppins_medium));
     }
 
-        // Crear TextView
+    // Crear TextView
         TextView textView2 = new TextView(this.getContext());
         textView2.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -214,10 +220,29 @@ public class ProductosFragment extends Fragment {
             textView2.setTypeface(getResources().getFont(R.font.poppins_medium));
         }
 
-    // Añadir ImageView y TextView al LinearLayout
+        // Crear el ImageButton
+        ImageButton imageButton = new ImageButton(this.getContext());
+// Definir parámetros de diseño (puedes ajustar el tamaño como necesites)
+        LinearLayout.LayoutParams imageButtonParams = new LinearLayout.LayoutParams(
+                dpToPx(60),   // Ancho del botón en dp
+                dpToPx(50)    // Alto del botón en dp
+        );
+        imageButton.setLayoutParams(imageButtonParams);
+        imageButtonParams.gravity = Gravity.CENTER;
+        imageButton.setImageResource(R.drawable.ic_plus);  // Asegúrate de que la imagen esté en res/drawable
+        imageButton.setScaleType(ImageView.ScaleType.FIT_XY);
+
+        ColorStateList colorStateList = getResources().getColorStateList(R.color.agregar_producto_button, null);
+        imageButton.setBackgroundTintList(colorStateList);
+
+
+        // Añadir ImageView y TextView al LinearLayout
     linearLayout.addView(imageView);
     linearLayout.addView(textView);
         linearLayout.addView(textView2);
+
+        // Añadir el botón debajo de los TextView
+        linearLayout.addView(imageButton);
 
     // Añadir LinearLayout al CardView
     cardView.addView(linearLayout);

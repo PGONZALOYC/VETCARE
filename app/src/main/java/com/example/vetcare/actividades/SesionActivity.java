@@ -214,7 +214,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             txtClav = hash.StringToHash(txtClav,"SHA256").toLowerCase();
             if(usuarioDAO.loginUsuario(txtCorr, txtClav)){
 
-                guardarCorreoEnSharedPreferences(usuarioDAO.obtenerInformacionUsuario(txtCorr).getNombres(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getApellidos(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getTelefono());
+                guardarCorreoEnSharedPreferences(usuarioDAO.obtenerInformacionUsuario(txtCorr).getId_Usuario(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getNombres(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getApellidos(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getTelefono());
                 cnx = 1;
             }
             return cnx;
@@ -233,9 +233,10 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         }
     }
 
-    private void guardarCorreoEnSharedPreferences(String nombre, String apellido, String telefono) {
+    private void guardarCorreoEnSharedPreferences(int id_usuario, String nombre, String apellido, String telefono) {
         SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("id_usuario", id_usuario);
         editor.putString("nombre", nombre);
         editor.putString("apellido", apellido);
         editor.putString("telefono", telefono);

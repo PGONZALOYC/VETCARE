@@ -217,8 +217,8 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             Mascota mascota = new Mascota();
             int cnx = 0;
             // Obtener el correo del usuario desde SharedPreferences
-            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CorreoGuardado", Context.MODE_PRIVATE);
-            String correo = sharedPreferences.getString("correo_usuario", null); // Si no existe, serÃ¡ null
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+            String correo = sharedPreferences.getString("correo", null); // Si no existe, serÃ¡ null
             //Almacenar todas las variables necesarias antes del cnx 1
             usuarioPerfil = usuario.obtenerInformacionUsuario(correo);
             mascotasPerfil = mascota.obtenerMascotasPorCorreo(correo);

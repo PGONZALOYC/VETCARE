@@ -1,5 +1,7 @@
 package com.example.vetcare.actividades;
 
+import static android.app.PendingIntent.getActivity;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -37,11 +39,17 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     private static Toast toastActual;
     private ProgressDialog progressDialog;
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sesion);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -63,6 +71,32 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         btnRegistrarse.setOnClickListener(this); // Listener para el botón Registrarse
         btnSOS.setOnClickListener(this); // Listener para el botón SOS
         logTxtOlvidasteContrasena.setOnClickListener(this); // Listener para el olvido de contraseña
+
+        if(!sharedPreferences.getString("correo", "-").equals("-") && !sharedPreferences.getString("clave", "-").equals("-")){
+            new ConexionTask().execute();
+
+            showLoadingDialog();
+
+            // Ejecutar tareas en un hilo separado
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        freezeExecution();
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //CODIGO DESPUES DEL CONGELAMIENTO
+                                iniciarSesion();
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
     }
 
     @Override
@@ -117,8 +151,14 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             //Intent bienvenida = new Intent(this, ReservaCitaActivity.class);
             Intent bienvenida = new Intent(SesionActivity.this, BienvenidaActivity.class);
             //bienvenida.putExtra("nombre", "Dinamita");
+            SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
 
             if(chkRecordar.isChecked()){
+                editor.putString("correo", txtCorreo.getText().toString());
+                editor.putString("clave", txtClave.getText().toString());
+                editor.apply();
+
                 //Aca se guarda el correo y clave
                 //vt.agregarUsuario(1,txtCorreo,txtClave);
             }
@@ -129,7 +169,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
 
     }
 
-        private void registrar() {
+    private void registrar() {
         Intent registro = new Intent(this, RegistroActivity.class);
         startActivity(registro);
     }
@@ -148,15 +188,33 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     public class ConexionTask extends AsyncTask<Void, Void, Integer> {
         @Override
         protected Integer doInBackground(Void... voids) {
+            SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
             //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
-            Usuario usuario = new Usuario();
             int cnx = 0;
+            Usuario usuarioDAO = new Usuario();
             Hash hash = new Hash();
-            String txtClav = txtClave.getText().toString();
+            String txtCorr;
+            String txtClav;
+
+            if(!sharedPreferences.getString("correo", "-").equals("-")){
+                txtCorr = sharedPreferences.getString("correo", "-");
+            } else{
+                txtCorr = txtCorreo.getText().toString();
+            }
+
+            if(!sharedPreferences.getString("clave", "-").equals("-")){
+                txtClav = sharedPreferences.getString("clave", "-");
+            } else{
+                txtClav = txtClave.getText().toString();
+            }
+
+
             //Cifrar la clave
             txtClav = hash.StringToHash(txtClav,"SHA256").toLowerCase();
-            if(usuario.loginUsuario(txtCorreo.getText().toString(), txtClav)){
-                guardarCorreoEnSharedPreferences(txtCorreo.getText().toString());
+            if(usuarioDAO.loginUsuario(txtCorr, txtClav)){
+
+                guardarCorreoEnSharedPreferences(usuarioDAO.obtenerInformacionUsuario(txtCorr).getNombres(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getApellidos(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getTelefono());
                 cnx = 1;
             }
             return cnx;
@@ -175,10 +233,12 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         }
     }
 
-    private void guardarCorreoEnSharedPreferences(String correo) {
-        SharedPreferences sharedPreferences = getSharedPreferences("CorreoGuardado", Context.MODE_PRIVATE);
+    private void guardarCorreoEnSharedPreferences(String nombre, String apellido, String telefono) {
+        SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("correo_usuario", correo);
+        editor.putString("nombre", nombre);
+        editor.putString("apellido", apellido);
+        editor.putString("telefono", telefono);
         editor.apply();
     }
 

@@ -45,6 +45,7 @@ import com.example.vetcare.clases.Menu;
 import com.example.vetcare.modelo.Usuario;
 import com.example.vetcare.sqlite.Vetcare;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,6 +62,7 @@ public class ProductosFragment extends Fragment {
     List<Producto> productos;
     View vista;
     String valor;
+    ArrayList<Producto> carritoLista = new ArrayList();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -108,28 +110,11 @@ public class ProductosFragment extends Fragment {
         vista = inflater.inflate(R.layout.fragment_productos, container, false);
         TextView titulo = vista.findViewById(R.id.proLblProductosTitulo);
 
+
         Context context = getActivity();
         SharedPreferences sharedPreferences = context.getSharedPreferences("Sistema", Context.MODE_PRIVATE);
         valor = sharedPreferences.getString("categoria", "null");
         titulo.setText(valor);
-    /*
-        View iconoComida1 = vista.findViewById(R.id.proIconoComidaCanbo);
-        View iconoComida2 = vista.findViewById(R.id.proIconoComidaCanbo2);
-        View iconoComida3 = vista.findViewById(R.id.proIconoComidaWhiskas);
-        View iconoComida4 = vista.findViewById(R.id.proIconoComidaWhiskas2);
-
-
-        View.OnClickListener listener = new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Activity activity = getActivity();
-                ((Menu)activity).onClickMenu(8);
-            }
-        };
-        iconoComida1.setOnClickListener(listener);
-        iconoComida2.setOnClickListener(listener);
-        iconoComida3.setOnClickListener(listener);
-        iconoComida4.setOnClickListener(listener);*/
         ImageView closeButton = vista.findViewById(R.id.closeButton);
         closeButton.setOnClickListener(v -> closeFragment());
 
@@ -160,8 +145,9 @@ public class ProductosFragment extends Fragment {
         return vista;
     }
 
+
 // Método para crear una CardView y agregarla al GridLayout
-    private void agregarCard(GridLayout contenedor, Bitmap imageBitmap, String labelText, String labelPrecio) {
+    private void agregarCard(GridLayout contenedor, Bitmap imageBitmap, String labelText, String labelPrecio, Producto producto) {
     // Crear CardView
     CardView cardView = new CardView(this.getContext());
     GridLayout.LayoutParams params = new GridLayout.LayoutParams();
@@ -231,6 +217,8 @@ public class ProductosFragment extends Fragment {
         imageButtonParams.gravity = Gravity.CENTER;
         imageButton.setImageResource(R.drawable.ic_plus);  // Asegúrate de que la imagen esté en res/drawable
         imageButton.setScaleType(ImageView.ScaleType.FIT_XY);
+        imageButton.setId(R.id.agregar_producto_button);
+
 
         ColorStateList colorStateList = getResources().getColorStateList(R.color.agregar_producto_button, null);
         imageButton.setBackgroundTintList(colorStateList);
@@ -250,7 +238,24 @@ public class ProductosFragment extends Fragment {
     // Añadir CardView al GridLayout
     contenedor.addView(cardView);
 
+    imageButton.setOnClickListener(v -> cambiarBotonAgregar(imageButton));
+
+    imageButton.setOnClickListener(v -> carritoLista.add(producto));
+
 }
+
+    private void cambiarBotonAgregar(ImageButton button) {
+        button.setImageResource(R.drawable.ic_check);
+
+        ColorStateList colorStateList = getResources().getColorStateList(R.color.check_producto_button, null);
+        button.setBackgroundTintList(colorStateList);
+
+        button.setClickable(false);
+
+
+
+
+    }
 
     private void imprimirProductos() {
 
@@ -263,7 +268,7 @@ public class ProductosFragment extends Fragment {
             // Referencia al GridLayout
             GridLayout contenedorEtiquetas = vista.findViewById(R.id.contenedorEtiquetas);
             for(int i=0; i < productos.size(); i++){
-                agregarCard(contenedorEtiquetas, BitmapFactory.decodeByteArray(productos.get(i).getImagen(), 0, productos.get(i).getImagen().length), productos.get(i).getNombre(), "S/."+productos.get(i).getPrecio());
+                agregarCard(contenedorEtiquetas, BitmapFactory.decodeByteArray(productos.get(i).getImagen(), 0, productos.get(i).getImagen().length), productos.get(i).getNombre(), "S/."+productos.get(i).getPrecio(), productos.get(i));
             }
         }
 
@@ -353,6 +358,23 @@ public class ProductosFragment extends Fragment {
                 .remove(this)
                 .commit();
     }
+/*
+    public void insertarProductoEnCarrito(Producto[] carritoLista) {
+
+
+
+
+        SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Convertir el array de Producto a JSON
+        Gson gson = new Gson();
+        String json = gson.toJson(productos);
+
+        // Guardar el JSON en SharedPreferences
+        editor.putString("productos", json);
+        editor.apply();
+    }*/
 }
 
 

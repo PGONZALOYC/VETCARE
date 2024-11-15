@@ -160,7 +160,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
     }
 
     private boolean servicioRequiereVeterinario(String servicio) {
-        return servicio.equals("Consulta MÃ©dica") || servicio.equals("CastraciÃ³n") || servicio.equals("DesparasitaciÃ³n");
+        return servicio.equals("Consulta Médica") || servicio.equals("Castración") || servicio.equals("Desparasitación");
     }
 
     private void mostrarSpinnerVeterinario(boolean mostrar) {
@@ -174,12 +174,12 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
     }
 
     private void llenarVeterinarios() {
-        String[] veterinarios = {"--Seleccione Servicio--", "Dr. LÃ³pez", "Dra. GarcÃ­a", "Dr. MartÃ­nez"};
+        String[] veterinarios = {"--Seleccione Servicio--", "Dr. López", "Dra. García", "Dr. Martínez"};
         cboReservaVeterinario.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, veterinarios));
     }
 
     private void llenarServicios() {
-        String[] servicios = {"--Seleccione Servicio--", "BaÃ±o", "Corte", "Consulta MÃ©dica", "CastraciÃ³n", "DesparasitaciÃ³n"};
+        String[] servicios = {"--Seleccione Servicio--", "Baño", "Corte", "Consulta Médica", "Castración", "Desparasitación"};
         cboReservaServicio.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, servicios));
     }
 
@@ -198,7 +198,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
     }
 
     private void llenarSede() {
-        String[] sedes = {"--Seleccione Sede--", "San Juan de Lurigancho", "BreÃ±a", "Chorrillos", "Los Olivos"};
+        String[] sedes = {"--Seleccione Sede--", "San Juan de Lurigancho", "Breña", "Chorrillos", "Los Olivos"};
         cboReservaSede.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, sedes));
     }
 
@@ -208,11 +208,11 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
     }
 
 
-    // Clase interna para ejecutar la prueba de conexiÃ³n en un hilo de fondo
+    // Clase interna para ejecutar la prueba de conexión en un hilo de fondo
     private class ConexionTask extends AsyncTask<Void, Void, Integer> {
         @Override
         protected Integer doInBackground(Void... voids) {
-            //Instancia de usuario para usar su funciÃ³n loginUsuario (verificar Usuario.java)
+            //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
             Usuario usuario = new Usuario();
             Mascota mascota = new Mascota();
             int cnx = 0;
@@ -241,10 +241,10 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    // MÃ©todo para llenar el Spinner de mascotas con la lista de mascotas del usuario
+    // Método para llenar el Spinner de mascotas con la lista de mascotas del usuario
     private void llenarMascotasSpinner(List<Mascota> mascotas) {
         List<String> nombresMascotas = new ArrayList<>();
-        nombresMascotas.add("--Seleccione Mascota--"); // OpciÃ³n predeterminada
+        nombresMascotas.add("--Seleccione Mascota--"); // Opción predeterminada
 
         for (Mascota mascota : mascotas) {
             nombresMascotas.add(mascota.getNombre() +" - "+mascota.getTipo()); // Obtener el nombre de cada mascota
@@ -278,7 +278,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    //MÃ©todo para desplegar Toasts sin esperar a que termine el anterior toast (lo reemplaza)
+    //Método para desplegar Toasts sin esperar a que termine el anterior toast (lo reemplaza)
     private void mostrarToast(String message) {
         if (toastActual != null) {
             toastActual.cancel();

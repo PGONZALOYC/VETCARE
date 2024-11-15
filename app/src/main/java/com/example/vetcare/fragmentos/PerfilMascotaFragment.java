@@ -82,7 +82,7 @@ public class PerfilMascotaFragment extends Fragment {
     }
 
     private void llenarTipoMascota() {
-        String[] servicios = {"--Seleccione Servicio--", "Perro", "Gato", "Otro"};
+        String[] servicios = {"--Seleccione Tipo--", "Perro", "Gato", "Otro"};
         mascCboTipoMascota.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, servicios));
     }
 }

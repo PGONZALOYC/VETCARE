@@ -2,7 +2,7 @@
     <string name="app_name">Vetcare</string>
     <string name="bieLblSaludo">Hola: </string>
 
-    <!--SesiÃ³n-->
+    <!--Sesión-->
     <string name="logTxtCorreo">Correo</string>
     <string name="logTxtClave">Contraseña</string>
     <string name="logBtnIngresar">Ingresar</string>
@@ -12,13 +12,13 @@
     <string name="logTxtOlvidasteContrasena">¿Olvidaste tu contraseña</string>
     <string name="logLblFamilia">Vetcare</string>
 
-    <!--Olvidaste ContraseÃ±a-->
+    <!--Olvidaste Contraseña-->
     <string name="olvLblOlvidasteContrasenaTitulo">¿Olvidaste tu contraseña?</string>
     <string name="olvLblOlvidasteContrasenaInstrucciones">Ingresa tu correo electrónico.Te enviaremos un código para continuar.</string>
     <string name="olvTxtOlvidasteContrasenaCorreo">Correo electrónico</string>
     <string name="olvBtnOlvidasteContrasenaEnviar">Enviar</string>
 
-    <!--Confirmar Codigo-->
+    <!--Confirmar Código-->
     <string name="confLblConfirmarCodigoTitulo">Verifica tu identidad</string>
     <string name="confLblConfirmarCodigoInstrucciones">Ingresa el código de seis dígitos</string>
     <string name="confTxtConfirmarCodigo">Código</string>
@@ -31,14 +31,13 @@
     <string name="camTxtCambiarContrasenaConfirmarNueva">Confirmar contraseña</string>
     <string name="camBtnCambiarContrasenaAceptar">Aceptar</string>
 
-
     <!--Registro usuario-->
     <string name="regLblRegistroTitulo">Empecemos registrando tus datos</string>
     <string name="regTxtRegistroNombre">Nombre(s)</string>
     <string name="regTxtRegistroApellido">Apellidos</string>
     <string name="regTxtRegistroDni">DNI</string>
     <string name="regTxtRegistroFechaNacimiento">Fecha de nacimiento</string>
-    <string name="regTxtRegistroTelefono">TelÃ©fono</string>
+    <string name="regTxtRegistroTelefono">Teléfono</string>
     <string name="regTxtRegistroCorreo">Correo electrónico</string>
     <string name="regRbtRegistroSinDefinir">Sin definir</string>
     <string name="regRbtRegistroFemenino">Femenino</string>
@@ -59,12 +58,12 @@
 
     <!--Bienvenida-->
     <string name="bieLblQuienesSomos">¿Quiénes somos?</string>
-    <string name="bieLblInformacion">En Vetcare, somos un equipo de profesionales dedicados al bienestar y salud de tus mascotas. Con años de experiencia en el cuidado veterinario, ofrecemos una amplia gama de servicios, desde consultas y atención de urgencias hasta procedimientos especializados y tratamientos preventivos."\n"Nos enorgullecemos de tratar a cada mascota como si fuera nuestra, brindando un entorno seguro, confiable y acogedor para ellos y sus dueÃ±os. Creemos en una atención integral y personalizada, entendiendo las necesidades específicas de cada mascota.</string>
-
+    <string name="bieLblInformacion">En Vetcare, somos un equipo de profesionales dedicados al bienestar y salud de tus mascotas. Con años de experiencia en el cuidado veterinario, ofrecemos una amplia gama de servicios, desde consultas y atención de urgencias hasta procedimientos especializados y tratamientos preventivos."\n"
+        Nos enorgullecemos de tratar a cada mascota como si fuera nuestra, brindando un entorno seguro, confiable y acogedor para ellos y sus dueños. Creemos en una atención integral y personalizada, entendiendo las necesidades específicas de cada mascota.</string>
 
 
     <!--FRAGMENTOS-->
-    <!--    Reserva de cita-->
+    <!--Reserva de cita-->
     <string name="resLblReservaTitulo">Reservar cita</string>
     <string name="resLblReservarServicio">Servicio</string>
     <string name="resLblReservarVeterinario">Veterinario</string>
@@ -106,9 +105,8 @@
 
     <!--Nosotros-->
     <string name="nosLblNumeroVetcare">+51 902 458 162</string>
-    <string name="nosLblDescripcion">Nuestro equipo de veterinarios está dedicado a proporcionar servicios integrales de salud y bienestar animal, desde consultas preventivas y vacunaciÃ³n hasta tratamientos especializados y emergencias. Nos enorgullece contar con instalaciones modernas y equipadas para la atención de pequeños animales, con Áreas exclusivas para cirugía, cuidados intensivos y diagnósticos avanzados.</string>
+    <string name="nosLblDescripcion">Nuestro equipo de veterinarios está dedicado a proporcionar servicios integrales de salud y bienestar animal, desde consultas preventivas y vacunación hasta tratamientos especializados y emergencias. Nos enorgullece contar con instalaciones modernas y equipadas para la atención de pequeños animales, con Áreas exclusivas para cirugía, cuidados intensivos y diagnósticos avanzados.</string>
     <string name="nosBtnEncuentranos">Encuéntranos</string>
-
 
     <!--Perfil usuario-->
     <string name="perLblPerfilTitulo">Perfil</string>
@@ -136,7 +134,7 @@
 
     <!--Agregar Mascota-->
     <string name="agremasEdtNombreMascota">Nombre de la mascota</string>
-    <string name="agremasEdtEdadAnios">AÃ±os</string>
+    <string name="agremasEdtEdadAnios">Años</string>
     <string name="agremasEdtEdadMeses">Meses</string>
     <string name="agremasEdtRazaMascota">Raza de la mascota</string>
     <string name="agremascBtnSelecImg">Seleccionar Imagen</string>
@@ -145,7 +143,6 @@
     <string name="agremascLblEdad">Edad</string>
     <string name="agremascLblTipo">Tipo</string>
     <string name="agremascImgMascota">Vista previa de la imagen de mascota</string>
-
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

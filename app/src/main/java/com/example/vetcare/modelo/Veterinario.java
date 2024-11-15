@@ -89,6 +89,5 @@ public class Veterinario {
         }
         return listaVeterinarios;
     }
-
 }
 

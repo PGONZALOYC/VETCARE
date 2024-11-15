@@ -166,6 +166,7 @@ public class Usuario {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
                         usuario = new Usuario();
+                        usuario.setId_Usuario(resultSet.getInt("id_Usuario"));
                         usuario.setNombres(resultSet.getString("nombres"));
                         usuario.setApellidos(resultSet.getString("apellidos"));
                         usuario.setCorreo(resultSet.getString("correo"));

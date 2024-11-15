@@ -35,7 +35,7 @@ import com.example.vetcare.modelo.Usuario;
 public class PerfilUsuarioFragment extends Fragment {
 
     EditText perTxtNombre,perTxtApellido,perTxtTelefono,perTxtCorreo;
-    boolean esEscritura = true;
+    boolean escribe = true;
     int userID=-1;
     String nombre="";
     String apellido="";
@@ -112,13 +112,16 @@ public class PerfilUsuarioFragment extends Fragment {
         perTxtApellido.setText(sharedPreferences.getString("apellido", "null"));
         perTxtTelefono.setText(sharedPreferences.getString("telefono", "null"));
         perTxtCorreo.setText(sharedPreferences.getString("correo", "null"));
-        camposEscritura(!esEscritura);
+        camposEscritura(false);
 
         editarPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Usuario usuarioNuevo = new Usuario();
-                if (esEscritura) {
+                if(escribe){
+                    camposEscritura(true);
+                    escribe = false;
+                }else{
+                    Usuario usuarioNuevo = new Usuario();
                     // Si ya está en modo edición, guarda los cambios
                     nombre = perTxtNombre.getText().toString();
                     apellido = perTxtApellido.getText().toString();
@@ -140,7 +143,13 @@ public class PerfilUsuarioFragment extends Fragment {
                                     @Override
                                     public void run() {
                                         //CODIGO DESPUES DEL CONGELAMIENTO
-
+                                        if (conexionExitosa) {
+                                            Toast.makeText(getContext(), "Información actualizada", Toast.LENGTH_SHORT).show();
+                                            camposEscritura(false); // Deshabilita los campos
+                                            escribe=true;
+                                        }else{
+                                            Toast.makeText(getContext(), "Error al actualizar la información", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 });
                             } catch (InterruptedException e) {
@@ -148,18 +157,12 @@ public class PerfilUsuarioFragment extends Fragment {
                             }
                         }
                     }).start();
-
-                    boolean exito = usuarioNuevo.editarUsuario(userID, nombre, apellido, telefono, correo);
-
-                    if (exito) {
-                        Toast.makeText(getContext(), "Información actualizada", Toast.LENGTH_SHORT).show();
-                        esEscritura = false; // Cambia a modo de solo lectura
-                        camposEscritura(esEscritura); // Deshabilita los campos
-                    } else {
-                        Toast.makeText(getContext(), "Error al actualizar la información", Toast.LENGTH_SHORT).show();
-                    }
                 }
-            }
+
+
+
+                }
+
         });
         infoMastoca.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,6 +199,7 @@ public class PerfilUsuarioFragment extends Fragment {
 
         editor.remove("correo");
         editor.remove("clave");
+        editor.putBoolean("recuerda", false);
 
         editor.apply();
 
@@ -216,6 +220,8 @@ public class PerfilUsuarioFragment extends Fragment {
             //Cifrar la clave
 
             if(usuarioDAO.editarUsuario(userID, nombre, apellido, telefono, correo)){
+                guardarCorreoEnSharedPreferences(userID, nombre, apellido, telefono, correo);
+
                 cnx = 1;
             }
             return cnx;
@@ -265,6 +271,18 @@ public class PerfilUsuarioFragment extends Fragment {
             progressDialog.dismiss();
         }
     }
+
+    private void guardarCorreoEnSharedPreferences(int id_usuario, String nombre, String apellido, String telefono, String correo) {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("id_usuario", id_usuario);
+        editor.putString("nombre", nombre);
+        editor.putString("apellido", apellido);
+        editor.putString("telefono", telefono);
+        editor.putString("correo", correo);
+        editor.apply();
+    }
+
 
 
 

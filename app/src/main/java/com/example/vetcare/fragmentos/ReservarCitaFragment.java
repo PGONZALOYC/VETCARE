@@ -6,9 +6,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -25,6 +22,7 @@ import android.widget.Toast;
 import com.example.vetcare.R;
 import com.example.vetcare.modelo.Mascota;
 import com.example.vetcare.modelo.Usuario;
+import com.example.vetcare.modelo.Veterinario;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +45,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
     View vista;
     Usuario usuarioPerfil;
     List<Mascota> mascotasPerfil;
-
+    List<Veterinario> veterinariosList;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -150,9 +148,8 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
 
 
 
-        // Llenar los spinners
+        // Llenar los spinners estáticos
         llenarServicios();
-        llenarVeterinarios();
         llenarHora();
         llenarSede();
 
@@ -171,11 +168,6 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             lblVeterinario.setVisibility(View.GONE);
             cboReservaVeterinario.setVisibility(View.GONE);
         }
-    }
-
-    private void llenarVeterinarios() {
-        String[] veterinarios = {"--Seleccione Servicio--", "Dr. López", "Dra. García", "Dr. Martínez"};
-        cboReservaVeterinario.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, veterinarios));
     }
 
     private void llenarServicios() {
@@ -215,6 +207,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
             Usuario usuario = new Usuario();
             Mascota mascota = new Mascota();
+            Veterinario veterinario= new Veterinario();
             int cnx = 0;
             // Obtener el correo del usuario desde SharedPreferences
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
@@ -222,6 +215,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             //Almacenar todas las variables necesarias antes del cnx 1
             usuarioPerfil = usuario.obtenerInformacionUsuario(correo);
             mascotasPerfil = mascota.obtenerMascotasPorCorreo(correo);
+            veterinariosList= veterinario.obtenerVeterinarios();
             if(usuario != null && mascota != null){
                 cnx = 1;
             }
@@ -233,7 +227,8 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             if (result == 1) {
                 hideLoadingDialog();
                 conexionExitosa = true;
-                llenarMascotasSpinner(mascotasPerfil);
+                llenarMascotas(mascotasPerfil);
+                llenarVeterinarios(veterinariosList);
             } else{
                 hideLoadingDialog();
                 mostrarToast("Error: Conexion fallida");
@@ -242,17 +237,30 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
     }
 
     // Método para llenar el Spinner de mascotas con la lista de mascotas del usuario
-    private void llenarMascotasSpinner(List<Mascota> mascotas) {
+    private void llenarMascotas(List<Mascota> mascotas) {
         List<String> nombresMascotas = new ArrayList<>();
         nombresMascotas.add("--Seleccione Mascota--"); // Opción predeterminada
 
         for (Mascota mascota : mascotas) {
             nombresMascotas.add(mascota.getNombre() +" - "+mascota.getTipo()); // Obtener el nombre de cada mascota
         }
-
         // Configurar el adapter del Spinner con la lista de nombres de mascotas
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, nombresMascotas);
         cboReservaMascota.setAdapter(adapter);
+    }
+
+
+    // Método para llenar el Spinner de mascotas con la lista de Veterinarios
+    private void llenarVeterinarios(List<Veterinario> veterinariosList) {
+        List<String> nombresVeterinarios = new ArrayList<>();
+        nombresVeterinarios.add("--Seleccione Veterinario--"); // Opción predeterminada
+
+        for (Veterinario veterinario : veterinariosList) {
+            nombresVeterinarios.add(veterinario.getNombre() +" "+ veterinario.getApellidos()); // Obtener el nombre de cada Veterinario
+        }
+        // Configurar el adapter del Spinner con la lista de nombres de mascotas
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, nombresVeterinarios);
+        cboReservaVeterinario.setAdapter(adapter);
     }
 
     //METODOS IMPLEMENTADOS PARA LA CARGA DESDE LA BASE DE DATOS

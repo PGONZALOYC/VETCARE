@@ -39,6 +39,9 @@ import com.example.vetcare.actividades.BienvenidaActivity;
 import com.example.vetcare.actividades.SesionActivity;
 import com.example.vetcare.clases.Hash;
 import com.example.vetcare.modelo.Producto;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import com.example.vetcare.R;
 import com.example.vetcare.clases.Menu;
@@ -47,6 +50,7 @@ import com.example.vetcare.sqlite.Vetcare;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,6 +64,7 @@ public class ProductosFragment extends Fragment {
     private ProgressDialog progressDialog;
     private Toast toastActual;
     List<Producto> productos;
+
     View vista;
     String valor;
     ArrayList<Producto> carritoLista = new ArrayList();
@@ -238,13 +243,11 @@ public class ProductosFragment extends Fragment {
     // Añadir CardView al GridLayout
     contenedor.addView(cardView);
 
-    imageButton.setOnClickListener(v -> cambiarBotonAgregar(imageButton));
-
-    imageButton.setOnClickListener(v -> carritoLista.add(producto));
+    imageButton.setOnClickListener(v -> clickBotonAgregar(imageButton, producto));
 
 }
 
-    private void cambiarBotonAgregar(ImageButton button) {
+    private void clickBotonAgregar(ImageButton button, Producto producto) {
         button.setImageResource(R.drawable.ic_check);
 
         ColorStateList colorStateList = getResources().getColorStateList(R.color.check_producto_button, null);
@@ -252,8 +255,8 @@ public class ProductosFragment extends Fragment {
 
         button.setClickable(false);
 
-
-
+        carritoLista.add(producto);
+        insertarListaEnSharedPreferences();
 
     }
 
@@ -358,23 +361,38 @@ public class ProductosFragment extends Fragment {
                 .remove(this)
                 .commit();
     }
-/*
-    public void insertarProductoEnCarrito(Producto[] carritoLista) {
 
-
-
-
-        SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
+    public void insertarListaEnSharedPreferences() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        // Convertir el array de Producto a JSON
-        Gson gson = new Gson();
-        String json = gson.toJson(productos);
+        // Crear un objeto Gson con la configuración de @Expose
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String json = gson.toJson(carritoLista);
 
         // Guardar el JSON en SharedPreferences
-        editor.putString("productos", json);
+        editor.putString("carrito", json);
         editor.apply();
-    }*/
+
+        mostrarToast(obtenerListaEnSharedPreferences().get(obtenerListaEnSharedPreferences().size()-1).getNombre());
+
+    }
+
+    public ArrayList<Producto> obtenerListaEnSharedPreferences() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+
+        // Recuperar el JSON de SharedPreferences
+        String json = sharedPreferences.getString("carrito", null);
+
+        if (json != null) {
+            // Convertir el JSON de nuevo a ArrayList<Producto>
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            TypeToken<ArrayList<Producto>> typeToken = new TypeToken<ArrayList<Producto>>() {};
+            return gson.fromJson(json, typeToken.getType());
+        } else {
+            return new ArrayList<>();  // Retorna una lista vacía si no hay productos almacenados
+        }
+    }
 }
 
 

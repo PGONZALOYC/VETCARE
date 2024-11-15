@@ -4,16 +4,22 @@ import com.example.vetcare.clases.MySQLConnector;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import com.google.gson.annotations.Expose;
 
 public class Producto {
-
+    @Expose(serialize = false)
     private Connection connection;
-
+    @Expose
     private int id_Producto;
+    @Expose
     private String Nombre;
+    @Expose
     private double Precio;
+    @Expose
     private int Cantidad;
+    @Expose
     private byte[] imagen;
+    @Expose
     private int id_Categoria;
 
     public Producto() {

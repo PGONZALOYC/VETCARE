@@ -159,11 +159,6 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
                 editor.putString("clave", txtClave.getText().toString());
                 editor.putBoolean("recuerda", true);
                 editor.apply();
-
-
-
-                //Aca se guarda el correo y clave
-                //vt.agregarUsuario(1,txtCorreo,txtClave);
             }
             //vt.agregarUsuario(1,txtCorreo,txtClave,"Arturo","Romero Gonzales","78459612","04/09/2003","948156147","Masculino");
             startActivity(bienvenida);
@@ -216,7 +211,6 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             //Cifrar la clave
             txtClav = hash.StringToHash(txtClav,"SHA256").toLowerCase();
             if(usuarioDAO.loginUsuario(txtCorr, txtClav)){
-
                 guardarCorreoEnSharedPreferences(usuarioDAO.obtenerInformacionUsuario(txtCorr).getId_Usuario(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getNombres(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getApellidos(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getTelefono(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getCorreo(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getContraseña());
                 cnx = 1;
             }
@@ -239,13 +233,16 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     private void guardarCorreoEnSharedPreferences(int id_usuario, String nombre, String apellido, String telefono, String correo, String clave) {
         SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("id_usuario", id_usuario);
-        editor.putString("nombre", nombre);
-        editor.putString("apellido", apellido);
-        editor.putString("telefono", telefono);
-        editor.putString("correo", correo);
-        editor.putString("clave", clave);
-        editor.apply();
+
+        if(!sharedPreferences.getBoolean("recuerda", false)){
+            editor.putInt("id_usuario", id_usuario);
+            editor.putString("nombre", nombre);
+            editor.putString("apellido", apellido);
+            editor.putString("telefono", telefono);
+            editor.putString("correo", correo);
+            editor.putString("clave", clave);
+            editor.apply();
+        }
     }
 
     //Congela los procesos mientras espera que conexionExitosa sea true para continuar con las posteriores instrucciones

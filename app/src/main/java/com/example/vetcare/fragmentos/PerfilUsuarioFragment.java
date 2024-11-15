@@ -199,6 +199,11 @@ public class PerfilUsuarioFragment extends Fragment {
 
         editor.remove("correo");
         editor.remove("clave");
+        editor.remove("nombre");
+        editor.remove("apellido");
+        editor.remove("telefono");
+        editor.remove("id_usuario");
+
         editor.putBoolean("recuerda", false);
 
         editor.apply();

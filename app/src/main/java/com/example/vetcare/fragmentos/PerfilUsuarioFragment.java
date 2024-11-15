@@ -1,9 +1,11 @@
 package com.example.vetcare.fragmentos;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,10 +18,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 
 import com.example.vetcare.R;
 import com.example.vetcare.actividades.SesionActivity;
+import com.example.vetcare.clases.Hash;
 import com.example.vetcare.clases.Menu;
 import com.example.vetcare.modelo.Usuario;
 
@@ -31,6 +35,16 @@ import com.example.vetcare.modelo.Usuario;
 public class PerfilUsuarioFragment extends Fragment {
 
     EditText perTxtNombre,perTxtApellido,perTxtTelefono,perTxtCorreo;
+    boolean esEscritura = true;
+    int userID=-1;
+    String nombre="";
+    String apellido="";
+    String telefono="";
+    String correo="";
+    boolean conexionExitosa = false;
+    private static Toast toastActual;
+    private ProgressDialog progressDialog;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -87,36 +101,66 @@ public class PerfilUsuarioFragment extends Fragment {
         perTxtTelefono = vista.findViewById(R.id.perTxtTelefono);
         perTxtCorreo = vista.findViewById(R.id.perTxtCorreo);
 
-
+        View editarPerfil = vista.findViewById(R.id.perIconoEditar);
+        View infoMastoca = vista.findViewById(R.id.btnInfoMascota);
+        View agreMascota= vista.findViewById(R.id.btnAgregarMascota);
 
         // Obtener el correo del usuario desde SharedPreferences
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
-
+        userID = sharedPreferences.getInt("id_usuario", -1);
         perTxtNombre.setText(sharedPreferences.getString("nombre", "null"));
         perTxtApellido.setText(sharedPreferences.getString("apellido", "null"));
         perTxtTelefono.setText(sharedPreferences.getString("telefono", "null"));
         perTxtCorreo.setText(sharedPreferences.getString("correo", "null"));
+        camposEscritura(!esEscritura);
 
+        editarPerfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Usuario usuarioNuevo = new Usuario();
+                if (esEscritura) {
+                    // Si ya está en modo edición, guarda los cambios
+                    nombre = perTxtNombre.getText().toString();
+                    apellido = perTxtApellido.getText().toString();
+                    telefono = perTxtTelefono.getText().toString();
+                    correo = perTxtCorreo.getText().toString();
 
-//        // Obtener el correo del usuario actual (puede ser de un SharedPreference o de otro lugar)
-//        String correo = "roque@upn.pe"; // Este valor debe provenir de tu contexto (ej. SharedPreferences)
-//
-//        // Llamar al método obtenerInformacionUsuario para obtener los datos
-//        Usuario usuario = new Usuario();
-//        usuario = usuario.obtenerInformacionUsuario(correo);
-//
-//        // Si la información del usuario está disponible, actualizar los campos
-//        if (usuario != null) {
-//            perTxtNombre.setText(usuario.getNombres());
-//            perTxtApellido.setText(usuario.getApellidos());
-//            perTxtTelefono.setText(usuario.getTelefono());
-//            perTxtCorreo.setText(usuario.getCorreo());
-//        }
+                    new ConexionTask().execute();
 
+                    showLoadingDialog();
 
-        View infoMastoca = vista.findViewById(R.id.btnInfoMascota);
-        View agreMascota= vista.findViewById(R.id.btnAgregarMascota);
+                    // Ejecutar tareas en un hilo separado
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                freezeExecution();
 
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //CODIGO DESPUES DEL CONGELAMIENTO
+
+                                    }
+                                });
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+
+                    boolean exito = usuarioNuevo.editarUsuario(userID, nombre, apellido, telefono, correo);
+
+                    if (exito) {
+                        Toast.makeText(getContext(), "Información actualizada", Toast.LENGTH_SHORT).show();
+                        esEscritura = false; // Cambia a modo de solo lectura
+                        camposEscritura(esEscritura); // Deshabilita los campos
+                    } else {
+                        Toast.makeText(getContext(), "Error al actualizar la información", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
         infoMastoca.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,6 +182,14 @@ public class PerfilUsuarioFragment extends Fragment {
         return vista;
     }
 
+    private void camposEscritura(boolean esEscritura){
+        perTxtNombre.setEnabled(esEscritura);
+        perTxtApellido.setEnabled(esEscritura);
+        perTxtTelefono.setEnabled(esEscritura);
+        perTxtCorreo.setEnabled(esEscritura);
+
+    }
+
     private void closeFragment() {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -152,5 +204,68 @@ public class PerfilUsuarioFragment extends Fragment {
         Intent intent = new Intent(requireContext(), SesionActivity.class);
         startActivity(intent);
     }
+
+    // Clase interna para ejecutar la prueba de conexión en un hilo de fondo
+    public class ConexionTask extends AsyncTask<Void, Void, Integer> {
+        @Override
+        protected Integer doInBackground(Void... voids) {
+
+            //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
+            int cnx = 0;
+            Usuario usuarioDAO = new Usuario();
+            //Cifrar la clave
+
+            if(usuarioDAO.editarUsuario(userID, nombre, apellido, telefono, correo)){
+                cnx = 1;
+            }
+            return cnx;
+
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            if (result == 1) {
+                hideLoadingDialog();
+                conexionExitosa = true;
+            } else{
+                hideLoadingDialog();
+                mostrarToast("Error: Credenciales incorrectas");
+            }
+        }
+
+
+    }
+    //Congela los procesos mientras espera que conexionExitosa sea true para continuar con las posteriores instrucciones
+    private void freezeExecution() throws InterruptedException {
+        while (!conexionExitosa) {
+            Thread.sleep(100); // Esperar un breve periodo antes de volver a comprobar
+        }
+    }
+
+    //Método para desplegar Toasts sin esperar a que termine el anterior toast (lo reemplaza)
+    private void mostrarToast(String message) {
+        if (toastActual != null) {
+            toastActual.cancel();
+        }
+        toastActual = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toastActual.show();
+    }
+
+    //Dialogo de carga mientras espera al congelamiento -- mostrar
+    private void showLoadingDialog() {
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Editando informacion...");
+        progressDialog.setCancelable(false); // No se puede cancelar tocando fuera del diálogo
+        progressDialog.show();
+    }
+
+    //Dialogo de carga mientras espera al congelamiento -- ocultar
+    private void hideLoadingDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+
 
 }

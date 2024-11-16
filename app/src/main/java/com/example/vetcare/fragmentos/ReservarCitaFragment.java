@@ -20,10 +20,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vetcare.R;
+import com.example.vetcare.modelo.Cita;
 import com.example.vetcare.modelo.Mascota;
 import com.example.vetcare.modelo.Usuario;
 import com.example.vetcare.modelo.Veterinario;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +44,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
     boolean conexionExitosa = false;
     private ProgressDialog progressDialog;
     private Toast toastActual;
-    View vista;
+
     Usuario usuarioPerfil;
     List<Mascota> mascotasPerfil;
     List<Veterinario> veterinariosList;
@@ -143,11 +145,6 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             }
         }).start();
 
-
-
-
-
-
         // Llenar los spinners estáticos
         llenarServicios();
         llenarHora();
@@ -155,6 +152,19 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
 
         return view;
     }
+
+    @Override
+    public void onClick(View view) {
+
+    }
+
+
+
+
+
+
+
+
 
     private boolean servicioRequiereVeterinario(String servicio) {
         return servicio.equals("Consulta Médica") || servicio.equals("Castración") || servicio.equals("Desparasitación");
@@ -194,12 +204,6 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
         cboReservaSede.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, sedes));
     }
 
-    @Override
-    public void onClick(View view) {
-
-    }
-
-
     // Clase interna para ejecutar la prueba de conexión en un hilo de fondo
     private class ConexionTask extends AsyncTask<Void, Void, Integer> {
         @Override
@@ -211,7 +215,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             int cnx = 0;
             // Obtener el correo del usuario desde SharedPreferences
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
-            String correo = sharedPreferences.getString("correo", null); // Si no existe, serÃ¡ null
+            String correo = sharedPreferences.getString("correo", null); // Si no existe, será¡ null
             //Almacenar todas las variables necesarias antes del cnx 1
             usuarioPerfil = usuario.obtenerInformacionUsuario(correo);
             mascotasPerfil = mascota.obtenerMascotasPorCorreo(correo);

@@ -1,6 +1,5 @@
 package com.example.vetcare.fragmentos;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.vetcare.R;
-import com.example.vetcare.clases.Menu;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +19,7 @@ import com.example.vetcare.clases.Menu;
  * create an instance of this fragment.
  */
 public class CategProductosFragment extends Fragment {
+    View vista;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -67,15 +66,15 @@ public class CategProductosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View vista = inflater.inflate(R.layout.fragment_categproductos, container, false);
+        vista = inflater.inflate(R.layout.fragment_categproductos, container, false);
         View iconoComida = vista.findViewById(R.id.proIconoComida);
         View iconoHigiene = vista.findViewById(R.id.proIconoHigiene);
         View iconoJuguetes = vista.findViewById(R.id.proIconoJuguete);
         View iconoAccesorios = vista.findViewById(R.id.proIconoAccesorios);
-        View vista2 = inflater.inflate(R.layout.fragment_productos, container, false);
-        TextView titulo = vista2.findViewById(R.id.proLblProductosTitulo);
+        View iconoCarrito = vista.findViewById(R.id.proImagenCarrito);
 
         Context context = getActivity();
+        assert context != null;
         SharedPreferences sharedPreferences = context.getSharedPreferences("Sistema", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -110,6 +109,12 @@ public class CategProductosFragment extends Fragment {
         iconoJuguetes.setOnClickListener(listener);
         iconoAccesorios.setOnClickListener(listener);
 
+        View.OnClickListener listener2 = view -> requireActivity().getSupportFragmentManager().beginTransaction()
+                .add(R.id.menRelArea, new CarritoProductosFragment())
+                .commit();
+
+        iconoCarrito.setOnClickListener(listener2);
+
         return vista;
     }
 
@@ -118,4 +123,5 @@ public class CategProductosFragment extends Fragment {
                 .add(R.id.menRelArea, new ProductosFragment())
                 .commit();
     }
+
 }

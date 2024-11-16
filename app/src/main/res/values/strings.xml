@@ -85,15 +85,8 @@
     <string name="proDescIconoJuguete">Icono juguete</string>
     <string name="proDescIconoAccesorios">Icono accesorios</string>
 
-    <!--Productos-->
-    <string name="proDescIconoComidaCanbo">Comida canbo</string>
-    <string name="proLblComidaCanbo">Canbo super premium S/.23.00</string>
-    <string name="proDescIconoComidaCanbo2">Comida canbo 2</string>
-    <string name="proLblComidaCanbo2">Canbo super premium S/.23.00</string>
-    <string name="proDescIconoComidaWhiskas">Comida whisksa</string>
-    <string name="proLblComidaWhiskas">Whiska super premium S/.25.00</string>
-    <string name="proDescIconoComidaWhiskas2">Comida whiskas 2</string>
-    <string name="proLblComidaWhiskas2">Whiskas super premium S/.25.00</string>
+    <!--Carrito de Productos-->
+    <string name="proLblCarrito">Mi carrito</string>
 
     <!--Mis citas-->
     <string name="citLblMisCitasTitulo">Mis citas</string>

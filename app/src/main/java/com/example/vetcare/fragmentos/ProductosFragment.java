@@ -1,23 +1,17 @@
 package com.example.vetcare.fragmentos;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.view.Gravity;
 import android.widget.ImageButton;
@@ -26,26 +20,18 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.vetcare.actividades.BienvenidaActivity;
-import com.example.vetcare.actividades.SesionActivity;
-import com.example.vetcare.clases.Hash;
 import com.example.vetcare.modelo.Producto;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import com.example.vetcare.R;
-import com.example.vetcare.clases.Menu;
-import com.example.vetcare.modelo.Usuario;
 import com.example.vetcare.sqlite.Vetcare;
 
 import java.util.ArrayList;
@@ -58,8 +44,6 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class ProductosFragment extends Fragment {
-
-    EditText txtCorreo, txtClave;
     boolean conexionExitosa = false;
     private ProgressDialog progressDialog;
     private Toast toastActual;
@@ -67,7 +51,8 @@ public class ProductosFragment extends Fragment {
 
     View vista;
     String valor;
-    ArrayList<Producto> carritoLista = new ArrayList();
+    Producto productoPorIngresar;
+    ArrayList<Producto> carritoLista;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -121,6 +106,7 @@ public class ProductosFragment extends Fragment {
         valor = sharedPreferences.getString("categoria", "null");
         titulo.setText(valor);
         ImageView closeButton = vista.findViewById(R.id.closeButton);
+        View iconoCarrito = vista.findViewById(R.id.proImagenCarrito);
         closeButton.setOnClickListener(v -> closeFragment());
 
         new ProductosFragment.ConexionTask().execute();
@@ -146,6 +132,17 @@ public class ProductosFragment extends Fragment {
                 }
             }
         }).start();
+
+        View.OnClickListener listener2 = new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .add(R.id.menRelArea, new CarritoProductosFragment())
+                        .commit();
+            }
+        };
+
+        iconoCarrito.setOnClickListener(listener2);
 
         return vista;
     }
@@ -255,7 +252,7 @@ public class ProductosFragment extends Fragment {
 
         button.setClickable(false);
 
-        carritoLista.add(producto);
+        productoPorIngresar = producto;
         insertarListaEnSharedPreferences();
 
     }
@@ -368,14 +365,15 @@ public class ProductosFragment extends Fragment {
 
         // Crear un objeto Gson con la configuración de @Expose
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        carritoLista = obtenerListaEnSharedPreferences();
+        carritoLista.add(productoPorIngresar);
         String json = gson.toJson(carritoLista);
 
         // Guardar el JSON en SharedPreferences
         editor.putString("carrito", json);
         editor.apply();
 
-        mostrarToast(obtenerListaEnSharedPreferences().get(obtenerListaEnSharedPreferences().size()-1).getNombre());
-
+        mostrarToast(carritoLista.get(carritoLista.size()-1).getNombre());
     }
 
     public ArrayList<Producto> obtenerListaEnSharedPreferences() {

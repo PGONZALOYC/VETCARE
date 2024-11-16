@@ -92,20 +92,7 @@
                     android:layout_marginBottom="5dp"
                     android:visibility="gone"/>
 
-                <!-- Hora -->
-                <TextView
-                    android:id="@+id/resLblReservarHora"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="@string/resLblReservarHora" />
-                <Spinner
-                    android:id="@+id/resCboReservaHora"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:layout_marginBottom="5dp"/>
+
 
                 <!-- Sede -->
                 <TextView
@@ -121,6 +108,36 @@
                     android:layout_height="wrap_content"
                     android:minHeight="48dp"
                     android:layout_marginBottom="5dp" />
+
+                <!-- Hora -->
+                <TextView
+                    android:id="@+id/resLblReservarVeterinario"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/resLblReservarHora" />
+                <Spinner
+                    android:id="@+id/resCboReservarVeterinario"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:layout_marginBottom="5dp"/>
+
+                <!-- Veterinario -->
+                <TextView
+                    android:id="@+id/resLblReservarHora"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/resLblReservarVeterinario" />
+                <Spinner
+                    android:id="@+id/resCboReservaHora"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:layout_marginBottom="5dp"/>
 
                 <!-- BotÃ³n-->
                 <LinearLayout

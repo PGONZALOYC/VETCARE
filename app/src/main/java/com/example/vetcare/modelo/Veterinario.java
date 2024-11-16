@@ -14,6 +14,7 @@ public class Veterinario {
     private String nombre;
     private String apellidos;
     private String codigoColegiatura;
+    private int id_Sede;
 
     public Veterinario() {
         try {
@@ -24,15 +25,24 @@ public class Veterinario {
         }
     }
 
-    public Veterinario(Connection connection, int id_Veterinario, String nombre, String apellidos, String codigoColegiatura) {
+    public Veterinario(Connection connection, int id_Veterinario, String nombre, String apellidos, String codigoColegiatura, int id_Sede) {
         this.connection = connection;
         this.id_Veterinario = id_Veterinario;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.codigoColegiatura = codigoColegiatura;
+        this.id_Sede = id_Sede;
+    }
+    // Getters y Setters
+    public int getId_Sede() {
+        return id_Sede;
     }
 
-    // Getters y Setters
+    public void setId_Sede(int id_Sede) {
+        this.id_Sede = id_Sede;
+    }
+
+
     public int getId_Veterinario() {
         return id_Veterinario;
     }
@@ -79,6 +89,7 @@ public class Veterinario {
                         veterinario.setNombre(resultSet.getString("Nombre"));
                         veterinario.setApellidos(resultSet.getString("Apellidos"));
                         veterinario.setCodigoColegiatura(resultSet.getString("CodigoColegiatura"));
+                        veterinario.setId_Sede(resultSet.getInt("id_Sede"));
                         listaVeterinarios.add(veterinario);
                     }
                 }

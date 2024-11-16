@@ -37,7 +37,6 @@ import com.example.vetcare.actividades.SesionActivity;
 import com.example.vetcare.clases.Hash;
 import com.example.vetcare.clases.Menu;
 import com.example.vetcare.modelo.Mascota;
-import com.example.vetcare.modelo.Producto;
 import com.example.vetcare.modelo.Usuario;
 import com.example.vetcare.sqlite.Vetcare;
 import com.google.gson.Gson;
@@ -116,7 +115,7 @@ public class PerfilUsuarioFragment extends Fragment {
         // Inflate the layout for this fragment
 
 
-        View vista = inflater.inflate(R.layout.fragment_perfil_usuario, container, false);
+        vista = inflater.inflate(R.layout.fragment_perfil_usuario, container, false);
 
         perTxtNombre = vista.findViewById(R.id.perTxtNombre);
         perTxtApellido= vista.findViewById(R.id.perTxtApellido);
@@ -407,10 +406,10 @@ public class PerfilUsuarioFragment extends Fragment {
         if (json != null) {
             // Convertir el JSON de nuevo a ArrayList<Mascota>
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            TypeToken<ArrayList<Producto>> typeToken = new TypeToken<ArrayList<Producto>>() {};
+            TypeToken<ArrayList<Mascota>> typeToken = new TypeToken<ArrayList<Mascota>>() {};
             return gson.fromJson(json, typeToken.getType());
         } else {
-            return new ArrayList<>();  // Retorna una lista vacía si no hay productos almacenados
+            return new ArrayList<>();  // Retorna una lista vacía si no hay Mascota almacenados
         }
     }
 

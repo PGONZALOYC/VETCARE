@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -39,7 +40,11 @@ import com.example.vetcare.modelo.Mascota;
 import com.example.vetcare.modelo.Producto;
 import com.example.vetcare.modelo.Usuario;
 import com.example.vetcare.sqlite.Vetcare;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,8 +64,8 @@ public class PerfilUsuarioFragment extends Fragment {
     boolean conexionExitosa = false;
     private static Toast toastActual;
     private ProgressDialog progressDialog;
-    List<Mascota> mascotaList;
     View vista;
+    ArrayList<Mascota> mascotaLista;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -130,7 +135,7 @@ public class PerfilUsuarioFragment extends Fragment {
         perTxtTelefono.setText(sharedPreferences.getString("telefono", "null"));
         perTxtCorreo.setText(sharedPreferences.getString("correo", "null"));
         camposEscritura(false);
-
+        imprimirMascotas();
         new ConexionTask().execute();
 
 
@@ -244,12 +249,12 @@ public class PerfilUsuarioFragment extends Fragment {
             //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
             int cnx = 0;
             Usuario usuarioDAO = new Usuario();
-            Mascota mascotaDAO = new Mascota();
+            //Mascota mascotaDAO = new Mascota();
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
-            mascotaList = mascotaDAO.obtenerMascotasPorCorreo(sharedPreferences.getString("correo", "null"));
+            //mascotaList = mascotaDAO.obtenerMascotasPorCorreo(sharedPreferences.getString("correo", "null"));
             //Cifrar la clave
 
-            if(usuarioDAO.editarUsuario(userID, nombre, apellido, telefono, correo) && mascotaList!=null){
+            if(usuarioDAO.editarUsuario(userID, nombre, apellido, telefono, correo)){
                 guardarCorreoEnSharedPreferences(userID, nombre, apellido, telefono, correo);
 
                 cnx = 1;
@@ -315,79 +320,51 @@ public class PerfilUsuarioFragment extends Fragment {
     }
 
     private void agregarCard(GridLayout contenedor, Bitmap imageBitmap, String labelText, int mascotaId) {
-        // Crear CardView
-        CardView cardView = new CardView(this.getContext());
-        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-        params.width = GridLayout.LayoutParams.MATCH_PARENT;
-        params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-        cardView.setLayoutParams(params);
-        cardView.setRadius(10);
-        cardView.setCardElevation(5);
-        cardView.setUseCompatPadding(true);
-
-        // Crear LinearLayout
+        // Crear LinearLayout principal
         LinearLayout linearLayout = new LinearLayout(this.getContext());
-        LinearLayout.LayoutParams linearparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setLayoutParams(linearparams);
+        linearLayout.setLayoutParams(new GridLayout.LayoutParams());
+        linearLayout.setGravity(Gravity.CENTER); // Centrar los elementos dentro del LinearLayout
 
-        // Crear ImageView
-        ImageView imageView = new ImageView(this.getContext());
-        LinearLayout.LayoutParams imaparams = new LinearLayout.LayoutParams(dpToPx(150), dpToPx(160));
-        int marginInPx = dpToPx(10);
-        imaparams.setMargins(marginInPx, marginInPx, marginInPx, marginInPx);
-        imageView.setLayoutParams(imaparams);
-        imageView.setImageBitmap(imageBitmap);
-        imageView.setContentDescription(labelText);
+        // Crear ImageButton
+        ImageButton imageButton = new ImageButton(this.getContext());
+        LinearLayout.LayoutParams imageButtonParams = new LinearLayout.LayoutParams(
+                dpToPx(100), dpToPx(80));  // Tamaño de la imagen como en el XML
+        imageButtonParams.setMargins(dpToPx(10), dpToPx(10), dpToPx(10), dpToPx(10));
+        imageButton.setLayoutParams(imageButtonParams);
+        imageButton.setImageBitmap(imageBitmap);  // Establecer la imagen
+        imageButton.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageButton.setBackgroundResource(R.color.fondoTransparente);  // Fondo transparente
 
-        // Crear TextView
+        // Agregar acción al ImageButton
+        imageButton.setOnClickListener(v -> {
+            // Aquí puedes agregar la lógica para abrir el perfil de la mascota
+            // Por ejemplo, usando el ID de la mascota o su nombre
+            // startActivity(new Intent(getContext(), PerfilMascotaActivity.class));
+        });
+
+        // Crear TextView para el nombre de la mascota
         TextView textView = new TextView(this.getContext());
         textView.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                dpToPx(50)
-        ));
-        textView.setText(labelText);
-        textView.setTextSize(12);
-        textView.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
-        textView.setTextColor(getResources().getColor(R.color.titulo, null));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            textView.setTypeface(getResources().getFont(R.font.poppins_medium));
-        }
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+        textView.setText(labelText);  // Nombre de la mascota
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        textView.setTextColor(getResources().getColor(R.color.titulo, null));  // Color del texto
+        textView.setTextSize(12);  // Tamaño del texto
+        textView.setTypeface(ResourcesCompat.getFont(getContext(), R.font.poppins_medium));
 
-        // Crear el ImageButton para la interacción con la mascota (por ejemplo, navegar al perfil)
-        ImageButton imageButton = new ImageButton(this.getContext());
-        LinearLayout.LayoutParams imageButtonParams = new LinearLayout.LayoutParams(
-                dpToPx(60),   // Ancho del botón en dp
-                dpToPx(50)    // Alto del botón en dp
-        );
-        imageButton.setLayoutParams(imageButtonParams);
-        imageButtonParams.gravity = Gravity.CENTER;
-        imageButton.setImageResource(R.drawable.ic_plus);  // Asegúrate de que la imagen esté en res/drawable
-        imageButton.setScaleType(ImageView.ScaleType.FIT_XY);
-        imageButton.setId(R.id.agregar_producto_button);
-
-        // Añadir un click listener al botón para llevar al perfil de la mascota
-        imageButton.setOnClickListener(v -> {
-            // Aquí puedes navegar al perfil de la mascota
-            // Pasa el ID de la mascota para mostrar su perfil
-            //mostrarPerfilMascota(mascotaId);
-        });
-
-        ColorStateList colorStateList = getResources().getColorStateList(R.color.agregar_producto_button, null);
-        imageButton.setBackgroundTintList(colorStateList);
-
-        // Añadir ImageView y TextView al LinearLayout
-        linearLayout.addView(imageView);
+        // Agregar ImageButton y TextView al LinearLayout
+        linearLayout.addView(imageButton);
         linearLayout.addView(textView);
 
-        // Añadir el botón debajo de los TextView
-        linearLayout.addView(imageButton);
+        // Crear GridLayout.LayoutParams para colocar el LinearLayout dentro del GridLayout
+        GridLayout.LayoutParams gridParams = new GridLayout.LayoutParams();
+        gridParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
+        gridParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
 
-        // Añadir LinearLayout al CardView
-        cardView.addView(linearLayout);
-
-        // Añadir CardView al GridLayout
-        contenedor.addView(cardView);
+        // Agregar el LinearLayout al GridLayout
+        contenedor.addView(linearLayout, gridParams);
     }
     private int dpToPx(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
@@ -396,31 +373,44 @@ public class PerfilUsuarioFragment extends Fragment {
         // Crear instancia de la base de datos
         Vetcare vt = new Vetcare(this.getContext());
 
-        // Validar credenciales u obtener información del usuario
-        if (conexionExitosa) {
-            // Referencia al GridLayout
-            GridLayout contenedorMascotas = vista.findViewById(R.id.contenedorMascotas);
+        // Referencia al GridLayout
+        GridLayout contenedorMascotas = vista.findViewById(R.id.contenedorMascotas);
+        mascotaLista=obtenerListaMascotaEnSharedPreferences();
+        // Iterar por la lista de mascotas
+        for (int i = 0; i < mascotaLista.size(); i++) {
+            Mascota mascota = mascotaLista.get(i);
 
-            // Iterar por la lista de mascotas
-            for (int i = 0; i < mascotaList.size(); i++) {
-                Mascota mascota = mascotaList.get(i);
-
-                // Validar y obtener el Bitmap de la imagen de la mascota
-                Bitmap imagenBitmap;
-                try {
-                    imagenBitmap = BitmapFactory.decodeByteArray(
-                            mascota.getImagen(), 0, mascota.getImagen().length
-                    );
-                } catch (Exception e) {
-                    // Usar una imagen predeterminada en caso de error
-                    imagenBitmap = BitmapFactory.decodeResource(
-                            getResources(), R.drawable.user_mascota
-                    );
-                }
-
-                // Agregar tarjeta al contenedor
-                agregarCard(contenedorMascotas, imagenBitmap, mascota.getNombre(), mascota.getId_Mascota());
+            // Validar y obtener el Bitmap de la imagen de la mascota
+            Bitmap imagenBitmap;
+            try {
+                imagenBitmap = BitmapFactory.decodeByteArray(
+                        mascota.getImagen(), 0, mascota.getImagen().length
+                );
+            } catch (Exception e) {
+                // Usar una imagen predeterminada en caso de error
+                imagenBitmap = BitmapFactory.decodeResource(
+                        getResources(), R.drawable.user_mascota
+                );
             }
+
+            // Agregar tarjeta al contenedor
+            agregarCard(contenedorMascotas, imagenBitmap, mascota.getNombre(), mascota.getId_Mascota());
+        }
+    }
+
+    public ArrayList<Mascota> obtenerListaMascotaEnSharedPreferences() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+
+        // Recuperar el JSON de SharedPreferences
+        String json = sharedPreferences.getString("listaMascotas", null);
+
+        if (json != null) {
+            // Convertir el JSON de nuevo a ArrayList<Mascota>
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            TypeToken<ArrayList<Producto>> typeToken = new TypeToken<ArrayList<Producto>>() {};
+            return gson.fromJson(json, typeToken.getType());
+        } else {
+            return new ArrayList<>();  // Retorna una lista vacía si no hay productos almacenados
         }
     }
 

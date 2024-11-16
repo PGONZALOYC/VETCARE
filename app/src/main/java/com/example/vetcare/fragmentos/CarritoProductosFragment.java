@@ -1,8 +1,11 @@
 package com.example.vetcare.fragmentos;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -10,6 +13,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,6 +39,8 @@ public class CarritoProductosFragment extends Fragment {
 
     Producto productoPorIngresar;
     ArrayList<Producto> carritoLista;
+
+    double precioTotal = 0;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -76,6 +82,7 @@ public class CarritoProductosFragment extends Fragment {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -90,32 +97,48 @@ public class CarritoProductosFragment extends Fragment {
 
         imprimirProductos();
 
+        TextView txtTotal = vista.findViewById(R.id.carTxtTotal);
+        txtTotal.setText("S/"+String.format("%.2f", precioTotal));
+
         return vista;
     }
 
     private void imprimirProductos() {
+        precioTotal = 0;
+
         // Referencia al GridLayout
         GridLayout gridLayout = vista.findViewById(R.id.contenedorEtiquetas);
 
+        // Fila 1: Encabezados de columnas
+        addColumnHeader(gridLayout, "", 0);
+        addColumnHeader(gridLayout, "Imagen", 1);
+        addColumnHeader(gridLayout, "Nombre", 2);
+        addColumnHeader(gridLayout, "Cantidad", 3);
+        addColumnHeader(gridLayout, "Precio", 4);
+
+
         carritoLista = obtenerListaEnSharedPreferences();
 
-        // Fila 2: Encabezados de columnas
-        addColumnHeader(gridLayout, "Imagen", 0);
-        addColumnHeader(gridLayout, "Nombre", 1);
-        addColumnHeader(gridLayout, "Cantidad", 2);
-        addColumnHeader(gridLayout, "Precio", 3);
+        for(int i=0; i<carritoLista.size(); i++){
+            addProduct(gridLayout, BitmapFactory.decodeByteArray(carritoLista.get(i).getImagen(), 0, carritoLista.get(i).getImagen().length), carritoLista.get(i).getNombre(), 1, carritoLista.get(i).getPrecio(), i+1, R.drawable.ic_delete, carritoLista.get(i));
+        }
 
-        // Fila 3: Producto 1
-        addProduct(gridLayout, R.drawable.canbo, "Producto 1", 1, "$10.00", 1);
-        addProduct(gridLayout, R.drawable.canbo, "Producto 1", 2, "$10.00", 2);
-        addProduct(gridLayout, R.drawable.canbo, "Producto 1", 1, "$10.00", 3);
-        addProduct(gridLayout, R.drawable.canbo, "Producto 1", 1, "$10.00", 4);
+        if(carritoLista.isEmpty()){
+            TextView textView = new TextView(getContext());
+            textView.setText("No tienes productos agregados aún ):");
+            textView.setTypeface(null, Typeface.BOLD);
 
-        // Fila 4: Producto 2
-        addProduct(gridLayout, R.drawable.whiskas, "Producto 2", 2, "$20.00", 1);
-        addProduct(gridLayout, R.drawable.whiskas, "Producto 2", 1, "$20.00", 2);
-        addProduct(gridLayout, R.drawable.whiskas, "Producto 2", 2, "$20.00", 3);
-        addProduct(gridLayout, R.drawable.whiskas, "Producto 2", 3, "$20.00", 4);
+            GridLayout.LayoutParams textParams = new GridLayout.LayoutParams();
+            textParams.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+            textParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            textParams.setMargins(30, 30, 10, 10);
+            textParams.rowSpec = GridLayout.spec(1);
+            textParams.columnSpec = GridLayout.spec(0, 4);
+            textParams.setGravity(Gravity.CENTER);
+            textView.setLayoutParams(textParams);
+
+            gridLayout.addView(textView);
+        }
 
     }
 
@@ -125,14 +148,20 @@ public class CarritoProductosFragment extends Fragment {
                 .commit();
     }
 
-    public void insertarListaEnSharedPreferences() {
+    public void eliminarListaEnSharedPreferences(Producto producto) {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         // Crear un objeto Gson con la configuración de @Expose
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         carritoLista = obtenerListaEnSharedPreferences();
-        carritoLista.add(productoPorIngresar);
+        //carritoLista.remove(producto);
+        for(int i=0; i<carritoLista.size(); i++){
+            if(carritoLista.get(i).getId_Producto() == producto.getId_Producto()){
+                carritoLista.remove(i);
+                break;
+            }
+        }
         String json = gson.toJson(carritoLista);
 
         // Guardar el JSON en SharedPreferences
@@ -161,17 +190,26 @@ public class CarritoProductosFragment extends Fragment {
     private void addColumnHeader(GridLayout gridLayout, String text, int column) {
         TextView textView = new TextView(getContext());
         textView.setText(text);
-        textView.setGravity(Gravity.CENTER);
         textView.setTypeface(null, Typeface.BOLD);
-        textView.setLayoutParams(new GridLayout.LayoutParams());
-        gridLayout.addView(textView, new GridLayout.LayoutParams(GridLayout.spec(0), GridLayout.spec(column)));
+
+        GridLayout.LayoutParams textParams = new GridLayout.LayoutParams();
+        textParams.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        textParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        textParams.setMargins(0, 10, 50, 10);
+        textParams.rowSpec = GridLayout.spec(0);
+        textParams.columnSpec = GridLayout.spec(column);
+        textParams.setGravity(Gravity.CENTER);
+        textView.setLayoutParams(textParams);
+
+        gridLayout.addView(textView);
     }
 
     // Método para agregar un producto
-    private void addProduct(GridLayout gridLayout, int imageResId, String name, int quantity, String price, int row) {
+    @SuppressLint({"DefaultLocale", "SetTextI18n"})
+    private void addProduct(GridLayout gridLayout, Bitmap imageBitmap, String name, int quantity, double price, int row, int deleteResId, Producto producto) {
         // Imagen del producto
         ImageView imageView = new ImageView(getContext());
-        imageView.setImageResource(imageResId);
+        imageView.setImageBitmap(imageBitmap);
 
         // Ajustar el tamaño de la imagen
         GridLayout.LayoutParams imageParams = new GridLayout.LayoutParams();
@@ -179,8 +217,8 @@ public class CarritoProductosFragment extends Fragment {
         imageParams.height = dpToPx(70);
         imageParams.setMargins(10, 10, 10, 10);
         imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        imageParams.rowSpec = GridLayout.spec(row);    // Fila donde se colocará la imagen
-        imageParams.columnSpec = GridLayout.spec(0);   // Columna donde se colocará la imagen (ajustar si es necesario)
+        imageParams.rowSpec = GridLayout.spec(row);
+        imageParams.columnSpec = GridLayout.spec(1);
         // Añadir la imagen al GridLayout
         imageParams.setGravity(Gravity.CENTER);
         imageView.setLayoutParams(imageParams);
@@ -189,32 +227,101 @@ public class CarritoProductosFragment extends Fragment {
         // Nombre del producto
         TextView nameTextView = new TextView(getContext());
         nameTextView.setText(name);
-        nameTextView.setGravity(Gravity.CENTER);
         GridLayout.LayoutParams nameParams = new GridLayout.LayoutParams();
-        nameParams.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        nameParams.width = dpToPx(60);
         nameParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        nameParams.setMargins(10, 30, 10, 10);
+        nameParams.setMargins(10, 10, 10, 10);
+        nameParams.rowSpec = GridLayout.spec(row);
+        nameParams.columnSpec = GridLayout.spec(2);
+        nameParams.setGravity(Gravity.CENTER);
         nameTextView.setLayoutParams(nameParams);
-        gridLayout.addView(nameTextView, new GridLayout.LayoutParams(GridLayout.spec(row), GridLayout.spec(1)));
+        gridLayout.addView(nameTextView);
+
+        // Precio del producto
+        TextView priceTextView = new TextView(getContext());
+        priceTextView.setText("S/"+(String.format("%.2f", price)));
+        GridLayout.LayoutParams priceParams = new GridLayout.LayoutParams();
+        priceParams.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        priceParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        priceParams.setMargins(10, 30, 10, 10);
+        priceParams.rowSpec = GridLayout.spec(row);
+        priceParams.columnSpec = GridLayout.spec(4);
+        priceParams.setGravity(Gravity.CENTER);
+        priceTextView.setLayoutParams(priceParams);
 
         // Cantidad del producto (NumberPicker)
         NumberPicker numberPicker = new NumberPicker(getContext());
         numberPicker.setMinValue(1); // Valor mínimo
-        numberPicker.setMaxValue(10); // Valor máximo
+        numberPicker.setMaxValue(100); // Valor máximo
         numberPicker.setValue(quantity); // Valor predeterminado
-        numberPicker.setGravity(Gravity.CENTER);
-        numberPicker.setLayoutParams(new GridLayout.LayoutParams());
-        gridLayout.addView(numberPicker, new GridLayout.LayoutParams(GridLayout.spec(row), GridLayout.spec(2)));
+        GridLayout.LayoutParams numberParams = new GridLayout.LayoutParams();
+        numberParams.width = dpToPx(30);
+        numberParams.height = dpToPx(70);
+        numberParams.setMargins(30, 10, 10, 10);
+        numberParams.rowSpec = GridLayout.spec(row);
+        numberParams.columnSpec = GridLayout.spec(3);
+        numberParams.setGravity(Gravity.CENTER);
+        numberPicker.setLayoutParams(numberParams);
+        numberPicker.setWrapSelectorWheel(false);
 
-        // Precio del producto
-        TextView priceTextView = new TextView(getContext());
-        priceTextView.setText(price);
-        priceTextView.setGravity(Gravity.CENTER);
-        priceTextView.setLayoutParams(new GridLayout.LayoutParams());
-        gridLayout.addView(priceTextView, new GridLayout.LayoutParams(GridLayout.spec(row), GridLayout.spec(3)));
+        // Configurar el OnValueChangedListener
+        numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                priceTextView.setText("S/"+(String.format("%.2f", price*newVal)));
+
+                precioTotal -= price*oldVal;
+                precioTotal += price*newVal;
+
+                TextView txtTotal = vista.findViewById(R.id.carTxtTotal);
+                txtTotal.setText("S/"+String.format("%.2f", precioTotal));
+            }
+
+        });
+
+        precioTotal += price;
+        TextView txtTotal = vista.findViewById(R.id.carTxtTotal);
+        txtTotal.setText(Double.toString(precioTotal));
+        // Agregar al GridLayout
+        gridLayout.addView(numberPicker);
+
+        gridLayout.addView(priceTextView);
+
+        //Boton eliminar
+        ImageView deleteView = new ImageView(getContext());
+        deleteView.setImageResource(deleteResId);
+
+        // Ajustar el tamaño de la imagen
+        GridLayout.LayoutParams deleteParams = new GridLayout.LayoutParams();
+        deleteParams.width = dpToPx(30);
+        deleteParams.height = dpToPx(30);
+        deleteParams.setMargins(0, 10, 0, 10);
+        deleteView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        deleteParams.rowSpec = GridLayout.spec(row);
+        deleteParams.columnSpec = GridLayout.spec(0);
+        // Añadir la imagen al GridLayout
+        deleteParams.setGravity(Gravity.CENTER);
+        deleteView.setLayoutParams(deleteParams);
+
+        // Configurar el OnValueChangedListener
+        deleteView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                eliminarListaEnSharedPreferences(producto);
+                gridLayout.removeAllViews();
+                imprimirProductos();
+            }
+
+        });
+
+        gridLayout.addView(deleteView);
+
+
     }
 
     private int dpToPx(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
     }
+
+
 }

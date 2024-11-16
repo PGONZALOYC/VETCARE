@@ -119,78 +119,19 @@
             android:textColor="@color/titulo"
             android:layout_marginTop="40dp"
             />
-        <GridLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:columnCount="3"
-            android:rowCount="2"
-            android:layout_gravity="center_horizontal">
-
-            <LinearLayout
+        <android.widget.ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <GridLayout
+                android:id="@+id/contenedorMascotas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:columnCount="3"
+                android:rowCount="2"
+                android:layout_gravity="center_horizontal">
 
-                android:layout_marginEnd="16dp">
-
-                <ImageButton
-                    android:id="@+id/btnInfoMascota"
-                    android:layout_width="100dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/perro1_95x70"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="@string/perDescIconoMascota1"
-                    android:background="@color/fondoTransparente"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/perNombMascota1"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textAlignment="center" />
-            </LinearLayout>
-
-            <!-- Segunda imagen (centrada) -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"> <!-- Espaciado a los lados -->
-
-                <ImageButton
-                    android:id="@+id/btnInfoMascota2"
-                    android:layout_width="100dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/gato1_95x70"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="@string/perDescIconoMascota2"
-                    android:background="@color/fondoTransparente"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/perNombMascota2"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textAlignment="center" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <ImageButton
-                    android:id="@+id/btnAgregarMascota"
-                    android:layout_width="100dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/plus_mascota"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="@string/perDescIconoAgregar"
-                    android:background="@color/fondoTransparente"/>
-            </LinearLayout>
-
-        </GridLayout>
-
+            </GridLayout>
+        </android.widget.ScrollView>
         <LinearLayout
             android:id="@+id/exit_button"
             android:layout_width="wrap_content"

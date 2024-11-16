@@ -45,7 +45,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation("org.osmdroid:osmdroid-android:6.1.10")
     implementation("mysql:mysql-connector-java:5.1.49")
-    implementation ("com.google.code.gson:gson:2.8.9")
+    implementation ("com.google.code.gson:gson:2.10.1")
 
     //implementation ("com.google.android.gms:play-services-location:21.0.1")
 

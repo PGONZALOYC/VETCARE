@@ -115,8 +115,8 @@ public class Mascota {
     }
 
 
-    public List<Mascota> obtenerMascotasPorCorreo(String correo) {
-        List<Mascota> listaMascotas = new ArrayList<>();
+    public ArrayList<Mascota> obtenerMascotasPorCorreo(String correo) {
+        ArrayList<Mascota> listaMascotas = new ArrayList<>();
         Mascota mascota = null;
         try {
             String sql = "{CALL ObtenerMascotasPorUsuario(?)}";

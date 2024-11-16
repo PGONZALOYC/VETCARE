@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragmentos.CarritoProductosFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/closeButton"
+                android:layout_width="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="20dp"
+                android:contentDescription="@string/proDescIconoBuscar"
+                android:src="@drawable/icono_atras" />
+
+            <TextView
+                android:id="@+id/proLblCarrito"
+                android:layout_width="190dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/poppins_semibold"
+                android:text="@string/proLblCarrito"
+                android:textColor="@color/titulo"
+                android:textSize="35sp" />
+
+        </LinearLayout>
+        <android.widget.ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="665dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+        <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/contenedorEtiquetas"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnCount="5"
+            android:padding="16dp">
+        </GridLayout>
+        <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnCount="2"
+            android:rowCount="1"
+            android:padding="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:fontFamily="@font/poppins_semibold"
+                android:textColor="@color/titulo"
+                android:textSize="15dp"
+                android:layout_marginLeft ="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_margin="10dp" />
+
+            <TextView
+                android:id="@+id/carTxtTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="S/0.00"
+                android:gravity="right|center"
+                android:textStyle="bold"
+                android:fontFamily="@font/poppins_semibold"
+                android:textColor="@color/titulo"
+                android:textSize="15dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="180dp"
+                />
+        </GridLayout>
+            </LinearLayout>
+        </android.widget.ScrollView>
+    </LinearLayout>
+
+</FrameLayout>

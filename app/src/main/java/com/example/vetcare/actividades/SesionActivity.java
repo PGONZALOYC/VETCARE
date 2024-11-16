@@ -25,9 +25,16 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.vetcare.R;
 import com.example.vetcare.clases.Hash;
 
+import com.example.vetcare.modelo.Mascota;
+import com.example.vetcare.modelo.Producto;
 import com.example.vetcare.sqlite.Vetcare;
 import com.example.vetcare.modelo.Usuario;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 public class SesionActivity extends AppCompatActivity  implements View.OnClickListener {
@@ -233,6 +240,9 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     private void guardarCorreoEnSharedPreferences(int id_usuario, String nombre, String apellido, String telefono, String correo, String clave) {
         SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        Mascota mascotaDAO = new Mascota();
+        ArrayList<Mascota> listaMascotas = mascotaDAO.obtenerMascotasPorCorreo(correo);
+        insertarMascotasEnSharedPreferences(listaMascotas);
 
         if(!sharedPreferences.getBoolean("recuerda", false)){
             editor.putInt("id_usuario", id_usuario);
@@ -274,5 +284,18 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
+    }
+
+    public void insertarMascotasEnSharedPreferences(ArrayList<Mascota> lista) {
+        SharedPreferences sharedPreferences = getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Crear un objeto Gson con la configuración de @Expose
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String json = gson.toJson(lista);
+
+        // Guardar el JSON en SharedPreferences
+        editor.putString("listaMascotas", json);
+        editor.apply();
     }
 }

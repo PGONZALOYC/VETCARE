@@ -7,24 +7,25 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="750dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:orientation="vertical">
         <!-- Titulo - Fijado arriba -->
         <TextView
             android:id="@+id/reslblReservarT"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="35sp"
+            android:layout_height="50dp"
+            android:textSize="32sp"
             android:fontFamily="@font/poppins_semibold"
             android:text="@string/resLblReservaTitulo"
             android:textColor="@color/titulo"
             android:layout_marginTop="10dp"/>
 
+
         <!-- ScrollView para hacer el contenido desplazable -->
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="690dp"
             android:padding="16dp">
 
             <LinearLayout

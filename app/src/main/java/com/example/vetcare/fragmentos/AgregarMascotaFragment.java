@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.content.ContentResolver;
 
 import com.example.vetcare.R;
 import com.example.vetcare.clases.Menu;
@@ -32,6 +35,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Date;
 import java.util.ArrayList;
 
@@ -61,6 +69,7 @@ public class AgregarMascotaFragment extends Fragment {
     String raza="";
     int edadAnios=0;
     int edadMeses=0;
+    byte[] imgPerfil = new byte[10];
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -130,53 +139,79 @@ public class AgregarMascotaFragment extends Fragment {
         btnAgregarMascota.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(validarCampos()){
+                    new AgregarMascotaFragment.ConexionTask().execute();
 
-                new AgregarMascotaFragment.ConexionTask().execute();
+                    showLoadingDialog();
 
-                showLoadingDialog();
+                    // Ejecutar tareas en un hilo separado
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                freezeExecution();
 
-                // Ejecutar tareas en un hilo separado
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            freezeExecution();
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //CODIGO DESPUES DEL CONGELAMIENTO
+                                        if (conexionExitosa) {
+                                            Toast.makeText(getContext(), "Mascota registrada", Toast.LENGTH_SHORT).show();
+                                            Activity activity = getActivity();
+                                            ((Menu) activity).onClickMenu(4);
 
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //CODIGO DESPUES DEL CONGELAMIENTO
-                                    if (conexionExitosa) {
-                                        Toast.makeText(getContext(), "Mascota registrada", Toast.LENGTH_SHORT).show();
-                                        Activity activity = getActivity();
-                                        ((Menu) activity).onClickMenu(4);
-
-                                    }else{
-                                        Toast.makeText(getContext(), "Error al registrar mascota", Toast.LENGTH_SHORT).show();
+                                        }else{
+                                            Toast.makeText(getContext(), "Error al registrar mascota", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
-                                }
-                            });
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                                });
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                }).start();
+                    }).start();
+                }
+
             }
         });
         return vista;
     }
 
+    private boolean validarCampos() {
+        // Validar que los campos no estén vacíos
+        if (edtNombre.getText().toString().isEmpty()) {
+            edtNombre.setError("Este campo es obligatorio");
+            return false;
+        }
+        if (edtEdadAnios.getText().toString().isEmpty()) {
+            edtEdadAnios.setError("Este campo es obligatorio");
+            return false;
+        }
+        if (edtEdadMeses.getText().toString().isEmpty()) {
+            edtEdadMeses.setError("Este campo es obligatorio");
+            return false;
+        }
+        if (spinnerTipoMascota.getSelectedItemPosition() == 0) {
+            mostrarToast("Por favor seleccione un tipo de mascota.");
+            return false;
+        }
+        if (spinnerRazaMascota.getSelectedItemPosition() == 0) {
+            mostrarToast("Por favor seleccione una raza.");
+            return false;
+        }
+        return true;
+    }
+
+    // Método para mostrar el diálogo de selección de imagen
     private void showImageSelectionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Seleccionar foto")
-                .setItems(new CharSequence[] {"Seleccionar de Galería", "Tomar Foto con Cámara"}, (dialog, which) -> {
+                .setItems(new CharSequence[]{"Seleccionar de Galería", "Tomar Foto con Cámara"}, (dialog, which) -> {
                     switch (which) {
                         case 0:
-                            // Opción 1: Seleccionar desde la galería
                             openGallery();
                             break;
                         case 1:
-                            // Opción 2: Tomar foto con la cámara
                             openCamera();
                             break;
                     }
@@ -184,11 +219,13 @@ public class AgregarMascotaFragment extends Fragment {
                 .show();
     }
 
+    // Método para abrir la cámara
     private void openCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, CAPTURE_IMAGE_REQUEST);
     }
 
+    // Método para abrir la galería
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
@@ -201,20 +238,55 @@ public class AgregarMascotaFragment extends Fragment {
 
         if (resultCode == getActivity().RESULT_OK) {
             if (requestCode == PICK_IMAGE_REQUEST && data != null && data.getData() != null) {
-                // Si es desde la galería
+                // Manejo de la imagen seleccionada de la galería
                 imageUri = data.getData();
-                // Puedes cargar la imagen en un ImageView, por ejemplo:
-                btnSubirImagen.setImageURI(imageUri);
-            } else if (requestCode == CAPTURE_IMAGE_REQUEST && data != null) {
-                // Si es desde la cámara
-                imageUri = data.getData();
-                // Puedes cargar la imagen en un ImageView, por ejemplo:
-                btnSubirImagen.setImageURI(imageUri);
+                btnSubirImagen.setImageURI(imageUri);  // Mostrar la imagen seleccionada
+            } else if (requestCode == CAPTURE_IMAGE_REQUEST) {
+                // Verificar si la imagen fue capturada correctamente
+                if (data != null && data.getExtras() != null) {
+                    Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    if (photo != null) {
+                        // Si tienes una imagen, convierte el Bitmap en URI y actualiza el ImageButton
+                        imageUri = getImageUriFromBitmap(photo);  // Convierte el Bitmap en una URI válida
+                        btnSubirImagen.setImageURI(imageUri);  // Muestra la imagen en el ImageButton
+                    }
+                } else {
+                    // Si la imagen no se captura correctamente, muestra un mensaje
+                    mostrarToast("No se pudo capturar la imagen.");
+                }
             }
         } else {
-            Toast.makeText(getContext(), "No se seleccionó ninguna imagen", Toast.LENGTH_SHORT).show();
+            mostrarToast("No se seleccionó ninguna imagen");
         }
     }
+
+    // Método para convertir el Bitmap en una URI válida
+    private Uri getImageUriFromBitmap(Bitmap bitmap) {
+        // Guardar la imagen capturada en un archivo temporal
+        File file = new File(getContext().getCacheDir(), "captured_image.jpg");
+        try (FileOutputStream out = new FileOutputStream(file)) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            return Uri.fromFile(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public byte[] convertirImagenABlobs(Uri uri) {
+        try {
+            // Abre el archivo de la imagen
+            InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
 
 
@@ -230,7 +302,7 @@ public class AgregarMascotaFragment extends Fragment {
 //
 //    }
     private void llenarTipoMascota() {
-        String[] tipos = {"Seleccione el tipo de mascota", "Perro", "Gato"};
+        String[] tipos = {"Tipo de mascota", "Perro", "Gato"};
         ArrayAdapter<String> adapterTipo = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, tipos);
         spinnerTipoMascota.setAdapter(adapterTipo);
 
@@ -256,13 +328,13 @@ public class AgregarMascotaFragment extends Fragment {
         // Definir las razas según el tipo de mascota
         switch (tipoSeleccionado) {
             case "Perro":
-                razas = new String[]{"Seleccione la raza", "Labrador", "Bulldog", "Poodle", "Pastor Alemán", "Golden Retriever"};
+                razas = new String[]{"Raza", "Labrador", "Bulldog", "Poodle", "Pastor Alemán", "Golden Retriever"};
                 break;
             case "Gato":
-                razas = new String[]{"Seleccione la raza", "Siames", "Persa", "Maine Coon", "Bengalí", "Ragdoll"};
+                razas = new String[]{"Raza", "Siames", "Persa", "Maine Coon", "Bengalí", "Ragdoll"};
                 break;
             default:
-                razas = new String[]{"Seleccione la raza"};
+                razas = new String[]{"Raza"};
                 break;
         }
 
@@ -286,8 +358,8 @@ public class AgregarMascotaFragment extends Fragment {
             raza= spinnerRazaMascota.getSelectedItem().toString();
             edadAnios = Integer.parseInt(edtEdadAnios.getText().toString());
             edadMeses = Integer.parseInt(edtEdadMeses.getText().toString());
-
-            if(mascotaDAO.agregarMascota(sharedPreferences.getInt("id_usuario", -1), edtNombre.getText().toString(), tipo, raza, fechaNacimiento,null,edadAnios,edadMeses)){
+            imgPerfil = convertirImagenABlobs(imageUri);
+            if(mascotaDAO.agregarMascota(sharedPreferences.getInt("id_usuario", -1), edtNombre.getText().toString(), tipo, raza, fechaNacimiento,imgPerfil,edadAnios,edadMeses)){
                 insertarMascotasEnSharedPreferences(mascotaDAO.obtenerMascotasPorCorreo(sharedPreferences.getString("correo", null)));
                 cnx = 1;
             }

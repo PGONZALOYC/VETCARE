@@ -175,31 +175,31 @@ public class Mascota {
         }
         return mascota;
     }
-
     public boolean agregarMascota(int idUsuario, String nombre, String tipo, String raza, Date fechaNacimiento, byte[] imagen, int edadAño, int edadMeses) {
         boolean exito = false;
         try {
-            // Llama al procedimiento almacenado
             String sql = "{CALL AgregarMascota(?, ?, ?, ?, ?, ?, ?, ?)}";
-            try (CallableStatement statement = connection.prepareCall(sql)) {
-                // Configura los parámetros
-                statement.setInt(1, idUsuario);                // id_Usuario
-                statement.setString(2, nombre);                 // Nombre
-                statement.setString(3, tipo);                   // Tipo
-                statement.setString(4, raza);                   // Raza
-                statement.setDate(5, new java.sql.Date(fechaNacimiento.getTime())); // FechaNacimiento
-                statement.setBytes(6, imagen);                  // Imagen (en bytes)
-                statement.setInt(7, edadAño);                   // EdadAño
-                statement.setInt(8, edadMeses);                 // EdadMeses
+            CallableStatement statement = connection.prepareCall(sql);
 
-                // Ejecuta la inserción
-                int filasInsertadas = statement.executeUpdate();
-                exito = filasInsertadas > 0; // True si se insertó al menos una fila
+            // Establecer los valores de los parámetros en el statement
+            statement.setInt(1, idUsuario);
+            statement.setString(2, nombre);
+            statement.setString(3, tipo);
+            statement.setString(4, raza);
+            statement.setDate(5, new java.sql.Date(fechaNacimiento.getTime()));
+            statement.setBytes(6, imagen);
+            statement.setInt(7, edadAño);
+            statement.setInt(8, edadMeses);
+
+            // Ejecutar la inserción
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                exito = true; // Si se insertó correctamente
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return exito; // Retorna si la inserción fue exitosa
+        return exito;
     }
 
 }

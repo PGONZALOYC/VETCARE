@@ -150,6 +150,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
                             //CODIGO DESPUES DEL CONGELAMIENTO
                             // Llenar los spinners estáticos
                             if(conexionExitosa){
+                                limitarCalendario();
                                 llenarServicios();
                                 llenarSede();
                                 llenarHoras();
@@ -171,6 +172,35 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View view) {
 
+    }
+
+    private void limitarCalendario() {
+        Date now = new Date(); // Fecha y hora actuales
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        sdf.setTimeZone(TimeZone.getTimeZone("America/Lima")); // Zona horaria de Perú
+
+        try {
+            // Convertir la fecha actual en milisegundos
+            String today = sdf.format(now);
+            Date parsedDate = sdf.parse(today);
+            if (parsedDate != null) {
+                calendReserva.setMinDate(parsedDate.getTime());
+            }
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(now);
+            calendar.add(Calendar.DAY_OF_MONTH, 7); // Añade un día
+            String unaSemanaDespues = sdf.format(calendar.getTime());
+            Date parsedDate2 = sdf.parse(unaSemanaDespues);
+            if (parsedDate2 != null) {
+                mostrarToast(unaSemanaDespues);
+                calendReserva.setMaxDate(parsedDate2.getTime());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean servicioRequiereVeterinario(String servicio) {

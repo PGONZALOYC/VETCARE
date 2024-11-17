@@ -159,7 +159,6 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             //bienvenida.putExtra("nombre", "Dinamita");
             SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            Toast.makeText(this, listaMascotas.get(8).getNombre(), Toast.LENGTH_SHORT).show();
             insertarMascotasEnSharedPreferences();
 
             if(chkRecordar.isChecked()){

@@ -46,6 +46,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     boolean conexionExitosa = false;
     private static Toast toastActual;
     private ProgressDialog progressDialog;
+    List<Mascota> listaMascotas;
 
 
 
@@ -127,6 +128,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
                             public void run() {
                                 //CODIGO DESPUES DEL CONGELAMIENTO
                                 iniciarSesion();
+
                             }
                         });
                     } catch (InterruptedException e) {
@@ -150,10 +152,6 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     }
 
     private void iniciarSesion() {
-        //Se creo la BD
-        //objeto de la BD
-        Vetcare vt = new Vetcare(getApplicationContext());
-
         // Validar credenciales en base de datos o lógica específica
         if (conexionExitosa) {
             //Intent bienvenida = new Intent(this, ReservaCitaActivity.class);
@@ -161,6 +159,8 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             //bienvenida.putExtra("nombre", "Dinamita");
             SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
+            Toast.makeText(this, listaMascotas.get(8).getNombre(), Toast.LENGTH_SHORT).show();
+            insertarMascotasEnSharedPreferences();
 
             if(chkRecordar.isChecked()){
                 editor.putString("correo", txtCorreo.getText().toString());
@@ -214,13 +214,14 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             } else{
                 txtClav = txtClave.getText().toString();
             }
-
+            Usuario user = usuarioDAO.obtenerInformacionUsuario(txtCorr);
+            guardarCorreoEnSharedPreferences(user.getId_Usuario(), user.getNombres(), user.getApellidos(), user.getTelefono(), user.getCorreo(), user.getContraseña());
 
             //Cifrar la clave
             txtClav = hash.StringToHash(txtClav,"SHA256").toLowerCase();
-            if(usuarioDAO.loginUsuario(txtCorr, txtClav)){
-                guardarCorreoEnSharedPreferences(usuarioDAO.obtenerInformacionUsuario(txtCorr).getId_Usuario(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getNombres(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getApellidos(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getTelefono(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getCorreo(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getContraseña());
+            if(usuarioDAO.loginUsuario(txtCorr, txtClav) && listaMascotas!=null){
                 cnx = 1;
+
             }
             return cnx;
 
@@ -242,8 +243,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Mascota mascotaDAO = new Mascota();
-        ArrayList<Mascota> listaMascotas = mascotaDAO.obtenerMascotasPorCorreo(correo);
-        insertarMascotasEnSharedPreferences(listaMascotas);
+        listaMascotas = mascotaDAO.obtenerMascotasPorCorreo(correo);
 
         if(!sharedPreferences.getBoolean("recuerda", false)){
             editor.putInt("id_usuario", id_usuario);
@@ -287,18 +287,19 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         }
     }
 
-    public void insertarMascotasEnSharedPreferences(ArrayList<Mascota> lista) {
+    public void insertarMascotasEnSharedPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences("Sistema", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         // Crear un objeto Gson con la configuración de @Expose
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        String json = gson.toJson(lista);
+        String json = gson.toJson(listaMascotas);
 
         // Guardar el JSON en SharedPreferences
         editor.putString("listaMascotas", json);
         editor.apply();
     }
+
     private void redirigirSOS(){
         //nunmero de la veterinaria
         String numVetCare= "tel:928270448";

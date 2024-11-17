@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -70,6 +71,7 @@ public class AgregarMascotaFragment extends Fragment {
     int edadAnios=0;
     int edadMeses=0;
     byte[] imgPerfil = new byte[10];
+    List<Mascota> listaMascotas;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -360,7 +362,8 @@ public class AgregarMascotaFragment extends Fragment {
             edadMeses = Integer.parseInt(edtEdadMeses.getText().toString());
             imgPerfil = convertirImagenABlobs(imageUri);
             if(mascotaDAO.agregarMascota(sharedPreferences.getInt("id_usuario", -1), edtNombre.getText().toString(), tipo, raza, fechaNacimiento,imgPerfil,edadAnios,edadMeses)){
-                insertarMascotasEnSharedPreferences(mascotaDAO.obtenerMascotasPorCorreo(sharedPreferences.getString("correo", null)));
+                listaMascotas = mascotaDAO.obtenerMascotasPorCorreo(sharedPreferences.getString("correo", null));
+                insertarMascotasEnSharedPreferences();
                 cnx = 1;
             }
             return cnx;
@@ -381,13 +384,13 @@ public class AgregarMascotaFragment extends Fragment {
 
     }
 
-    public void insertarMascotasEnSharedPreferences(ArrayList<Mascota> lista) {
+    public void insertarMascotasEnSharedPreferences() {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         // Crear un objeto Gson con la configuración de @Expose
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        String json = gson.toJson(lista);
+        String json = gson.toJson(listaMascotas);
 
         // Guardar el JSON en SharedPreferences
         editor.putString("listaMascotas", json);

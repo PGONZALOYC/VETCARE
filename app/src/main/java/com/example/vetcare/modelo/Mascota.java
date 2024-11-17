@@ -1,7 +1,9 @@
 package com.example.vetcare.modelo;
 
 import com.example.vetcare.clases.MySQLConnector;
+import com.google.gson.annotations.Expose;
 
+import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
@@ -11,14 +13,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Mascota {
+    @Expose(serialize = false)
     private Connection connection;
+    @Expose
     private int id_Mascota;
+    @Expose
     private String nombre;
+    @Expose
     private String tipo;
+    @Expose
     private String raza;
+    @Expose
     private Date fechaNacimiento;
+    @Expose
     private byte[] imagen;
+    @Expose
     private int edadAño;
+    @Expose
     private int edadMeses;
 
     public Mascota() {
@@ -115,15 +126,14 @@ public class Mascota {
     }
 
 
-    public ArrayList<Mascota> obtenerMascotasPorCorreo(String correo) {
-        ArrayList<Mascota> listaMascotas = new ArrayList<>();
+    public List<Mascota> obtenerMascotasPorCorreo(String correo) {
+        List<Mascota> listaMascotas = new ArrayList<>();
         Mascota mascota = null;
         try {
             String sql = "{CALL ObtenerMascotasPorUsuario(?)}";
 
             try (CallableStatement statement = connection.prepareCall(sql)) {
                 statement.setString(1, correo);
-
                 try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
                         mascota = new Mascota();
@@ -132,10 +142,12 @@ public class Mascota {
                         mascota.setTipo(resultSet.getString("Tipo"));
                         mascota.setRaza(resultSet.getString("Raza"));
                         mascota.setFechaNacimiento(resultSet.getDate("FechaNacimiento"));
-                        mascota.setImagen(resultSet.getBytes("imagen"));
+                        Blob blob = resultSet.getBlob("Imagen");
+                        if(blob!=null){
+                            mascota.setImagen(blob.getBytes(1, (int) blob.length()));
+                        }
                         mascota.setEdadAño(resultSet.getInt("EdadAño"));
                         mascota.setEdadMeses(resultSet.getInt("EdadMeses"));
-
                         listaMascotas.add(mascota);
                     }
                 }
@@ -187,7 +199,9 @@ public class Mascota {
             statement.setString(3, tipo);
             statement.setString(4, raza);
             statement.setDate(5, new java.sql.Date(fechaNacimiento.getTime()));
-            statement.setBytes(6, imagen);
+            Blob blob = connection.createBlob();
+            blob.setBytes(1, imagen);
+            statement.setBlob(6, blob);
             statement.setInt(7, edadAño);
             statement.setInt(8, edadMeses);
 

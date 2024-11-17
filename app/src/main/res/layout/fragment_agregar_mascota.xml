@@ -106,7 +106,18 @@
             android:contentDescription="@string/agremascImgMascota"
             android:src="@drawable/user_mascota"
             android:layout_marginBottom="10dp"/>
-        
+
+        <Button
+            android:id="@+id/agremascBtnSubirImagen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/agremascBtnSelecImg"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/btnSecundario"
+            android:fontFamily="@font/poppins_medium"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="80dp"/>
+
         <Button
             android:id="@+id/agremascBtnAgregarMascota"
             android:layout_width="match_parent"

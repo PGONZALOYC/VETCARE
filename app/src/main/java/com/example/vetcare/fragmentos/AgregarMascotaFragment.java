@@ -133,7 +133,6 @@ public class AgregarMascotaFragment extends Fragment {
         //btnSubirImagen = vista.findViewById(R.id.agremascBtnSubirImagen);
         btnAgregarMascota = vista.findViewById(R.id.agremascBtnAgregarMascota);
         llenarTipoMascota();
-        llenarTipoMascota();
         // Obtener el correo del usuario desde SharedPreferences
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
 

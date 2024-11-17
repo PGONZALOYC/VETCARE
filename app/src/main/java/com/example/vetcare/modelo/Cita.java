@@ -1,36 +1,86 @@
 package com.example.vetcare.modelo;
 
+import com.example.vetcare.clases.MySQLConnector;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date; // Asegúrate de importar la clase Date para manejar fechas
+import java.util.ArrayList;
 
 public class Cita {
     private Connection connection;
     private int idCita;
     private int idUsuario;
     private int idMascota;
+    private int idSede;
     private String servicio;
     private int idVeterinario;
-    private String horaCita;
     private String sede;
     private String estado;
+    private String horaInicio;
+    private String horaFinal;
     private Date fecha;
 
     // Constructor vacío
-    public Cita() {}
+    public Cita() {
+        try {
+            MySQLConnector conexion = new MySQLConnector();
+            connection = conexion.conecta();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     // Constructor con parámetros, incluyendo la fecha
-    public Cita(int idCita, int idUsuario, Date fecha, int idMascota, String servicio, int idVeterinario, String horaCita, String sede, String estado) {
+
+
+    public Cita(Connection connection, int idCita, int idUsuario, int idMascota, int idSede, String servicio, int idVeterinario, String sede, String estado, String horaInicio, String horaFinal, Date fecha) {
+        this.connection = connection;
         this.idCita = idCita;
         this.idUsuario = idUsuario;
-        this.fecha = fecha;
         this.idMascota = idMascota;
+        this.idSede = idSede;
         this.servicio = servicio;
         this.idVeterinario = idVeterinario;
-        this.horaCita = horaCita;
         this.sede = sede;
         this.estado = estado;
+        this.horaInicio = horaInicio;
+        this.horaFinal = horaFinal;
+        this.fecha = fecha;
+    }
+
+    public String getHoraInicio() {
+        return horaInicio;
+    }
+
+    public void setHoraInicio(String horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+
+    public String getHoraFinal() {
+        return horaFinal;
+    }
+
+    public void setHoraFinal(String horaFinal) {
+        this.horaFinal = horaFinal;
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+
+    public int getIdSede() {
+        return idSede;
+    }
+
+    public void setIdSede(int idSede) {
+        this.idSede = idSede;
     }
 
     // Getters y setters
@@ -74,14 +124,6 @@ public class Cita {
         this.idVeterinario = idVeterinario;
     }
 
-    public String getHoraCita() {
-        return horaCita;
-    }
-
-    public void setHoraCita(String horaCita) {
-        this.horaCita = horaCita;
-    }
-
     public String getSede() {
         return sede;
     }
@@ -106,41 +148,35 @@ public class Cita {
         this.fecha = fecha; // Setter para la fecha
     }
 
-    // Método para crear una cita, ahora con la fecha
-    public boolean crearCita() {
-        boolean exito = false;
-        CallableStatement stmt = null;
 
+    public ArrayList<Cita> obtenerCitas(){
+        ArrayList<Cita> listaCitas = new ArrayList<>();
+        Cita cita = null;
         try {
-            // Preparar el llamado al procedimiento almacenado CrearCita
-            stmt = connection.prepareCall("{CALL CrearCita(?, ?, ?, ?, ?, ?, ?, ?)}");
+            String sql = "{CALL obtenerCitas()}";
 
-            // Asignar los valores a los parámetros
-            stmt.setInt(1, this.idUsuario);
-            stmt.setDate(2, this.fecha);
-            stmt.setInt(3, this.idMascota);
-            stmt.setString(4, this.servicio);
-            stmt.setInt(5, this.idVeterinario);
-            stmt.setString(6, this.horaCita);
-            stmt.setString(7, this.sede);
-            stmt.setString(8, this.estado);
-
-            // Ejecutar el procedimiento
-            stmt.executeUpdate();
-
-            exito = true; // Si no hay excepciones, la cita se creó exitosamente
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            // Asegúrate de cerrar los recursos
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+            try (CallableStatement statement = connection.prepareCall(sql)) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        cita = new Cita();
+                        cita.setIdCita(resultSet.getInt("id_Cita"));
+                        cita.setIdCita(resultSet.getInt("id_Usuario"));
+                        cita.setFecha(resultSet.getDate("Fecha"));
+                        cita.setIdMascota(resultSet.getInt("id_Mascota"));
+                        cita.setServicio(resultSet.getString("Servicio"));
+                        cita.setIdVeterinario(resultSet.getInt("id_Veterinario"));
+                        cita.setServicio(resultSet.getString("Estado"));
+                        cita.setIdSede(resultSet.getInt("id_Sede"));
+                        cita.setHoraInicio(resultSet.getString("horaInicio"));
+                        cita.setHoraFinal(resultSet.getString("horaFinal"));
+                        listaCitas.add(cita);
+                    }
                 }
             }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return exito;
+        return listaCitas;
     }
 }

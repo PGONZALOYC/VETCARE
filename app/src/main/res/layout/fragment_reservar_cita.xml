@@ -74,25 +74,6 @@
                     android:minHeight="48dp"
                     android:layout_marginBottom="5dp"/>
 
-                <!-- Veterinario (APARECE SOLO SI EL SERVICIO LO REQUIERE) -->
-                <TextView
-                    android:id="@+id/lblReservarVeterinario"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="@string/resLblReservarVeterinario"
-                    tools:ignore="TextSizeCheck"
-                    android:visibility="gone"/>
-                <Spinner
-                    android:id="@+id/resCboReservaVeterinario"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:layout_marginBottom="5dp"
-                    android:visibility="gone"/>
-
-
 
                 <!-- Sede -->
                 <TextView
@@ -109,29 +90,29 @@
                     android:minHeight="48dp"
                     android:layout_marginBottom="5dp" />
 
-                <!-- Hora -->
+                <!-- Vet -->
                 <TextView
                     android:id="@+id/resLblReservarVeterinario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
                     android:fontFamily="@font/poppins_semibold"
-                    android:text="@string/resLblReservarHora" />
+                    android:text="@string/resLblReservarVeterinario" />
                 <Spinner
-                    android:id="@+id/resCboReservarVeterinario"
+                    android:id="@+id/resCboReservaVeterinario"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:minHeight="48dp"
                     android:layout_marginBottom="5dp"/>
 
-                <!-- Veterinario -->
+                <!-- Hora -->
                 <TextView
-                    android:id="@+id/resLblReservarHora"
+                    android:id="@+id/reslblReservarHora"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
                     android:fontFamily="@font/poppins_semibold"
-                    android:text="@string/resLblReservarVeterinario" />
+                    android:text="@string/resLblReservarHora" />
                 <Spinner
                     android:id="@+id/resCboReservaHora"
                     android:layout_width="250dp"

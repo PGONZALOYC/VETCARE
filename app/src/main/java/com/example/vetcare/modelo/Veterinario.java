@@ -75,8 +75,8 @@ public class Veterinario {
         this.codigoColegiatura = codigoColegiatura;
     }
 
-    public List<Veterinario> obtenerVeterinarios() {
-        List<Veterinario> listaVeterinarios = new ArrayList<>();
+    public ArrayList<Veterinario> obtenerVeterinarios() {
+        ArrayList<Veterinario> listaVeterinarios = new ArrayList<>();
         Veterinario veterinario= null;
         try{
             String sql = "{CALL obtenerVeterinarios()}";

@@ -21,7 +21,9 @@ import android.widget.Toast;
 
 import com.example.vetcare.R;
 import com.example.vetcare.modelo.Cita;
+import com.example.vetcare.modelo.Horario;
 import com.example.vetcare.modelo.Mascota;
+import com.example.vetcare.modelo.Sede;
 import com.example.vetcare.modelo.Usuario;
 import com.example.vetcare.modelo.Veterinario;
 
@@ -47,7 +49,10 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
 
     Usuario usuarioPerfil;
     List<Mascota> mascotasPerfil;
-    List<Veterinario> veterinariosList;
+    ArrayList<Veterinario> veterinariosList;
+    ArrayList<Horario> horariosList;
+    ArrayList<Sede> sedesList;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -101,7 +106,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
         cboReservaHora = view.findViewById(R.id.resCboReservaHora);
         cboReservaSede = view.findViewById(R.id.resCboReservaSede);
         btnReservarCita = view.findViewById(R.id.resBtnReservarCita);
-        lblVeterinario= view.findViewById(R.id.lblReservarVeterinario);
+        lblVeterinario= view.findViewById(R.id.resLblReservarVeterinario);
         cboReservaVeterinario =view.findViewById(R.id.resCboReservaVeterinario);
         btnReservarCita.setOnClickListener(this);
 
@@ -136,7 +141,13 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
                         @Override
                         public void run() {
                             //CODIGO DESPUES DEL CONGELAMIENTO
-
+                            // Llenar los spinners estáticos
+                            if(conexionExitosa){
+                                llenarServicios();
+                                llenarSede();
+                                llenarVeterinario();
+                                llenarHoras();
+                            }
                         }
                     });
                 } catch (InterruptedException e) {
@@ -145,10 +156,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             }
         }).start();
 
-        // Llenar los spinners estáticos
-        llenarServicios();
-        llenarHora();
-        llenarSede();
+
 
         return view;
     }
@@ -157,14 +165,6 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
     public void onClick(View view) {
 
     }
-
-
-
-
-
-
-
-
 
     private boolean servicioRequiereVeterinario(String servicio) {
         return servicio.equals("Consulta Médica") || servicio.equals("Castración") || servicio.equals("Desparasitación");
@@ -185,23 +185,33 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
         cboReservaServicio.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, servicios));
     }
 
-    private void llenarHora() {
-        List<String> horas = new ArrayList<>();
-        horas.add("--Seleccione Hora--");
+    private void llenarHoras() {
+        ArrayList<String> stringHorarios = new ArrayList<>();
 
-        for (int hora = 9; hora <= 18; hora++) {
-            String horaStr = (hora < 10) ? "0" + hora : String.valueOf(hora);
-            horas.add(horaStr + ":00");
-            if (hora != 18) { // Agregar solo hasta las 16:30
-                horas.add(horaStr + ":30");
+        for (Horario h : horariosList) {
+            if(h.isDisponible()){
+                stringHorarios.add(h.getHoraInicio()+"-"+h.getHoraFinal());
             }
         }
-        cboReservaHora.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, horas));
+        cboReservaHora.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, stringHorarios));
+    }
+
+    private void llenarVeterinario() {
+        ArrayList<String> nombresVeterinarios = new ArrayList<>();
+
+        for (Veterinario vet : veterinariosList) {
+            nombresVeterinarios.add(vet.getNombre());
+        }
+        cboReservaVeterinario.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, nombresVeterinarios));
     }
 
     private void llenarSede() {
-        String[] sedes = {"--Seleccione Sede--", "San Juan de Lurigancho", "Breña", "Chorrillos", "Los Olivos"};
-        cboReservaSede.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, sedes));
+        ArrayList<String> nombresSedes = new ArrayList<>();
+
+        for (Sede sede : sedesList) {
+            nombresSedes.add(sede.getNombre());
+        }
+        cboReservaSede.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, nombresSedes));
     }
 
     // Clase interna para ejecutar la prueba de conexión en un hilo de fondo
@@ -212,6 +222,9 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             Usuario usuario = new Usuario();
             Mascota mascota = new Mascota();
             Veterinario veterinario= new Veterinario();
+            Horario horario = new Horario();
+            Sede sede = new Sede();
+
             int cnx = 0;
             // Obtener el correo del usuario desde SharedPreferences
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
@@ -220,7 +233,9 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             usuarioPerfil = usuario.obtenerInformacionUsuario(correo);
             mascotasPerfil = mascota.obtenerMascotasPorCorreo(correo);
             veterinariosList= veterinario.obtenerVeterinarios();
-            if(usuario != null && mascota != null){
+            horariosList= horario.obtenerHorarios();
+            sedesList= sede.obtenerSedes();
+            if(usuarioPerfil != null && mascotasPerfil != null && veterinariosList != null && horariosList != null && sedesList != null){
                 cnx = 1;
             }
             return cnx;
@@ -232,7 +247,6 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
                 hideLoadingDialog();
                 conexionExitosa = true;
                 llenarMascotas(mascotasPerfil);
-                llenarVeterinarios(veterinariosList);
             } else{
                 hideLoadingDialog();
                 mostrarToast("Error: Conexion fallida");
@@ -251,20 +265,6 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
         // Configurar el adapter del Spinner con la lista de nombres de mascotas
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, nombresMascotas);
         cboReservaMascota.setAdapter(adapter);
-    }
-
-
-    // Método para llenar el Spinner de mascotas con la lista de Veterinarios
-    private void llenarVeterinarios(List<Veterinario> veterinariosList) {
-        List<String> nombresVeterinarios = new ArrayList<>();
-        nombresVeterinarios.add("--Seleccione Veterinario--"); // Opción predeterminada
-
-        for (Veterinario veterinario : veterinariosList) {
-            nombresVeterinarios.add(veterinario.getNombre() +" "+ veterinario.getApellidos()); // Obtener el nombre de cada Veterinario
-        }
-        // Configurar el adapter del Spinner con la lista de nombres de mascotas
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, nombresVeterinarios);
-        cboReservaVeterinario.setAdapter(adapter);
     }
 
     //METODOS IMPLEMENTADOS PARA LA CARGA DESDE LA BASE DE DATOS

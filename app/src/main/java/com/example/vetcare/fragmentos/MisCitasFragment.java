@@ -13,13 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vetcare.R;
 import com.example.vetcare.modelo.Cita;
-import com.example.vetcare.modelo.Mascota;
 import com.example.vetcare.modelo.Sede;
 import com.example.vetcare.modelo.Usuario;
 import com.example.vetcare.modelo.Veterinario;
@@ -40,6 +38,8 @@ public class MisCitasFragment extends Fragment {
     private Toast toastActual;
 
     ArrayList<Cita> citasList;
+    ArrayList<Veterinario> veterinariosList;
+    ArrayList<Sede> sedesList;
     Usuario usuarioPerfil;
 
 
@@ -127,7 +127,8 @@ public class MisCitasFragment extends Fragment {
             //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
             Usuario usuario = new Usuario();
             Cita cita = new Cita();
-
+            Veterinario vet= new Veterinario();
+            Sede sede= new Sede();
             int cnx = 0;
             // Obtener el correo del usuario desde SharedPreferences
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
@@ -135,15 +136,16 @@ public class MisCitasFragment extends Fragment {
             //Almacenar todas las variables necesarias antes del cnx 1
             usuarioPerfil = usuario.obtenerInformacionUsuario(correo);
             citasList = cita.obtenerCitasPorCorreo(usuarioPerfil.getCorreo());
-
-            if (usuarioPerfil != null && citasList != null) {
+            veterinariosList= vet.obtenerVeterinarios();
+            sedesList= sede.obtenerSedes();
+            if (usuarioPerfil != null && citasList != null && veterinariosList != null&& sedesList != null) {
                 cnx = 1;
                 // Mostrar las citas en el Log
                 for (Cita c : citasList) {
                     Log.d("Cita", "ID Cita: " + c.getIdCita() +
                             ", Fecha: " + c.getFecha() +
                             ", Servicio: " + c.getServicio() +
-                            ", Veterinario ID: " + c.getIdVeterinario() +
+                            ", Veterinario: " + c.getIdVeterinario() +
                             ", Estado: " + c.getEstado() +
                             ", Sede ID: " + c.getIdSede());
                 }
@@ -156,7 +158,6 @@ public class MisCitasFragment extends Fragment {
             if (result == 1) {
                 hideLoadingDialog();
                 conexionExitosa = true;
-
             } else {
                 hideLoadingDialog();
                 mostrarToast("Error: Conexion fallida");

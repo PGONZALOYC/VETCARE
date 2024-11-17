@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,18 +19,22 @@ import android.widget.CalendarView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import com.example.vetcare.R;
 import com.example.vetcare.modelo.Cita;
-import com.example.vetcare.modelo.Horario;
 import com.example.vetcare.modelo.Mascota;
 import com.example.vetcare.modelo.Sede;
 import com.example.vetcare.modelo.Usuario;
 import com.example.vetcare.modelo.Veterinario;
 
-import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,7 +55,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
     Usuario usuarioPerfil;
     List<Mascota> mascotasPerfil;
     ArrayList<Veterinario> veterinariosList;
-    ArrayList<Horario> horariosList;
+    ArrayList<Cita> citasList;
     ArrayList<Sede> sedesList;
 
 
@@ -120,6 +125,8 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
                 } else {
                     mostrarSpinnerVeterinario(false);
                 }
+                llenarVeterinario();
+                llenarHoras();
             }
 
             @Override
@@ -145,8 +152,8 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
                             if(conexionExitosa){
                                 llenarServicios();
                                 llenarSede();
-                                llenarVeterinario();
                                 llenarHoras();
+                                llenarVeterinario();
                             }
                         }
                     });
@@ -186,23 +193,105 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
     }
 
     private void llenarHoras() {
-        ArrayList<String> stringHorarios = new ArrayList<>();
+        ArrayList<String> horarios = new ArrayList<>();
+        if(cboReservaVeterinario.getVisibility()==View.VISIBLE && cboReservaVeterinario.getSelectedItem()!=null){
+            Collections.addAll(horarios,"9:00-10:30", "10:30-12:00", "12:00-13:30", "14:00-15:30", "15:30-17:00", "17:00-18:30");
+            String formattedDate;
+            Date now = new Date(); // Fecha y hora actuales
 
-        for (Horario h : horariosList) {
-            if(h.isDisponible()){
-                stringHorarios.add(h.getHoraInicio()+"-"+h.getHoraFinal());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setTimeZone(TimeZone.getTimeZone("America/Lima")); // Zona horaria de Perú
+
+            String today = sdf.format(now);
+            int id_vetSeleccionado = -1;
+            for (Cita c : citasList) {
+                for (int i = 0; i < veterinariosList.size(); i++){
+                    if(cboReservaVeterinario.getSelectedItem() != null){
+                        if(cboReservaVeterinario.getSelectedItem().toString() == veterinariosList.get(i).getNombre()){
+                            id_vetSeleccionado = veterinariosList.get(i).getId_Veterinario();
+                            break;
+                        }
+                    }
+
+                }
+                if(id_vetSeleccionado == c.getIdVeterinario()){
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(c.getFecha());
+                    calendar.add(Calendar.DAY_OF_MONTH, 1); // Añade un día
+
+                    // Obtener la nueva fecha con un día añadido
+                    formattedDate = sdf.format(calendar.getTime());
+
+                    if(formattedDate.equals(today)){
+                        switch (c.getHoraInicio()){
+                            case "9:00":
+                                if(horarios.contains("9:00-10:30")){
+                                    horarios.remove("9:00-10:30");
+                                }
+                                break;
+                            case "10:30":
+                                if(horarios.contains("10:30-12:00")){
+                                    horarios.remove("10:30-12:00");
+                                }
+                                break;
+                            case "12:00":
+                                if(horarios.contains("12:00-13:30")){
+                                    horarios.remove("12:00-13:30");
+                                }
+                                break;
+                            case "14:00":
+                                if(horarios.contains("14:00-15:30")){
+                                    horarios.remove("14:00-15:30");
+                                }
+                                break;
+                            case "15:30":
+                                if(horarios.contains("15:30-17:00")){
+                                    horarios.remove("15:30-17:00");
+                                }
+                                break;
+                            case "17:00":
+                                if(horarios.contains("17:00-18:30")){
+                                    horarios.remove("17:00-18:30");
+                                }
+                                break;
+                        }
+                    }
+                }
+
             }
+        } else if(cboReservaVeterinario.getVisibility()==View.GONE){
+            Collections.addAll(horarios,"9:00-10:30", "10:30-12:00", "12:00-13:30", "14:00-15:30", "15:30-17:00", "17:00-18:30");
         }
-        cboReservaHora.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, stringHorarios));
+        cboReservaHora.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, horarios));
     }
 
     private void llenarVeterinario() {
         ArrayList<String> nombresVeterinarios = new ArrayList<>();
-
+        int id_sedeSeleccionada = -1;
         for (Veterinario vet : veterinariosList) {
-            nombresVeterinarios.add(vet.getNombre());
+            for (int i = 0; i < sedesList.size(); i++){
+                if(cboReservaSede.getSelectedItem().toString() == sedesList.get(i).getNombre()){
+                    id_sedeSeleccionada = sedesList.get(i).getId_Sede();
+                    break;
+                }
+            }
+            if(id_sedeSeleccionada == vet.getId_Sede()){
+                nombresVeterinarios.add(vet.getNombre());
+            }
+
         }
         cboReservaVeterinario.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, nombresVeterinarios));
+        cboReservaVeterinario.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int posicion, long longitud) {
+                llenarHoras();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     private void llenarSede() {
@@ -212,6 +301,18 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             nombresSedes.add(sede.getNombre());
         }
         cboReservaSede.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, nombresSedes));
+        cboReservaSede.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int posicion, long longitud) {
+                llenarVeterinario();
+                llenarHoras();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     // Clase interna para ejecutar la prueba de conexión en un hilo de fondo
@@ -222,7 +323,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             Usuario usuario = new Usuario();
             Mascota mascota = new Mascota();
             Veterinario veterinario= new Veterinario();
-            Horario horario = new Horario();
+            Cita cita = new Cita();
             Sede sede = new Sede();
 
             int cnx = 0;
@@ -233,9 +334,9 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             usuarioPerfil = usuario.obtenerInformacionUsuario(correo);
             mascotasPerfil = mascota.obtenerMascotasPorCorreo(correo);
             veterinariosList= veterinario.obtenerVeterinarios();
-            horariosList= horario.obtenerHorarios();
+            citasList= cita.obtenerCitas();
             sedesList= sede.obtenerSedes();
-            if(usuarioPerfil != null && mascotasPerfil != null && veterinariosList != null && horariosList != null && sedesList != null){
+            if(usuarioPerfil != null && mascotasPerfil != null && veterinariosList != null && citasList != null && sedesList != null){
                 cnx = 1;
             }
             return cnx;

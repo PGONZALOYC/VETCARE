@@ -100,5 +100,29 @@ public class Veterinario {
         }
         return listaVeterinarios;
     }
+    // Función para obtener un veterinario por ID
+    public Veterinario obtenerVeterinarioPorID(int idVeterinario) {
+        Veterinario veterinario = null;
+        try {
+            String sql = "{CALL obtenerVeterinarioPorID(?)}"; // Llamar al procedimiento almacenado con un parámetro
+            try (CallableStatement statement = connection.prepareCall(sql)) {
+                statement.setInt(1, idVeterinario); // Establecer el ID del veterinario
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        veterinario = new Veterinario();
+                        veterinario.setId_Veterinario(resultSet.getInt("id_Veterinario"));
+                        veterinario.setNombre(resultSet.getString("Nombre"));
+                        veterinario.setApellidos(resultSet.getString("Apellidos"));
+                        veterinario.setCodigoColegiatura(resultSet.getString("CodigoColegiatura"));
+                        veterinario.setId_Sede(resultSet.getInt("id_Sede"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return veterinario; // Devolver el veterinario encontrado
+    }
 }
 

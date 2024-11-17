@@ -96,4 +96,27 @@ public class Sede {
         }
         return listaSedes;
     }
+
+    // Función para obtener una sede por ID
+    public Sede obtenerSedePorID(int idSede) {
+        Sede sede = null;
+        try {
+            String sql = "{CALL obtenerSedePorID(?)}"; // Llamada al stored procedure
+            try (CallableStatement statement = connection.prepareCall(sql)) {
+                statement.setInt(1, idSede); // Establecer el parámetro para el procedimiento almacenado
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        sede = new Sede();
+                        sede.setId_Sede(resultSet.getInt("id_Sede"));
+                        sede.setNombre(resultSet.getString("nombre"));
+                        sede.setLatitud(resultSet.getString("latitud"));
+                        sede.setAltitud(resultSet.getString("altitud"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return sede; // Devolver la sede encontrada
+    }
 }

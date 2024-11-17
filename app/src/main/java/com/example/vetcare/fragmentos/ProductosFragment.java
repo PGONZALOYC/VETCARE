@@ -271,11 +271,6 @@ public class ProductosFragment extends Fragment {
     }
 
     private void imprimirProductos() {
-
-        //Se creo la BD
-        //objeto de la BD
-        Vetcare vt = new Vetcare(this.getContext());
-
         // Validar credenciales en base de datos o lógica específica
         if (conexionExitosa) {
             // Referencia al GridLayout

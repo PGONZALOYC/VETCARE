@@ -18,6 +18,25 @@ public class Cita {
     private String servicio;
     private int idVeterinario;
     private String sede;
+
+    public String getMascota() {
+        return mascota;
+    }
+
+    public void setMascota(String mascota) {
+        this.mascota = mascota;
+    }
+
+    public String getVeterinario() {
+        return veterinario;
+    }
+
+    public void setVeterinario(String veterinario) {
+        this.veterinario = veterinario;
+    }
+
+    private String mascota;
+    private String veterinario;
     private String estado;
     private String horaInicio;
     private String horaFinal;
@@ -185,7 +204,7 @@ public class Cita {
 
     public ArrayList<Cita> obtenerCitasPorCorreo(String correo) {
         ArrayList<Cita> listaCitas = new ArrayList<>();
-        Cita cita = null;
+        Cita cita;
 
         try {
             // Llamada al procedimiento almacenado con el parámetro de correo
@@ -202,15 +221,17 @@ public class Cita {
 
                         // Asignar los valores obtenidos del ResultSet a los atributos de la cita
                         cita.setIdCita(resultSet.getInt("id_Cita"));
-                        cita.setIdUsuario(resultSet.getInt("id_Usuario"));
                         cita.setFecha(resultSet.getDate("Fecha"));
-                        cita.setIdMascota(resultSet.getInt("id_Mascota"));
                         cita.setServicio(resultSet.getString("Servicio"));
-                        cita.setIdVeterinario(resultSet.getInt("id_Veterinario"));
                         cita.setEstado(resultSet.getString("Estado"));
-                        cita.setIdSede(resultSet.getInt("id_Sede"));
-                        cita.setHoraInicio(resultSet.getString("horaInicio"));
-                        cita.setHoraFinal(resultSet.getString("horaFinal"));
+                        // Obtener los nombres directamente
+                        cita.setMascota(resultSet.getString("NombreMascota"));
+                        cita.setSede(resultSet.getString("NombreSede"));
+                        // Concatenar nombre y apellido del veterinario
+                        String nombreCompletoVeterinario = resultSet.getString("NombreVeterinario") + " " +
+                                resultSet.getString("ApellidosVeterinario");
+                        cita.setVeterinario(nombreCompletoVeterinario);
+
 
                         // Añadir la cita a la lista
                         listaCitas.add(cita);

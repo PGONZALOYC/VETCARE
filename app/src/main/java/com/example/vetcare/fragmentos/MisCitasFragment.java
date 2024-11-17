@@ -30,7 +30,6 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class MisCitasFragment extends Fragment {
-    private CalendarView calendarMisCitas;
     private TextView citLblFechaCita, citLblDetalleCita;
 
     boolean conexionExitosa = false;
@@ -38,8 +37,6 @@ public class MisCitasFragment extends Fragment {
     private Toast toastActual;
 
     ArrayList<Cita> citasList;
-    ArrayList<Veterinario> veterinariosList;
-    ArrayList<Sede> sedesList;
     Usuario usuarioPerfil;
 
 
@@ -88,7 +85,6 @@ public class MisCitasFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mis_citas, container, false);
         //Inicializar vistas
-        calendarMisCitas = view.findViewById(R.id.calendReserva);
         citLblFechaCita = view.findViewById(R.id.citLblFechaCita);
         citLblDetalleCita = view.findViewById(R.id.citLblDetalleCita);
 
@@ -127,8 +123,6 @@ public class MisCitasFragment extends Fragment {
             //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
             Usuario usuario = new Usuario();
             Cita cita = new Cita();
-            Veterinario vet= new Veterinario();
-            Sede sede= new Sede();
             int cnx = 0;
             // Obtener el correo del usuario desde SharedPreferences
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
@@ -136,18 +130,18 @@ public class MisCitasFragment extends Fragment {
             //Almacenar todas las variables necesarias antes del cnx 1
             usuarioPerfil = usuario.obtenerInformacionUsuario(correo);
             citasList = cita.obtenerCitasPorCorreo(usuarioPerfil.getCorreo());
-            veterinariosList= vet.obtenerVeterinarios();
-            sedesList= sede.obtenerSedes();
-            if (usuarioPerfil != null && citasList != null && veterinariosList != null&& sedesList != null) {
+            if (usuarioPerfil != null && citasList != null) {
                 cnx = 1;
+
                 // Mostrar las citas en el Log
                 for (Cita c : citasList) {
                     Log.d("Cita", "ID Cita: " + c.getIdCita() +
                             ", Fecha: " + c.getFecha() +
                             ", Servicio: " + c.getServicio() +
-                            ", Veterinario: " + c.getIdVeterinario() +
-                            ", Estado: " + c.getEstado() +
-                            ", Sede ID: " + c.getIdSede());
+                            ", Mascota: "+ c.getMascota() +
+                            ", Sede ID: " + c.getSede()+
+                            ", Veterinario: " + c.getVeterinario() +
+                            ", Estado: " + c.getEstado());
                 }
             }
             return cnx;

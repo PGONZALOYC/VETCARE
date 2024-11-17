@@ -124,7 +124,7 @@ public class PerfilUsuarioFragment extends Fragment {
 
         View editarPerfil = vista.findViewById(R.id.perIconoEditar);
         //View infoMastoca = vista.findViewById(R.id.btnInfoMascota);
-        //View agreMascota= vista.findViewById(R.id.btnAgregarMascota);
+        View agreMascota= vista.findViewById(R.id.btnAgregarMascota);
 
         // Obtener el correo del usuario desde SharedPreferences
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
@@ -135,8 +135,9 @@ public class PerfilUsuarioFragment extends Fragment {
         perTxtCorreo.setText(sharedPreferences.getString("correo", "null"));
         camposEscritura(false);
         imprimirMascotas();
-        new ConexionTask().execute();
-
+        //new ConexionTask().execute();
+        //mascotaLista=obtenerListaMascotaEnSharedPreferences();
+        //Toast.makeText(getContext(), mascotaLista.get(0).getNombre(), Toast.LENGTH_SHORT).show();
 
         editarPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,13 +198,13 @@ public class PerfilUsuarioFragment extends Fragment {
 //                ((Menu)activity).onClickMenu(5);
 //            }
 //        });
-//        agreMascota.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Activity activity = getActivity();
-//                ((Menu)activity).onClickMenu(7);
-//            }
-//        });
+        agreMascota.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Activity activity = getActivity();
+                ((Menu)activity).onClickMenu(7);
+            }
+        });
 
         LinearLayout closeButton = vista.findViewById(R.id.exit_button);
         closeButton.setOnClickListener(v -> closeFragment());
@@ -328,7 +329,7 @@ public class PerfilUsuarioFragment extends Fragment {
         // Crear ImageButton
         ImageButton imageButton = new ImageButton(this.getContext());
         LinearLayout.LayoutParams imageButtonParams = new LinearLayout.LayoutParams(
-                dpToPx(100), dpToPx(80));  // Tamaño de la imagen como en el XML
+                dpToPx(110), dpToPx(90));  // Tamaño de la imagen como en el XML
         imageButtonParams.setMargins(dpToPx(10), dpToPx(10), dpToPx(10), dpToPx(10));
         imageButton.setLayoutParams(imageButtonParams);
         imageButton.setImageBitmap(imageBitmap);  // Establecer la imagen
@@ -350,7 +351,7 @@ public class PerfilUsuarioFragment extends Fragment {
         textView.setText(labelText);  // Nombre de la mascota
         textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         textView.setTextColor(getResources().getColor(R.color.titulo, null));  // Color del texto
-        textView.setTextSize(12);  // Tamaño del texto
+        textView.setTextSize(8);  // Tamaño del texto
         textView.setTypeface(ResourcesCompat.getFont(getContext(), R.font.poppins_medium));
 
         // Agregar ImageButton y TextView al LinearLayout
@@ -364,6 +365,54 @@ public class PerfilUsuarioFragment extends Fragment {
 
         // Agregar el LinearLayout al GridLayout
         contenedor.addView(linearLayout, gridParams);
+
+        // Crear CardView
+//        CardView cardView = new CardView(this.getContext());
+//        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+//        params.width = GridLayout.LayoutParams.MATCH_PARENT;
+//        params.height = GridLayout.LayoutParams.WRAP_CONTENT;
+//        cardView.setLayoutParams(params);
+//        cardView.setRadius(10);
+//        cardView.setCardElevation(5);
+//        cardView.setUseCompatPadding(true);
+//
+//        // Crear LinearLayout para el contenido
+//        LinearLayout linearLayout = new LinearLayout(this.getContext());
+//        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+//                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//        linearLayout.setOrientation(LinearLayout.VERTICAL);
+//        linearLayout.setLayoutParams(linearParams);
+//
+//        // Crear ImageView para la imagen de la mascota
+//        ImageView imageView = new ImageView(this.getContext());
+//        LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(dpToPx(100), dpToPx(110));
+//        int marginInPx = dpToPx(10);
+//        imageParams.setMargins(marginInPx, marginInPx, marginInPx, marginInPx);
+//        imageView.setLayoutParams(imageParams);
+//        imageView.setImageBitmap(imageBitmap);
+//        imageView.setContentDescription(labelText);
+//
+//        // Crear TextView para el nombre de la mascota
+//        TextView textView = new TextView(this.getContext());
+//        textView.setLayoutParams(new LinearLayout.LayoutParams(
+//                LinearLayout.LayoutParams.MATCH_PARENT, dpToPx(50)));
+//        textView.setText(labelText);  // Nombre de la mascota
+//        textView.setTextSize(12);
+//        textView.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
+//        textView.setTextColor(getResources().getColor(R.color.titulo, null));
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            textView.setTypeface(getResources().getFont(R.font.poppins_medium));
+//        }
+//
+//        // Agregar los elementos al LinearLayout
+//        linearLayout.addView(imageView);
+//        linearLayout.addView(textView);
+//
+//        // Añadir el LinearLayout al CardView
+//        cardView.addView(linearLayout);
+//
+//        // Añadir CardView al GridLayout
+//        contenedor.addView(cardView);
     }
     private int dpToPx(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());

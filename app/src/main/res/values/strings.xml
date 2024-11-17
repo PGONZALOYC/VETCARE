@@ -126,7 +126,7 @@
     <string name="mascTxtRazaMascota">Raza</string>
 
     <!--Agregar Mascota-->
-    <string name="agremasEdtNombreMascota">Nombre de la mascota</string>
+    <string name="agremasEdtNombreMascota">Nombre</string>
     <string name="agremasEdtEdadAnios">Años</string>
     <string name="agremasEdtEdadMeses">Meses</string>
     <string name="agremasEdtRazaMascota">Raza de la mascota</string>

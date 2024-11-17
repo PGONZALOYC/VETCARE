@@ -132,6 +132,15 @@
 
             </GridLayout>
         </android.widget.ScrollView>
+        <ImageButton
+            android:id="@+id/btnAgregarMascota"
+            android:layout_width="100dp"
+            android:layout_height="80dp"
+            android:src="@drawable/plus_mascota"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/perDescIconoAgregar"
+            android:layout_gravity="center"
+            android:background="@color/fondoTransparente"/>
         <LinearLayout
             android:id="@+id/exit_button"
             android:layout_width="wrap_content"

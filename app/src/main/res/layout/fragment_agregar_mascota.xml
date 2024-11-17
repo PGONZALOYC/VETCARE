@@ -9,83 +9,94 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_marginHorizontal="20dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Agregar Mascota"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_gravity="center"
-            android:paddingBottom="16dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/agremascLblNombre"
-            android:paddingTop="16dp"
-            android:paddingBottom="8dp"/>
+            android:textSize="35sp"
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="@color/titulo"/>
 
-        <EditText
-            android:id="@+id/agremasEdtNombreMascota"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/agremasEdtNombreMascota"
-            android:padding="8dp"
-            android:inputType="text"/>
+            android:text="@string/regLblRegistroPrimMascota"
+            android:textSize="15sp"
+            android:fontFamily="@font/poppins_medium"
+            android:layout_marginVertical="10dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/agremasEdtNombreMascota"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/agremasEdtNombreMascota"
+                android:maxLength="100"
+                android:inputType="text"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/agremascLblEdad"
-            android:paddingTop="16dp"
-            android:paddingBottom="8dp"/>
+            android:textSize="25sp"
+            android:fontFamily="@font/poppins_semibold"
+            android:layout_marginVertical="10dp"
+            android:textColor="@color/titulo"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/agrmasEdtEdadAnios"
-                android:layout_width="0dp"
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="@string/agremasEdtEdadAnios"
-                android:padding="8dp"
-                android:inputType="number"/>
+                >
+                <EditText
+                    android:id="@+id/agremasEdtEdadAnios"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/agremasEdtEdadAnios"
+                    android:inputType="number"
+                    android:layout_marginRight="10dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/agrmasEdtEdadMeses"
-                android:layout_width="0dp"
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/agremasEdtEdadMeses"
-                android:padding="8dp"
-                android:inputType="number"/>
+                android:layout_weight="1">
+                <EditText
+                    android:id="@+id/agremasEdtEdadMeses"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/agremasEdtEdadMeses"
+                    android:inputType="number"
+                    android:layout_marginLeft="10dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/agremascLblTipo"
-            android:paddingTop="16dp"
-            android:paddingBottom="8dp"/>
-
+        <!-- Spinner para el tipo de mascota -->
         <Spinner
             android:id="@+id/agremascSpinnerTipoMascota"
-            android:layout_width="match_parent"
+            android:layout_width="270dp"
             android:layout_height="wrap_content"
-            android:padding="8dp"/>
+            android:layout_marginVertical="10dp"
+            android:minHeight="48dp"/>
 
-        <EditText
-            android:id="@+id/agremasEdtRazaMascota"
-            android:layout_width="match_parent"
+        <!-- Spinner para la raza de la mascota -->
+        <Spinner
+            android:id="@+id/agremascSpinnerRazaMascota"
+            android:layout_width="270dp"
             android:layout_height="wrap_content"
-            android:hint="@string/agremasEdtRazaMascota"
-            android:padding="8dp"/>
+            android:minHeight="48dp"/>
 
-        <ImageView
+        <ImageButton
             android:id="@+id/agremascImgMascota"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -93,7 +104,8 @@
             android:layout_marginTop="25dp"
             android:background="@color/fondoTransparente"
             android:contentDescription="@string/agremascImgMascota"
-            android:src="@drawable/user_mascota"/>
+            android:src="@drawable/user_mascota"
+            android:layout_marginBottom="10dp"/>
 
         <Button
             android:id="@+id/agremascBtnSubirImagen"
@@ -102,7 +114,9 @@
             android:text="@string/agremascBtnSelecImg"
             android:textAllCaps="false"
             android:backgroundTint="@color/btnSecundario"
-            android:fontFamily="@font/poppins_medium"/>
+            android:fontFamily="@font/poppins_medium"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="80dp"/>
 
         <Button
             android:id="@+id/agremascBtnAgregarMascota"
@@ -111,7 +125,8 @@
             android:text="@string/agremascBtnAgregar"
             android:textAllCaps="false"
             android:backgroundTint="@color/btnPrimario"
-            android:fontFamily="@font/poppins_medium"/>
+            android:fontFamily="@font/poppins_medium"
+            android:layout_marginHorizontal="80dp"/>
 
     </LinearLayout>
 </FrameLayout>

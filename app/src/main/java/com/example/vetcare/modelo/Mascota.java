@@ -175,4 +175,31 @@ public class Mascota {
         }
         return mascota;
     }
+
+    public boolean agregarMascota(int idUsuario, String nombre, String tipo, String raza, Date fechaNacimiento, byte[] imagen, int edadAño, int edadMeses) {
+        boolean exito = false;
+        try {
+            // Llama al procedimiento almacenado
+            String sql = "{CALL AgregarMascota(?, ?, ?, ?, ?, ?, ?, ?)}";
+            try (CallableStatement statement = connection.prepareCall(sql)) {
+                // Configura los parámetros
+                statement.setInt(1, idUsuario);                // id_Usuario
+                statement.setString(2, nombre);                 // Nombre
+                statement.setString(3, tipo);                   // Tipo
+                statement.setString(4, raza);                   // Raza
+                statement.setDate(5, new java.sql.Date(fechaNacimiento.getTime())); // FechaNacimiento
+                statement.setBytes(6, imagen);                  // Imagen (en bytes)
+                statement.setInt(7, edadAño);                   // EdadAño
+                statement.setInt(8, edadMeses);                 // EdadMeses
+
+                // Ejecuta la inserción
+                int filasInsertadas = statement.executeUpdate();
+                exito = filasInsertadas > 0; // True si se insertó al menos una fila
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return exito; // Retorna si la inserción fue exitosa
+    }
+
 }

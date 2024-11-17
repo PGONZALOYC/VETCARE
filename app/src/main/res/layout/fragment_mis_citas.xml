@@ -4,6 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".fragmentos.MisCitasFragment">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,17 +25,17 @@
             android:layout_marginTop="10dp"/>
         <CalendarView
             android:id="@+id/calendReserva"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_marginHorizontal="10dp"
             android:layout_weight="1" />
 
         <TextView
-            android:id="@+id/citLblfechaCita"
+            android:id="@+id/citLblFechaCita"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_semibold"
-            android:text="@string/citLblFechaCita"
+            android:text="TESTTESTTEST"
             android:textSize="15sp"
             tools:ignore="TextSizeCheck" />
 
@@ -40,7 +43,7 @@
             android:id="@+id/citLblDetalleCita"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/citLblDetalleCita"
+            android:text="SERVICIO / SEDE / MASCOTA / VETERINARIO(SI HAY)"
             android:textColor="@color/white"
             android:textSize="15sp"
             android:fontFamily="@font/poppins_semibold"
@@ -63,7 +66,7 @@
             android:id="@+id/citLblFechaProximaCita"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/citLblFechaProximaCita"
+            android:text="TESTTESTTEST"
             android:textSize="15sp"
             android:fontFamily="@font/poppins_semibold"
             tools:ignore="TextSizeCheck" />
@@ -72,7 +75,7 @@
             android:id="@+id/citLblDetalleProximaCita"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/citLblDetalleProximaCita"
+            android:text="SERVICIO / SEDE / MASCOTA / VETERINARIO(SI HAY)"
             android:textColor="@color/white"
             android:textSize="15sp"
             android:fontFamily="@font/poppins_semibold"
@@ -82,5 +85,5 @@
             tools:ignore="TextSizeCheck" />
 
     </LinearLayout>
-
+</ScrollView>
 </FrameLayout>

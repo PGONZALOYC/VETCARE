@@ -90,11 +90,8 @@
 
     <!--Mis citas-->
     <string name="citLblMisCitasTitulo">Mis citas</string>
-    <string name="citLblFechaCita">26 junio</string>
-    <string name="citLblDetalleCita">Vacunación / Perro</string>
     <string name="citLblProximaCita">Próximas citas</string>
-    <string name="citLblFechaProximaCita">28 junio</string>
-    <string name="citLblDetalleProximaCita">Vacunación / Perro</string>
+
 
     <!--Nosotros-->
     <string name="nosLblNumeroVetcare">+51 902 458 162</string>

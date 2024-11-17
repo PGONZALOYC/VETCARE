@@ -149,6 +149,9 @@ public class Cita {
     }
 
 
+
+
+
     public ArrayList<Cita> obtenerCitas(){
         ArrayList<Cita> listaCitas = new ArrayList<>();
         Cita cita = null;
@@ -160,7 +163,7 @@ public class Cita {
                     while (resultSet.next()) {
                         cita = new Cita();
                         cita.setIdCita(resultSet.getInt("id_Cita"));
-                        cita.setIdCita(resultSet.getInt("id_Usuario"));
+                        cita.setIdUsuario(resultSet.getInt("id_Usuario"));
                         cita.setFecha(resultSet.getDate("Fecha"));
                         cita.setIdMascota(resultSet.getInt("id_Mascota"));
                         cita.setServicio(resultSet.getString("Servicio"));
@@ -178,5 +181,45 @@ public class Cita {
             e.printStackTrace();
         }
         return listaCitas;
+    }
+
+    public ArrayList<Cita> obtenerCitasPorCorreo(String correo) {
+        ArrayList<Cita> listaCitas = new ArrayList<>();
+        Cita cita = null;
+
+        try {
+            // Llamada al procedimiento almacenado con el parámetro de correo
+            String sql = "{CALL ObtenerCitasPorCorreo(?)}";  // Procedimiento con un parámetro
+
+            try (CallableStatement statement = connection.prepareCall(sql)) {
+                // Establecer el valor del parámetro de correo
+                statement.setString(1, correo);
+
+                // Ejecutar la consulta y obtener el ResultSet
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        cita = new Cita();
+
+                        // Asignar los valores obtenidos del ResultSet a los atributos de la cita
+                        cita.setIdCita(resultSet.getInt("id_Cita"));
+                        cita.setIdUsuario(resultSet.getInt("id_Usuario"));
+                        cita.setFecha(resultSet.getDate("Fecha"));
+                        cita.setIdMascota(resultSet.getInt("id_Mascota"));
+                        cita.setServicio(resultSet.getString("Servicio"));
+                        cita.setIdVeterinario(resultSet.getInt("id_Veterinario"));
+                        cita.setEstado(resultSet.getString("Estado"));
+                        cita.setIdSede(resultSet.getInt("id_Sede"));
+                        cita.setHoraInicio(resultSet.getString("horaInicio"));
+                        cita.setHoraFinal(resultSet.getString("horaFinal"));
+
+                        // Añadir la cita a la lista
+                        listaCitas.add(cita);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Mostrar detalles del error en caso de excepciones
+        }
+        return listaCitas;  // Devolver la lista de citas
     }
 }

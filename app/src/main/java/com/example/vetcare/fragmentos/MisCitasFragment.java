@@ -102,7 +102,27 @@ public class MisCitasFragment extends Fragment {
                         public void run() {
                             //CODIGO DESPUES DEL CONGELAMIENTO
                             if (conexionExitosa) {
+                                // Verificar si hay citas y obtener la última
+                                if (conexionExitosa && citasList != null && !citasList.isEmpty()) {
+                                    Cita ultimaCita = citasList.get(citasList.size() - 1);  // Obtener la última cita de la lista
 
+                                    // Crear el detalle de la cita en el formato deseado
+                                    String detalleCita = ultimaCita.getServicio() + " / " +
+                                            ultimaCita.getSede() + " / " +
+                                            ultimaCita.getMascota();
+
+                                    // Si el servicio requiere veterinario, agregarlo al detalle
+                                    if (ultimaCita.getServicio().equalsIgnoreCase("Consulta médica") ||
+                                            ultimaCita.getServicio().equalsIgnoreCase("Castración") ||
+                                            ultimaCita.getServicio().equalsIgnoreCase("Desparasitación")) {
+                                        detalleCita += " / " + ultimaCita.getVeterinario();
+                                    }
+
+                                    // Asignar el detalle al TextView
+                                    citLblDetalleCita.setText(detalleCita);
+                                } else {
+                                    citLblDetalleCita.setText("No hay citas disponibles");
+                                }
                             }
                         }
                     });

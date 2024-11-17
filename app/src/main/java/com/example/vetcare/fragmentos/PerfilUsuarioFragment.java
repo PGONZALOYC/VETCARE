@@ -365,54 +365,6 @@ public class PerfilUsuarioFragment extends Fragment {
 
         // Agregar el LinearLayout al GridLayout
         contenedor.addView(linearLayout, gridParams);
-
-        // Crear CardView
-//        CardView cardView = new CardView(this.getContext());
-//        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-//        params.width = GridLayout.LayoutParams.MATCH_PARENT;
-//        params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-//        cardView.setLayoutParams(params);
-//        cardView.setRadius(10);
-//        cardView.setCardElevation(5);
-//        cardView.setUseCompatPadding(true);
-//
-//        // Crear LinearLayout para el contenido
-//        LinearLayout linearLayout = new LinearLayout(this.getContext());
-//        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
-//                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//        linearLayout.setOrientation(LinearLayout.VERTICAL);
-//        linearLayout.setLayoutParams(linearParams);
-//
-//        // Crear ImageView para la imagen de la mascota
-//        ImageView imageView = new ImageView(this.getContext());
-//        LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(dpToPx(100), dpToPx(110));
-//        int marginInPx = dpToPx(10);
-//        imageParams.setMargins(marginInPx, marginInPx, marginInPx, marginInPx);
-//        imageView.setLayoutParams(imageParams);
-//        imageView.setImageBitmap(imageBitmap);
-//        imageView.setContentDescription(labelText);
-//
-//        // Crear TextView para el nombre de la mascota
-//        TextView textView = new TextView(this.getContext());
-//        textView.setLayoutParams(new LinearLayout.LayoutParams(
-//                LinearLayout.LayoutParams.MATCH_PARENT, dpToPx(50)));
-//        textView.setText(labelText);  // Nombre de la mascota
-//        textView.setTextSize(12);
-//        textView.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
-//        textView.setTextColor(getResources().getColor(R.color.titulo, null));
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            textView.setTypeface(getResources().getFont(R.font.poppins_medium));
-//        }
-//
-//        // Agregar los elementos al LinearLayout
-//        linearLayout.addView(imageView);
-//        linearLayout.addView(textView);
-//
-//        // Añadir el LinearLayout al CardView
-//        cardView.addView(linearLayout);
-//
-//        // Añadir CardView al GridLayout
-//        contenedor.addView(cardView);
     }
     private int dpToPx(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());

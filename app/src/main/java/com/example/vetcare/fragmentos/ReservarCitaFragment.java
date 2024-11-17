@@ -1,5 +1,6 @@
 package com.example.vetcare.fragmentos;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,16 +25,21 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.example.vetcare.R;
+import com.example.vetcare.clases.Menu;
 import com.example.vetcare.modelo.Cita;
 import com.example.vetcare.modelo.Mascota;
 import com.example.vetcare.modelo.Sede;
 import com.example.vetcare.modelo.Usuario;
 import com.example.vetcare.modelo.Veterinario;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.TimeZone;
 
 /**
@@ -57,6 +63,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
     ArrayList<Veterinario> veterinariosList;
     ArrayList<Cita> citasList;
     ArrayList<Sede> sedesList;
+    ArrayList<Mascota> mascotasList;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -164,6 +171,40 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             }
         }).start();
 
+        btnReservarCita.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                new ReservarCitaFragment.ConexionTask2().execute();
+
+                    showLoadingDialog();
+
+                    // Ejecutar tareas en un hilo separado
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                freezeExecution();
+
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //CODIGO DESPUES DEL CONGELAMIENTO
+                                        if (conexionExitosa) {
+                                            mostrarToast("Cita registrada con exito");
+                                        }else{
+                                            Toast.makeText(getContext(), "Error al registrar la información", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                }
+
+        });
 
 
         return view;
@@ -194,7 +235,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             String unaSemanaDespues = sdf.format(calendar.getTime());
             Date parsedDate2 = sdf.parse(unaSemanaDespues);
             if (parsedDate2 != null) {
-                mostrarToast(unaSemanaDespues);
+                //mostrarToast(unaSemanaDespues);
                 calendReserva.setMaxDate(parsedDate2.getTime());
             }
 
@@ -218,7 +259,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
     }
 
     private void llenarServicios() {
-        String[] servicios = {"--Seleccione Servicio--", "Baño", "Corte", "Consulta Médica", "Castración", "Desparasitación"};
+        String[] servicios = {"Baño", "Corte", "Consulta Médica", "Castración", "Desparasitación"};
         cboReservaServicio.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, servicios));
     }
 
@@ -306,7 +347,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
                 }
             }
             if(id_sedeSeleccionada == vet.getId_Sede()){
-                nombresVeterinarios.add(vet.getNombre());
+                nombresVeterinarios.add(vet.getNombre()+" "+vet.getApellidos());
             }
 
         }
@@ -385,10 +426,89 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
         }
     }
 
+    private class ConexionTask2 extends AsyncTask<Void, Void, Integer> {
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            int cnx = 0;
+
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+
+            Cita cita = new Cita();
+            cita.setIdUsuario(sharedPreferences.getInt("id_usuario", -1));
+
+            long fechaEnMilisegundos = calendReserva.getDate(); // Supongo que esto es un long
+            Date fecha = new Date(fechaEnMilisegundos);
+            java.sql.Date fechaSql = new java.sql.Date(fecha.getTime());
+
+            cita.setFecha(fechaSql);
+
+            mascotasList = obtenerListaMascotaEnSharedPreferences();
+
+            for(Mascota v : mascotasList){
+                if(cboReservaMascota.getSelectedItem().toString() == (v.getNombre()+" - "+v.getTipo())){
+                    cita.setIdMascota(v.getId_Mascota());
+                }
+            }
+
+            cita.setServicio(cboReservaServicio.getSelectedItem().toString());
+
+            for(Veterinario v : veterinariosList){
+                if(cboReservaVeterinario.getSelectedItem().toString() == (v.getNombre()+" "+v.getApellidos())){
+                    cita.setIdVeterinario(v.getId_Veterinario());
+                }
+            }
+
+            cita.setEstado("Pendiente");
+
+            for(Sede v : sedesList){
+                if(cboReservaSede.getSelectedItem().toString() == v.getNombre()){
+                    cita.setIdSede(v.getId_Sede());
+                }
+            }
+
+            switch (cboReservaHora.getSelectedItem().toString()){
+                case "9:00-10:30":
+                    cita.setHoraInicio("9:00");
+                    break;
+                case "10:30-12:00":
+                    cita.setHoraInicio("10:30");
+                    break;
+                case "12:00-13:30":
+                    cita.setHoraInicio("12:00");
+                    break;
+                case "14:00-15:30":
+                    cita.setHoraInicio("14:00");
+                    break;
+                case "15:30-17:00":
+                    cita.setHoraInicio("15:30");
+                    break;
+                case "17:00-18:30":
+                    cita.setHoraInicio("17:00");
+                    break;
+            }
+            cita.agregarCita(cita);
+            if(cita != null){
+                cnx = 1;
+            }
+            return cnx;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            if (result == 1) {
+                hideLoadingDialog();
+                conexionExitosa = true;
+            } else{
+                hideLoadingDialog();
+                mostrarToast("Error: No se pudo registrar la cita");
+            }
+        }
+    }
+
     // Método para llenar el Spinner de mascotas con la lista de mascotas del usuario
     private void llenarMascotas(List<Mascota> mascotas) {
         List<String> nombresMascotas = new ArrayList<>();
-        nombresMascotas.add("--Seleccione Mascota--"); // Opción predeterminada
+        //nombresMascotas.add("--Seleccione Mascota--"); // Opción predeterminada
 
         for (Mascota mascota : mascotas) {
             nombresMascotas.add(mascota.getNombre() +" - "+mascota.getTipo()); // Obtener el nombre de cada mascota
@@ -428,5 +548,21 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
         }
         toastActual = Toast.makeText(this.getContext(), message, Toast.LENGTH_SHORT);
         toastActual.show();
+    }
+
+    public ArrayList<Mascota> obtenerListaMascotaEnSharedPreferences() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+
+        // Recuperar el JSON de SharedPreferences
+        String json = sharedPreferences.getString("listaMascotas", null);
+
+        if (json != null) {
+            // Convertir el JSON de nuevo a ArrayList<Mascota>
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            TypeToken<ArrayList<Mascota>> typeToken = new TypeToken<ArrayList<Mascota>>() {};
+            return gson.fromJson(json, typeToken.getType());
+        } else {
+            return new ArrayList<>();  // Retorna una lista vacía si no hay Mascota almacenados
+        }
     }
 }

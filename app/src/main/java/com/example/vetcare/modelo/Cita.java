@@ -2,6 +2,7 @@ package com.example.vetcare.modelo;
 
 import com.example.vetcare.clases.MySQLConnector;
 
+import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -168,8 +169,43 @@ public class Cita {
     }
 
 
-
-
+    public void agregarCita(Cita cita) {
+        try {
+            String sql = "{CALL InsertarCita(?, ?, ?, ?, ?, ?, ?, ?)}";
+            try (CallableStatement statement = connection.prepareCall(sql)) {
+                statement.setInt(1, cita.getIdUsuario());
+                statement.setDate(2, cita.getFecha());
+                statement.setInt(3, cita.getIdMascota());
+                statement.setString(4, cita.getServicio());
+                statement.setInt(5, cita.getIdVeterinario());
+                statement.setString(6, cita.getEstado());
+                statement.setInt(7, cita.getIdSede());
+                switch (cita.getHoraInicio()){
+                    case "9:00":
+                        statement.setInt(8, 1);
+                        break;
+                    case "10:30":
+                        statement.setInt(8, 2);
+                        break;
+                    case "12:00":
+                        statement.setInt(8, 3);
+                        break;
+                    case "14:00":
+                        statement.setInt(8, 4);
+                        break;
+                    case "15:30":
+                        statement.setInt(8, 5);
+                        break;
+                    case "17:00":
+                        statement.setInt(8, 6);
+                        break;
+                }
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public ArrayList<Cita> obtenerCitas(){
         ArrayList<Cita> listaCitas = new ArrayList<>();

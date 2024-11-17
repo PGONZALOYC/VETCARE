@@ -65,11 +65,11 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="300dp">
+            android:layout_height="170dp">
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="300dp"
                 android:textSize="15sp"
                 android:text="@string/bieLblInformacion"
                 android:fontFamily="@font/poppins_medium"

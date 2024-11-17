@@ -14,8 +14,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class VerMapaFragment extends Fragment {
 
@@ -32,9 +37,37 @@ public class VerMapaFragment extends Fragment {
          */
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            LatLng sydney = new LatLng(-34, 151);
-            googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            //LatLng sydney = new LatLng(-34, 151);
+            // Lista de ubicaciones de veterinarias con nombre y coordenadas
+            List<LatLng> veterinarias = Arrays.asList(
+                    new LatLng(-12.008373520602117, -77.00542555276013), // Veterinaria 1
+                    new LatLng(-12.08520932154498, -77.04306758220875), // Veterinaria 2
+                    new LatLng(-12.128590799478914, -77.00416898220882),  // Veterinaria 3
+                    new LatLng(-12.05450068657127, -77.0477690748604)  // Veterinaria 4
+            );
+            // Lista de nombres para las veterinarias
+            List<String> nombres = Arrays.asList(
+                    "Vetcare SJL",
+                    "Vetcare Lince",
+                    "Vetcare Miraflores",
+                    "Vetcare Breña"
+            );
+            // Ícono personalizado
+            BitmapDescriptor iconoPersonalizado = BitmapDescriptorFactory.fromResource(R.drawable.marcador_mapa);
+            // Agregar marcadores para cada veterinaria
+            for (int i = 0; i < veterinarias.size(); i++) {
+                googleMap.addMarker(new MarkerOptions()
+                        .position(veterinarias.get(i))
+                        .title(nombres.get(i))
+                        .icon(iconoPersonalizado));
+            }
+
+            // Mover la cámara a la primera ubicación
+            if (!veterinarias.isEmpty()) {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(veterinarias.get(0), 12f)); // Zoom nivel 12
+            }
+            //googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+            //googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         }
     };
 

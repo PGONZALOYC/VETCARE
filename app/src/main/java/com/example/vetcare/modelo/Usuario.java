@@ -206,7 +206,7 @@ public class Usuario {
         return actualizado;
     }
 
-    public boolean agregarUsuario(String dni, String nombres, String apellidos, String telefono, String correo, String contraseña, Date fechaNacimiento, String sexo, byte[] imagen) {
+    public boolean agregarUsuario(String dni, String nombres, String apellidos, String telefono, String correo, String contraseña,byte[] imagen, Date fechaNacimiento, String sexo ) {
         boolean exito = false;
         try {
             String sql = "{CALL AgregarUsuario(?, ?, ?, ?, ?, ?, ?, ?, ?)}";

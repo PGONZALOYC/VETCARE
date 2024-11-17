@@ -1,9 +1,13 @@
 package com.example.vetcare.actividades;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+import com.example.vetcare.clases.Hash;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,9 +27,17 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.vetcare.R;
+import com.example.vetcare.clases.Menu;
+import com.example.vetcare.fragmentos.AgregarMascotaFragment;
+import com.example.vetcare.modelo.Mascota;
 import com.example.vetcare.modelo.Usuario;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class RegistroActivity extends AppCompatActivity implements View.OnClickListener{
@@ -33,6 +46,15 @@ public class RegistroActivity extends AppCompatActivity implements View.OnClickL
     RadioButton regRbtRegistroSinDefinir, regRbtRegistroFemenino, regRbtRegistroMasculino;
     CheckBox regChkRegistroTerminos;
     ImageButton imageButtonSiguiente;
+    boolean conexionExitosa = false;
+    private static Toast toastActual;
+    private ProgressDialog progressDialog;
+    String dni="";
+    String nombre="";
+    String apellido="";
+
+
+    View vista;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,13 +92,36 @@ public class RegistroActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.imageButtonSiguiente) {
-            //Handle the click for the ImageButton
-            if (validarFormulario()) {
-                // If the form is valid, navigate to the next activity
-                new RegistroUsuarioTask().execute();
-                Intent intent = new Intent(RegistroActivity.this, RegistroPrimeraMascotaActivity.class);
-                startActivity(intent);
-            }
+            new ConexionTask().execute();
+
+            showLoadingDialog();
+
+            // Ejecutar tareas en un hilo separado
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        freezeExecution();
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //CODIGO DESPUES DEL CONGELAMIENTO
+                                if (conexionExitosa) {
+                                    Toast.makeText(RegistroActivity.this, "Usuario registrado", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(RegistroActivity.this, RegistroPrimeraMascotaActivity.class);
+                                    startActivity(intent);
+
+                                }else{
+                                    Toast.makeText(RegistroActivity.this, "Error al registrar el usuario", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
         } else if (view.getId() == R.id.regTxtRegistroFechaNacimiento) {
             SeleccionarFecha();
         } else if (view.getId() == R.id.regChkRegistroTerminos) {
@@ -224,22 +269,25 @@ public class RegistroActivity extends AppCompatActivity implements View.OnClickL
         },anio,mes,dia);
         dpd.show();
     }
-    private class RegistroUsuarioTask extends AsyncTask<Void, Void, Boolean> {
+    // Clase interna para ejecutar la prueba de conexión en un hilo de fondo
+    public class ConexionTask extends AsyncTask<Void, Void, Integer> {
         @Override
-        protected Boolean doInBackground(Void... voids) {
-            // Instancia de la clase Usuario
+        protected Integer doInBackground(Void... voids) {
+            SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
+            int cnx = 0;
             Usuario usuarioDAO = new Usuario();
-
-            // Capturar datos del formulario
-            String dni = regTxtRegistroDni.getText().toString().trim();
-            String nombre = regTxtRegistroNombre.getText().toString().trim();
-            String apellido = regTxtRegistroApellido.getText().toString().trim();
-            String telefono = regTxtRegistroTelefono.getText().toString().trim();
-            String correo = regTxtRegistroCorreo.getText().toString().trim();
-            String contrasena = regTxtRegistroContrasena.getText().toString().trim();
+            Hash hash = new Hash();
+            //SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+            String dni = regTxtRegistroDni.getText().toString();
+            String nombre = regTxtRegistroNombre.getText().toString();
+            String apellido = regTxtRegistroApellido.getText().toString();
+            String telefono = regTxtRegistroTelefono.getText().toString();
+            String correo = regTxtRegistroCorreo.getText().toString();
+            String contrasena = regTxtRegistroContrasena.getText().toString();
+            String contrasenaHash = hash.StringToHash(contrasena, "SHA-256").toLowerCase();
             Date fechaNacimiento = Date.valueOf(regTxtRegistroFechaNacimiento.getText().toString().trim());
-
-            // Determinar el sexo seleccionado
             String sexo = "";
             int selectedId = regGrpRegistroSexo.getCheckedRadioButtonId();
             if (selectedId == R.id.regRbtRegistroMasculino) {
@@ -249,24 +297,105 @@ public class RegistroActivity extends AppCompatActivity implements View.OnClickL
             } else {
                 sexo = "Sin definir";
             }
+            String txtCorr;
+            String txtClav;
+            if(!sharedPreferences.getString("correo", "-").equals("-")){
+                txtCorr = sharedPreferences.getString("correo", "-");
+            } else{
+                txtCorr = regTxtRegistroNombre.getText().toString();
+            }
 
-            // Intentar agregar el usuario a la base de datos
-            return usuarioDAO.agregarUsuario(dni, nombre, apellido, telefono, correo, contrasena, fechaNacimiento, sexo, null);
+            if(!sharedPreferences.getString("clave", "-").equals("-")){
+                txtClav = sharedPreferences.getString("clave", "-");
+            } else{
+                txtClav = regTxtRegistroContrasena.getText().toString();
+            }
+
+            if(usuarioDAO.agregarUsuario(dni, nombre, apellido, telefono, correo,contrasenaHash,null,fechaNacimiento,sexo)){
+                guardarCorreoEnSharedPreferences(usuarioDAO.obtenerInformacionUsuario(txtCorr).getId_Usuario(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getNombres(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getApellidos(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getTelefono(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getCorreo(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getContraseña());
+                cnx = 1;
+            }
+            return cnx;
+
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
-            if (result) {
-                // Usuario registrado exitosamente
-                Toast.makeText(RegistroActivity.this, "Usuario registrado exitosamente", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(RegistroActivity.this, RegistroPrimeraMascotaActivity.class);
-                startActivity(intent);
-            } else {
-                // Falló el registro
-                Toast.makeText(RegistroActivity.this, "Error al registrar el usuario", Toast.LENGTH_SHORT).show();
+        protected void onPostExecute(Integer result) {
+            if (result == 1) {
+                hideLoadingDialog();
+                conexionExitosa = true;
+            } else{
+                hideLoadingDialog();
+                mostrarToast("Error: Credenciales incorrectas");
             }
         }
+
+
     }
+
+    private void guardarCorreoEnSharedPreferences(int id_usuario, String nombre, String apellido, String telefono, String correo, String clave) {
+        SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Mascota mascotaDAO = new Mascota();
+        ArrayList<Mascota> listaMascotas = mascotaDAO.obtenerMascotasPorCorreo(correo);
+        insertarMascotasEnSharedPreferences(listaMascotas);
+
+        if(!sharedPreferences.getBoolean("recuerda", false)){
+            editor.putInt("id_usuario", id_usuario);
+            editor.putString("nombre", nombre);
+            editor.putString("apellido", apellido);
+            editor.putString("telefono", telefono);
+            editor.putString("correo", correo);
+            editor.putString("clave", clave);
+            editor.apply();
+        }
+    }
+
+    public void insertarMascotasEnSharedPreferences(ArrayList<Mascota> lista) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Crear un objeto Gson con la configuración de @Expose
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String json = gson.toJson(lista);
+
+        // Guardar el JSON en SharedPreferences
+        editor.putString("listaMascotas", json);
+        editor.apply();
+    }
+
+    //Congela los procesos mientras espera que conexionExitosa sea true para continuar con las posteriores instrucciones
+    private void freezeExecution() throws InterruptedException {
+        while (!conexionExitosa) {
+            Thread.sleep(100); // Esperar un breve periodo antes de volver a comprobar
+        }
+    }
+
+    //Método para desplegar Toasts sin esperar a que termine el anterior toast (lo reemplaza)
+    private void mostrarToast(String message) {
+        if (toastActual != null) {
+            toastActual.cancel();
+        }
+        toastActual = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        toastActual.show();
+    }
+
+    //Dialogo de carga mientras espera al congelamiento -- mostrar
+    private void showLoadingDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Registrando usuario...");
+        progressDialog.setCancelable(false); // No se puede cancelar tocando fuera del diálogo
+        progressDialog.show();
+    }
+
+    //Dialogo de carga mientras espera al congelamiento -- ocultar
+    private void hideLoadingDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+
 
 
 }

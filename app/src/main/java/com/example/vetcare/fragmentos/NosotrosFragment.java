@@ -1,9 +1,13 @@
 package com.example.vetcare.fragmentos;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -25,6 +29,7 @@ public class NosotrosFragment extends Fragment implements View.OnClickListener {
 //    private static final int PERMISSION_CODE_LOCATION_PERMISSION = 1;
 //    private MapView mapView;
 //    private FusedLocationProviderClient fusedLocationClient;
+private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
 
     Button nosBtnEncuentranos;
 
@@ -81,14 +86,34 @@ public class NosotrosFragment extends Fragment implements View.OnClickListener {
         return vista;
     }
 
+    private boolean tienePermisosDeUbicacion() {
+        return ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void solicitarPermisosDeUbicacion() {
+        requestPermissions(
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                LOCATION_PERMISSION_REQUEST_CODE
+        );
+    }
 
     @Override
     public void onClick(View v) {
         if(v.getId()== R.id.nosBtnEncuentranos){
 //            Intent intent = new Intent(getActivity(), VerMapaActivity.class);
 //            startActivity(intent);
-            Activity activity = getActivity();
-            ((Menu)activity).onClickMenu(9);
+            if (tienePermisosDeUbicacion()) {
+                // Si ya tiene permisos, ir a VerMapaFragment
+                Activity activity = getActivity();
+                ((Menu)activity).onClickMenu(9);
+            } else {
+                // Solicitar permisos
+                solicitarPermisosDeUbicacion();
+            }
+
         }
     }
 }

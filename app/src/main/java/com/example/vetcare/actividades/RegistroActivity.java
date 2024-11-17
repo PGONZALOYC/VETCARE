@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -21,7 +22,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.vetcare.R;
+import com.example.vetcare.modelo.Usuario;
 
+import java.sql.Date;
 import java.util.Calendar;
 
 public class RegistroActivity extends AppCompatActivity implements View.OnClickListener{
@@ -70,6 +73,7 @@ public class RegistroActivity extends AppCompatActivity implements View.OnClickL
             //Handle the click for the ImageButton
             if (validarFormulario()) {
                 // If the form is valid, navigate to the next activity
+                new RegistroUsuarioTask().execute();
                 Intent intent = new Intent(RegistroActivity.this, RegistroPrimeraMascotaActivity.class);
                 startActivity(intent);
             }
@@ -220,5 +224,49 @@ public class RegistroActivity extends AppCompatActivity implements View.OnClickL
         },anio,mes,dia);
         dpd.show();
     }
+    private class RegistroUsuarioTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            // Instancia de la clase Usuario
+            Usuario usuarioDAO = new Usuario();
+
+            // Capturar datos del formulario
+            String dni = regTxtRegistroDni.getText().toString().trim();
+            String nombre = regTxtRegistroNombre.getText().toString().trim();
+            String apellido = regTxtRegistroApellido.getText().toString().trim();
+            String telefono = regTxtRegistroTelefono.getText().toString().trim();
+            String correo = regTxtRegistroCorreo.getText().toString().trim();
+            String contrasena = regTxtRegistroContrasena.getText().toString().trim();
+            Date fechaNacimiento = Date.valueOf(regTxtRegistroFechaNacimiento.getText().toString().trim());
+
+            // Determinar el sexo seleccionado
+            String sexo = "";
+            int selectedId = regGrpRegistroSexo.getCheckedRadioButtonId();
+            if (selectedId == R.id.regRbtRegistroMasculino) {
+                sexo = "Masculino";
+            } else if (selectedId == R.id.regRbtRegistroFemenino) {
+                sexo = "Femenino";
+            } else {
+                sexo = "Sin definir";
+            }
+
+            // Intentar agregar el usuario a la base de datos
+            return usuarioDAO.agregarUsuario(dni, nombre, apellido, telefono, correo, contrasena, fechaNacimiento, sexo, null);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                // Usuario registrado exitosamente
+                Toast.makeText(RegistroActivity.this, "Usuario registrado exitosamente", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(RegistroActivity.this, RegistroPrimeraMascotaActivity.class);
+                startActivity(intent);
+            } else {
+                // Falló el registro
+                Toast.makeText(RegistroActivity.this, "Error al registrar el usuario", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 
 }

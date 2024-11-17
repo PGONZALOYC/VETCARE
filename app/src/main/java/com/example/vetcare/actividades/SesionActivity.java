@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -144,7 +145,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             olvidasteContrasena(); // Método para manejar el olvido de contraseña
         }
         else if (v.getId() == R.id.logBtnSOS) {
-            mostrarSOS(); // Método para manejar el botón SOS
+            redirigirSOS(); // Método para manejar el botón SOS
         }
     }
 
@@ -297,5 +298,13 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         // Guardar el JSON en SharedPreferences
         editor.putString("listaMascotas", json);
         editor.apply();
+    }
+    private void redirigirSOS(){
+        //nunmero de la veterinaria
+        String numVetCare= "tel:928270448";
+        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+        callIntent.setData(Uri.parse(numVetCare));
+
+        startActivity(callIntent);
     }
 }

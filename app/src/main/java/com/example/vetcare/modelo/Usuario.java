@@ -206,6 +206,28 @@ public class Usuario {
         return actualizado;
     }
 
+    public boolean agregarUsuario(String dni, String nombres, String apellidos, String telefono, String correo, String contraseña, Date fechaNacimiento, String sexo, byte[] imagen) {
+        boolean exito = false;
+        try {
+            String sql = "{CALL AgregarUsuario(?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+            try (CallableStatement statement = connection.prepareCall(sql)) {
+                statement.setString(1, dni);
+                statement.setString(2, nombres);
+                statement.setString(3, apellidos);
+                statement.setString(4, telefono);
+                statement.setString(5, correo);
+                statement.setString(6, contraseña);
+                statement.setBytes(7, imagen);
+                statement.setDate(8, new java.sql.Date(fechaNacimiento.getTime()));
+                statement.setString(9, sexo);
+                int filasInsertadas = statement.executeUpdate();
+                exito = filasInsertadas > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return exito;
+    }
 
 
 }

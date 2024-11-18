@@ -26,8 +26,11 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.vetcare.R;
 import com.example.vetcare.clases.Hash;
 
+import com.example.vetcare.modelo.Cita;
 import com.example.vetcare.modelo.Mascota;
 import com.example.vetcare.modelo.Producto;
+import com.example.vetcare.modelo.Sede;
+import com.example.vetcare.modelo.Veterinario;
 import com.example.vetcare.sqlite.Vetcare;
 import com.example.vetcare.modelo.Usuario;
 import com.google.gson.Gson;
@@ -46,7 +49,11 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     boolean conexionExitosa = false;
     private static Toast toastActual;
     private ProgressDialog progressDialog;
-    List<Mascota> listaMascotas;
+    ArrayList<Mascota> listaMascotas;
+    ArrayList<Veterinario> listaVeterinarios;
+    ArrayList<Cita> listaCitas;
+    ArrayList<Sede> listaSedes;
+
 
 
 
@@ -160,6 +167,9 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             insertarMascotasEnSharedPreferences();
+            insertarVeterinariosEnSharedPreferences();
+            insertarCitasEnSharedPreferences();
+            insertarSedesEnSharedPreferences();
 
             if(chkRecordar.isChecked()){
                 editor.putString("correo", txtCorreo.getText().toString());
@@ -198,6 +208,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
             int cnx = 0;
             Usuario usuarioDAO = new Usuario();
+
             Hash hash = new Hash();
             String txtCorr;
             String txtClav;
@@ -218,7 +229,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
 
             //Cifrar la clave
             txtClav = hash.StringToHash(txtClav,"SHA256").toLowerCase();
-            if(usuarioDAO.loginUsuario(txtCorr, txtClav) && listaMascotas!=null){
+            if(usuarioDAO.loginUsuario(txtCorr, txtClav) && listaMascotas!=null && listaVeterinarios!=null && listaCitas!=null && listaSedes!=null){
                 cnx = 1;
 
             }
@@ -242,7 +253,13 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Mascota mascotaDAO = new Mascota();
+        Veterinario veterinarioDAO = new Veterinario();
+        Cita citaDAO = new Cita();
+        Sede sedeDAO = new Sede();
         listaMascotas = mascotaDAO.obtenerMascotasPorCorreo(correo);
+        listaVeterinarios = veterinarioDAO.obtenerVeterinarios();
+        listaCitas = citaDAO.obtenerCitas();
+        listaSedes = sedeDAO.obtenerSedes();
 
         if(!sharedPreferences.getBoolean("recuerda", false)){
             editor.putInt("id_usuario", id_usuario);
@@ -296,6 +313,45 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
 
         // Guardar el JSON en SharedPreferences
         editor.putString("listaMascotas", json);
+        editor.apply();
+    }
+
+    public void insertarVeterinariosEnSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Crear un objeto Gson con la configuración de @Expose
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String json = gson.toJson(listaVeterinarios);
+
+        // Guardar el JSON en SharedPreferences
+        editor.putString("listaVeterinarios", json);
+        editor.apply();
+    }
+
+    public void insertarCitasEnSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Crear un objeto Gson con la configuración de @Expose
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String json = gson.toJson(listaCitas);
+
+        // Guardar el JSON en SharedPreferences
+        editor.putString("listaCitasGenerales", json);
+        editor.apply();
+    }
+
+    public void insertarSedesEnSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Crear un objeto Gson con la configuración de @Expose
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String json = gson.toJson(listaSedes);
+
+        // Guardar el JSON en SharedPreferences
+        editor.putString("listaSedes", json);
         editor.apply();
     }
 

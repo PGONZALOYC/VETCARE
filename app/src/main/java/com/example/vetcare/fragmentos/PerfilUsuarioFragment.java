@@ -256,7 +256,6 @@ public class PerfilUsuarioFragment extends Fragment {
 
             if(usuarioDAO.editarUsuario(userID, nombre, apellido, telefono, correo)){
                 guardarCorreoEnSharedPreferences(userID, nombre, apellido, telefono, correo);
-
                 cnx = 1;
             }
             return cnx;

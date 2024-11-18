@@ -1,6 +1,7 @@
 package com.example.vetcare.modelo;
 
 import com.example.vetcare.clases.MySQLConnector;
+import com.google.gson.annotations.Expose;
 
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -11,13 +12,21 @@ import java.sql.Date; // Asegúrate de importar la clase Date para manejar fecha
 import java.util.ArrayList;
 
 public class Cita {
+    @Expose(serialize = false)
     private Connection connection;
+    @Expose
     private int idCita;
+    @Expose
     private int idUsuario;
+    @Expose
     private int idMascota;
+    @Expose
     private int idSede;
+    @Expose
     private String servicio;
+    @Expose
     private int idVeterinario;
+    @Expose
     private String sede;
 
     public String getMascota() {
@@ -69,6 +78,17 @@ public class Cita {
         this.horaInicio = horaInicio;
         this.horaFinal = horaFinal;
         this.fecha = fecha;
+    }
+
+    public Cita(int idUsuario, int idMascota, int idSede, int idVeterinario, String servicio, String horaInicio, Date fecha, String estado) {
+        this.idUsuario = idUsuario;
+        this.idMascota = idMascota;
+        this.idSede = idSede;
+        this.idVeterinario = idVeterinario;
+        this.servicio = servicio;
+        this.horaInicio = horaInicio;
+        this.fecha = fecha;
+        this.estado = estado;
     }
 
     public String getHoraInicio() {
@@ -169,7 +189,8 @@ public class Cita {
     }
 
 
-    public void agregarCita(Cita cita) {
+    public boolean agregarCita(Cita cita) {
+        boolean creado = false;
         try {
             String sql = "{CALL InsertarCita(?, ?, ?, ?, ?, ?, ?, ?)}";
             try (CallableStatement statement = connection.prepareCall(sql)) {
@@ -200,11 +221,14 @@ public class Cita {
                         statement.setInt(8, 6);
                         break;
                 }
-                statement.executeUpdate();
+                // Ejecuta la actualización
+                int filasActualizadas = statement.executeUpdate();
+                creado = filasActualizadas > 0; // True si se actualizó al menos una fila
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return creado;
     }
 
     public ArrayList<Cita> obtenerCitas(){

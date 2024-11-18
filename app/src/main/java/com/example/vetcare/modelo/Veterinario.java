@@ -1,6 +1,8 @@
 package com.example.vetcare.modelo;
 
 import com.example.vetcare.clases.MySQLConnector;
+import com.google.gson.annotations.Expose;
+
 import java.sql.Connection;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
@@ -9,11 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Veterinario {
+    @Expose(serialize = false)
     private Connection connection;
+    @Expose
     private int id_Veterinario;
+    @Expose
     private String nombre;
+    @Expose
     private String apellidos;
+    @Expose
     private String codigoColegiatura;
+    @Expose
     private int id_Sede;
 
     public Veterinario() {

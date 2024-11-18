@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -58,12 +59,11 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
     private ProgressDialog progressDialog;
     private Toast toastActual;
 
-    Usuario usuarioPerfil;
-    List<Mascota> mascotasPerfil;
+    ArrayList<Mascota> mascotasList;
     ArrayList<Veterinario> veterinariosList;
     ArrayList<Cita> citasList;
     ArrayList<Sede> sedesList;
-    ArrayList<Mascota> mascotasList;
+    Cita nuevaCita;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -142,41 +142,23 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             }
         });
 
-        new ReservarCitaFragment.ConexionTask().execute();
-        showLoadingDialog();
-        // Ejecutar tareas en un hilo separado
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    freezeExecution();
+        mascotasList = obtenerListaMascotaEnSharedPreferences();
+        veterinariosList = obtenerListaVeterinariosEnSharedPreferences();
+        citasList = obtenerListaCitasEnSharedPreferences();
+        sedesList = obtenerListaSedesEnSharedPreferences();
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //CODIGO DESPUES DEL CONGELAMIENTO
-                            // Llenar los spinners estáticos
-                            if(conexionExitosa){
-                                limitarCalendario();
-                                llenarServicios();
-                                llenarSede();
-                                llenarHoras();
-                                llenarVeterinario();
-                            }
-                        }
-                    });
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        limitarCalendario();
+        llenarMascotas();
+        llenarServicios();
+        llenarSede();
+        llenarHoras();
+        llenarVeterinario();
 
         btnReservarCita.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                new ReservarCitaFragment.ConexionTask2().execute();
-
+                new ReservarCitaFragment.ConexionTask().execute();
                     showLoadingDialog();
 
                     // Ejecutar tareas en un hilo separado
@@ -191,9 +173,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
                                     public void run() {
                                         //CODIGO DESPUES DEL CONGELAMIENTO
                                         if (conexionExitosa) {
-                                            mostrarToast("Cita registrada con exito");
-                                        }else{
-                                            Toast.makeText(getContext(), "Error al registrar la información", Toast.LENGTH_SHORT).show();
+                                            mostrarToast(nuevaCita.getIdVeterinario()+"");
                                         }
                                     }
                                 });
@@ -244,7 +224,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    private boolean servicioRequiereVeterinario(String servicio) {
+    private boolean servicioRequiereVeterinario(@NonNull String servicio) {
         return servicio.equals("Consulta Médica") || servicio.equals("Castración") || servicio.equals("Desparasitación");
     }
 
@@ -386,108 +366,81 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
         });
     }
 
-    // Clase interna para ejecutar la prueba de conexión en un hilo de fondo
     private class ConexionTask extends AsyncTask<Void, Void, Integer> {
         @Override
         protected Integer doInBackground(Void... voids) {
-            //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
-            Usuario usuario = new Usuario();
-            Mascota mascota = new Mascota();
-            Veterinario veterinario= new Veterinario();
-            Cita cita = new Cita();
-            Sede sede = new Sede();
-
             int cnx = 0;
-            // Obtener el correo del usuario desde SharedPreferences
-            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
-            String correo = sharedPreferences.getString("correo", null); // Si no existe, será¡ null
-            //Almacenar todas las variables necesarias antes del cnx 1
-            usuarioPerfil = usuario.obtenerInformacionUsuario(correo);
-            mascotasPerfil = mascota.obtenerMascotasPorCorreo(correo);
-            veterinariosList= veterinario.obtenerVeterinarios();
-            citasList= cita.obtenerCitas();
-            sedesList= sede.obtenerSedes();
-            if(usuarioPerfil != null && mascotasPerfil != null && veterinariosList != null && citasList != null && sedesList != null){
-                cnx = 1;
-            }
-            return cnx;
-        }
+            Cita citaDAO = new Cita();
 
-        @Override
-        protected void onPostExecute(Integer result) {
-            if (result == 1) {
-                hideLoadingDialog();
-                conexionExitosa = true;
-                llenarMascotas(mascotasPerfil);
-            } else{
-                hideLoadingDialog();
-                mostrarToast("Error: Conexion fallida");
-            }
-        }
-    }
-
-    private class ConexionTask2 extends AsyncTask<Void, Void, Integer> {
-        @Override
-        protected Integer doInBackground(Void... voids) {
-            int cnx = 0;
+            int c_id_usuario;
+            java.sql.Date c_fecha;
+            int c_id_mascota = -1;
+            String c_servicio;
+            int c_id_veterinario = -1;
+            String c_estado;
+            int c_id_sede = -1;
+            String c_horaInicio;
 
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
 
-            Cita cita = new Cita();
-            cita.setIdUsuario(sharedPreferences.getInt("id_usuario", -1));
+            c_id_usuario = sharedPreferences.getInt("id_usuario", -1);
 
             long fechaEnMilisegundos = calendReserva.getDate(); // Supongo que esto es un long
             Date fecha = new Date(fechaEnMilisegundos);
             java.sql.Date fechaSql = new java.sql.Date(fecha.getTime());
 
-            cita.setFecha(fechaSql);
-
-            mascotasList = obtenerListaMascotaEnSharedPreferences();
+            c_fecha = fechaSql;
 
             for(Mascota v : mascotasList){
                 if(cboReservaMascota.getSelectedItem().toString() == (v.getNombre()+" - "+v.getTipo())){
-                    cita.setIdMascota(v.getId_Mascota());
+                    c_id_mascota = v.getId_Mascota();
+                    break;
                 }
             }
 
-            cita.setServicio(cboReservaServicio.getSelectedItem().toString());
+            c_servicio = cboReservaServicio.getSelectedItem().toString();
 
             for(Veterinario v : veterinariosList){
                 if(cboReservaVeterinario.getSelectedItem().toString() == (v.getNombre()+" "+v.getApellidos())){
-                    cita.setIdVeterinario(v.getId_Veterinario());
+                    c_id_veterinario = v.getId_Veterinario();
+                    break;
                 }
             }
 
-            cita.setEstado("Pendiente");
+            c_estado = "Pendiente";
 
             for(Sede v : sedesList){
                 if(cboReservaSede.getSelectedItem().toString() == v.getNombre()){
-                    cita.setIdSede(v.getId_Sede());
+                    c_id_sede = v.getId_Sede();
                 }
             }
 
             switch (cboReservaHora.getSelectedItem().toString()){
                 case "9:00-10:30":
-                    cita.setHoraInicio("9:00");
+                    c_horaInicio = "9:00";
                     break;
                 case "10:30-12:00":
-                    cita.setHoraInicio("10:30");
+                    c_horaInicio = "10:30";
                     break;
                 case "12:00-13:30":
-                    cita.setHoraInicio("12:00");
+                    c_horaInicio = "12:00";
                     break;
                 case "14:00-15:30":
-                    cita.setHoraInicio("14:00");
+                    c_horaInicio = "14:00";
                     break;
                 case "15:30-17:00":
-                    cita.setHoraInicio("15:30");
+                    c_horaInicio = "15:30";
                     break;
                 case "17:00-18:30":
-                    cita.setHoraInicio("17:00");
+                    c_horaInicio = "17:00";
                     break;
+                default:
+                    c_horaInicio = "";
             }
-            cita.agregarCita(cita);
-            if(cita != null){
+
+            nuevaCita = new Cita(c_id_usuario, c_id_mascota, c_id_sede, c_id_veterinario, c_servicio, c_horaInicio, c_fecha, c_estado);
+
+            if(citaDAO.agregarCita(nuevaCita)){
                 cnx = 1;
             }
             return cnx;
@@ -500,17 +453,17 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
                 conexionExitosa = true;
             } else{
                 hideLoadingDialog();
-                mostrarToast("Error: No se pudo registrar la cita");
+                mostrarToast("Error en la conexión");
             }
         }
     }
 
     // Método para llenar el Spinner de mascotas con la lista de mascotas del usuario
-    private void llenarMascotas(List<Mascota> mascotas) {
-        List<String> nombresMascotas = new ArrayList<>();
+    private void llenarMascotas() {
+        ArrayList<String> nombresMascotas = new ArrayList<>();
         //nombresMascotas.add("--Seleccione Mascota--"); // Opción predeterminada
 
-        for (Mascota mascota : mascotas) {
+        for (Mascota mascota : mascotasList) {
             nombresMascotas.add(mascota.getNombre() +" - "+mascota.getTipo()); // Obtener el nombre de cada mascota
         }
         // Configurar el adapter del Spinner con la lista de nombres de mascotas
@@ -560,6 +513,54 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             // Convertir el JSON de nuevo a ArrayList<Mascota>
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
             TypeToken<ArrayList<Mascota>> typeToken = new TypeToken<ArrayList<Mascota>>() {};
+            return gson.fromJson(json, typeToken.getType());
+        } else {
+            return new ArrayList<>();  // Retorna una lista vacía si no hay Mascota almacenados
+        }
+    }
+
+    public ArrayList<Veterinario> obtenerListaVeterinariosEnSharedPreferences() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+
+        // Recuperar el JSON de SharedPreferences
+        String json = sharedPreferences.getString("listaVeterinarios", null);
+
+        if (json != null) {
+            // Convertir el JSON de nuevo a ArrayList<Mascota>
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            TypeToken<ArrayList<Veterinario>> typeToken = new TypeToken<ArrayList<Veterinario>>() {};
+            return gson.fromJson(json, typeToken.getType());
+        } else {
+            return new ArrayList<>();  // Retorna una lista vacía si no hay Mascota almacenados
+        }
+    }
+
+    public ArrayList<Cita> obtenerListaCitasEnSharedPreferences() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+
+        // Recuperar el JSON de SharedPreferences
+        String json = sharedPreferences.getString("listaCitasGenerales", null);
+
+        if (json != null) {
+            // Convertir el JSON de nuevo a ArrayList<Mascota>
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            TypeToken<ArrayList<Cita>> typeToken = new TypeToken<ArrayList<Cita>>() {};
+            return gson.fromJson(json, typeToken.getType());
+        } else {
+            return new ArrayList<>();  // Retorna una lista vacía si no hay Mascota almacenados
+        }
+    }
+
+    public ArrayList<Sede> obtenerListaSedesEnSharedPreferences() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+
+        // Recuperar el JSON de SharedPreferences
+        String json = sharedPreferences.getString("listaSedes", null);
+
+        if (json != null) {
+            // Convertir el JSON de nuevo a ArrayList<Mascota>
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            TypeToken<ArrayList<Sede>> typeToken = new TypeToken<ArrayList<Sede>>() {};
             return gson.fromJson(json, typeToken.getType());
         } else {
             return new ArrayList<>();  // Retorna una lista vacía si no hay Mascota almacenados

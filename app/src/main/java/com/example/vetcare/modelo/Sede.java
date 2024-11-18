@@ -1,6 +1,7 @@
 package com.example.vetcare.modelo;
 
 import com.example.vetcare.clases.MySQLConnector;
+import com.google.gson.annotations.Expose;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -10,10 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Sede {
+    @Expose(serialize = false)
     Connection connection;
+    @Expose
     int id_Sede;
+    @Expose
     String nombre;
+    @Expose
     String latitud;
+    @Expose
     String altitud;
 
     public Sede(int id_Sede, String nombre, String latitud, String altitud) {

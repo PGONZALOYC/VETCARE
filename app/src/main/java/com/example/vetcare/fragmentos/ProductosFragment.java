@@ -106,7 +106,6 @@ public class ProductosFragment extends Fragment {
         valor = sharedPreferences.getString("categoria", "null");
         titulo.setText(valor);
         ImageView closeButton = vista.findViewById(R.id.closeButton);
-        View iconoCarrito = vista.findViewById(R.id.proImagenCarrito);
         closeButton.setOnClickListener(v -> closeFragment());
 
         new ProductosFragment.ConexionTask().execute();
@@ -132,17 +131,6 @@ public class ProductosFragment extends Fragment {
                 }
             }
         }).start();
-
-        View.OnClickListener listener2 = new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .add(R.id.menRelArea, new CarritoProductosFragment())
-                        .commit();
-            }
-        };
-
-        iconoCarrito.setOnClickListener(listener2);
 
         return vista;
     }
@@ -240,21 +228,8 @@ public class ProductosFragment extends Fragment {
     // Añadir CardView al GridLayout
     contenedor.addView(cardView);
 
+    imageButton.setOnClickListener(v -> clickBotonAgregar(imageButton, producto));
 
-
-    for(int i= 0; i< carritoLista.size(); i++){
-        if(carritoLista.get(i).getId_Producto() == producto.getId_Producto()){
-            imageButton.setImageResource(R.drawable.ic_check);
-
-            ColorStateList colorStateList1 = getResources().getColorStateList(R.color.check_producto_button, null);
-            imageButton.setBackgroundTintList(colorStateList1);
-
-            imageButton.setClickable(false);
-            break;
-        } else if (i == carritoLista.size()-1){
-            imageButton.setOnClickListener(v -> clickBotonAgregar(imageButton, producto));
-        }
-    }
 }
 
     private void clickBotonAgregar(ImageButton button, Producto producto) {
@@ -271,11 +246,15 @@ public class ProductosFragment extends Fragment {
     }
 
     private void imprimirProductos() {
+
+        //Se creo la BD
+        //objeto de la BD
+        Vetcare vt = new Vetcare(this.getContext());
+
         // Validar credenciales en base de datos o lógica específica
         if (conexionExitosa) {
             // Referencia al GridLayout
             GridLayout contenedorEtiquetas = vista.findViewById(R.id.contenedorEtiquetas);
-            carritoLista = obtenerListaEnSharedPreferences();
             for(int i=0; i < productos.size(); i++){
                 agregarCard(contenedorEtiquetas, BitmapFactory.decodeByteArray(productos.get(i).getImagen(), 0, productos.get(i).getImagen().length), productos.get(i).getNombre(), "S/."+productos.get(i).getPrecio(), productos.get(i));
             }

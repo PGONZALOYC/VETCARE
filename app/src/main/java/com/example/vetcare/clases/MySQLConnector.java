@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 
 public class MySQLConnector {
     // URL de conexión a la base de datos MySQL en el servidor remoto, incluyendo el nombre de la base de datos "VetCare"
-    private static final String URL = "jdbc:mysql://54.87.3.7:3306/VetCare";
+    private static final String URL = "jdbc:mysql://54.87.3.7:3306/VetCare?useSSL=false";
     // Nombre de usuario para autenticar la conexión a la base de datos
     private static final String USER = "admin";
     // Contraseña del usuario para la conexión

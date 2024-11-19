@@ -238,6 +238,19 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
         }
     }
 
+    // Método para llenar el Spinner de mascotas con la lista de mascotas del usuario
+    private void llenarMascotas() {
+        ArrayList<String> nombresMascotas = new ArrayList<>();
+        //nombresMascotas.add("--Seleccione Mascota--"); // Opción predeterminada
+
+        for (Mascota mascota : mascotasList) {
+            nombresMascotas.add(mascota.getNombre() +" - "+mascota.getTipo()); // Obtener el nombre de cada mascota
+        }
+        // Configurar el adapter del Spinner con la lista de nombres de mascotas
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, nombresMascotas);
+        cboReservaMascota.setAdapter(adapter);
+    }
+
     private void llenarServicios() {
         String[] servicios = {"Baño", "Corte", "Consulta Médica", "Castración", "Desparasitación"};
         cboReservaServicio.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, servicios));
@@ -392,7 +405,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             c_fecha = fechaSql;
 
             for(Mascota v : mascotasList){
-                if(cboReservaMascota.getSelectedItem().toString() == (v.getNombre()+" - "+v.getTipo())){
+                if(cboReservaMascota.getSelectedItem().toString().equals(v.getNombre() +" - "+v.getTipo())){
                     c_id_mascota = v.getId_Mascota();
                     break;
                 }
@@ -401,7 +414,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             c_servicio = cboReservaServicio.getSelectedItem().toString();
 
             for(Veterinario v : veterinariosList){
-                if(cboReservaVeterinario.getSelectedItem().toString() == (v.getNombre()+" "+v.getApellidos())){
+                if(cboReservaVeterinario.getSelectedItem().toString().equals(v.getNombre()+" "+v.getApellidos())){
                     c_id_veterinario = v.getId_Veterinario();
                     break;
                 }
@@ -410,7 +423,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             c_estado = "Pendiente";
 
             for(Sede v : sedesList){
-                if(cboReservaSede.getSelectedItem().toString() == v.getNombre()){
+                if(cboReservaSede.getSelectedItem().toString().equals(v.getNombre())){
                     c_id_sede = v.getId_Sede();
                 }
             }
@@ -453,23 +466,12 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
                 conexionExitosa = true;
             } else{
                 hideLoadingDialog();
-                mostrarToast("Error en la conexión");
+                mostrarToast("Error en la conexión "+"Mascota: "+nuevaCita.getIdMascota()+" Sede: "+nuevaCita.getIdSede()+" Veterinario: "+nuevaCita.getIdVeterinario()+" Servicio: "+nuevaCita.getServicio()+" Hora: "+nuevaCita.getHoraInicio()+" Fecha: "+nuevaCita.getFecha()+" Estado: "+nuevaCita.getEstado());
             }
         }
     }
 
-    // Método para llenar el Spinner de mascotas con la lista de mascotas del usuario
-    private void llenarMascotas() {
-        ArrayList<String> nombresMascotas = new ArrayList<>();
-        //nombresMascotas.add("--Seleccione Mascota--"); // Opción predeterminada
 
-        for (Mascota mascota : mascotasList) {
-            nombresMascotas.add(mascota.getNombre() +" - "+mascota.getTipo()); // Obtener el nombre de cada mascota
-        }
-        // Configurar el adapter del Spinner con la lista de nombres de mascotas
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, nombresMascotas);
-        cboReservaMascota.setAdapter(adapter);
-    }
 
     //METODOS IMPLEMENTADOS PARA LA CARGA DESDE LA BASE DE DATOS
     //Congela los procesos mientras espera que conexionExitosa sea true para continuar con las posteriores instrucciones
@@ -503,6 +505,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
         toastActual.show();
     }
 
+    //METODOS CONSULTORES DEL SHARED PREFERENCES
     public ArrayList<Mascota> obtenerListaMascotaEnSharedPreferences() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
 

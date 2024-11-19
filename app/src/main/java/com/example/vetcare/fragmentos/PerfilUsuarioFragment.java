@@ -249,10 +249,6 @@ public class PerfilUsuarioFragment extends Fragment {
             //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
             int cnx = 0;
             Usuario usuarioDAO = new Usuario();
-            //Mascota mascotaDAO = new Mascota();
-            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
-            //mascotaList = mascotaDAO.obtenerMascotasPorCorreo(sharedPreferences.getString("correo", "null"));
-            //Cifrar la clave
 
             if(usuarioDAO.editarUsuario(userID, nombre, apellido, telefono, correo)){
                 guardarCorreoEnSharedPreferences(userID, nombre, apellido, telefono, correo);

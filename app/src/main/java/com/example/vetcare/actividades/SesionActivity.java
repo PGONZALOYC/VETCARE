@@ -204,7 +204,6 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         @Override
         protected Integer doInBackground(Void... voids) {
             SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
             //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
             int cnx = 0;
             Usuario usuarioDAO = new Usuario();

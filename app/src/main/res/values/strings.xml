@@ -134,6 +134,13 @@
     <string name="agremascLblTipo">Tipo</string>
     <string name="agremascImgMascota">Vista previa de la imagen de mascota</string>
 
+    <!--Item Mis Citas-->
+    <string name="itemlblServicio">Servicio:</string>
+    <string name="itemlblVeterinario">Veterinario:</string>
+    <string name="itemlblMascota">Boby</string>
+    <string name="itemlblSede">Sede:</string>
+    <string name="itemlblFecha">Fecha y hora:</string>
+    <string name="lblMisCitasTitulo">Mis Citas</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

@@ -109,11 +109,6 @@ public class PerfilUsuarioFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_perfil_usuario, container, false);
-
-        // Inflate the layout for this fragment
-
 
         vista = inflater.inflate(R.layout.fragment_perfil_usuario, container, false);
 
@@ -191,13 +186,7 @@ public class PerfilUsuarioFragment extends Fragment {
                 }
 
         });
-//        infoMastoca.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Activity activity = getActivity();
-//                ((Menu)activity).onClickMenu(5);
-//            }
-//        });
+
         agreMascota.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -336,6 +325,9 @@ public class PerfilUsuarioFragment extends Fragment {
             // Aquí puedes agregar la lógica para abrir el perfil de la mascota
             // Por ejemplo, usando el ID de la mascota o su nombre
             // startActivity(new Intent(getContext(), PerfilMascotaActivity.class));
+            Activity activity = getActivity();
+            ((Menu)activity).onClickMenu(5);
+
         });
 
         // Crear TextView para el nombre de la mascota
@@ -346,7 +338,7 @@ public class PerfilUsuarioFragment extends Fragment {
         textView.setText(labelText);  // Nombre de la mascota
         textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         textView.setTextColor(getResources().getColor(R.color.titulo, null));  // Color del texto
-        textView.setTextSize(8);  // Tamaño del texto
+        textView.setTextSize(11);  // Tamaño del texto
         textView.setTypeface(ResourcesCompat.getFont(getContext(), R.font.poppins_medium));
 
         // Agregar ImageButton y TextView al LinearLayout

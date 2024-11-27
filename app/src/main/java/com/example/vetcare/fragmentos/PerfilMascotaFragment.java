@@ -1,5 +1,7 @@
 package com.example.vetcare.fragmentos;
 
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,8 +13,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.vetcare.R;
+import com.example.vetcare.modelo.Usuario;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +27,10 @@ public class PerfilMascotaFragment extends Fragment {
     ImageView mascIconoMascota;
     EditText mascTxtNombreMascota,mascTxtEdadMascota,mascTxtRazaMascota;
     Spinner mascCboTipoMascota;
+    boolean conexionExitosa = false;
+    private static Toast toastActual;
+    private ProgressDialog progressDialog;
+    View vista;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -84,5 +92,67 @@ public class PerfilMascotaFragment extends Fragment {
     private void llenarTipoMascota() {
         String[] servicios = {"--Seleccione Tipo--", "Perro", "Gato", "Otro"};
         mascCboTipoMascota.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, servicios));
+    }
+
+    // Clase interna para ejecutar la prueba de conexión en un hilo de fondo
+    public class ConexionTask extends AsyncTask<Void, Void, Integer> {
+        @Override
+        protected Integer doInBackground(Void... voids) {
+
+            //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
+            int cnx = 0;
+            Usuario usuarioDAO = new Usuario();
+
+//            if(usuarioDAO.editarUsuario(userID, nombre, apellido, telefono, correo)){
+//                guardarCorreoEnSharedPreferences(userID, nombre, apellido, telefono, correo);
+//                cnx = 1;
+//            }
+            return cnx;
+
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            if (result == 1) {
+                hideLoadingDialog();
+                conexionExitosa = true;
+            } else{
+                hideLoadingDialog();
+                mostrarToast("Error: Credenciales incorrectas");
+            }
+        }
+
+
+    }
+
+    //Congela los procesos mientras espera que conexionExitosa sea true para continuar con las posteriores instrucciones
+    private void freezeExecution() throws InterruptedException {
+        while (!conexionExitosa) {
+            Thread.sleep(100); // Esperar un breve periodo antes de volver a comprobar
+        }
+    }
+
+    //Método para desplegar Toasts sin esperar a que termine el anterior toast (lo reemplaza)
+    private void mostrarToast(String message) {
+        if (toastActual != null) {
+            toastActual.cancel();
+        }
+        toastActual = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toastActual.show();
+    }
+
+    //Dialogo de carga mientras espera al congelamiento -- mostrar
+    private void showLoadingDialog() {
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Editando informacion...");
+        progressDialog.setCancelable(false); // No se puede cancelar tocando fuera del diálogo
+        progressDialog.show();
+    }
+
+    //Dialogo de carga mientras espera al congelamiento -- ocultar
+    private void hideLoadingDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 }

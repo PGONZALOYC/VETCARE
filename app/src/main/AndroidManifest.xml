@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
 
     <application
@@ -38,7 +39,11 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
+            android:exported="true"
             android:value="AIzaSyB3nGsMRzHC9MM49kgiKSaTFBUYkbkz1II" />
+
+        <service android:name=".servicios.FloatingButtonService"
+            android:permission="android.permission.SYSTEM_ALERT_WINDOW" />
 
         <activity
             android:name=".actividades.CambiarContrasenaActivity"

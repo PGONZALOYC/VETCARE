@@ -4,80 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".fragmentos.MisCitasFragment">
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/citLblReservarT"
+        android:layout_height="720dp">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/citLblMisCitasTitulo"
-            android:textSize="35sp"
-            android:fontFamily="@font/poppins_semibold"
-            android:textColor="@color/titulo"
-            android:layout_marginTop="10dp"/>
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/reslblReservarT"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:textSize="32sp"
+                android:fontFamily="@font/poppins_semibold"
+                android:text="@string/lblMisCitasTitulo"
+                android:textColor="@color/titulo"
+                android:layout_marginTop="10dp"/>
 
-        <TextView
-            android:id="@+id/citLblFechaCita"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_semibold"
-            android:text="TESTTESTTEST"
-            android:textSize="15sp"
-            tools:ignore="TextSizeCheck" />
-
-        <TextView
-            android:id="@+id/citLblDetalleCita"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SERVICIO / SEDE / MASCOTA / VETERINARIO(SI HAY)"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:fontFamily="@font/poppins_semibold"
-            android:textAlignment="center"
-            android:padding="15dp"
-            tools:ignore="TextSizeCheck"
-            android:background="@color/fondoMisCitas"/>
-
-        <TextView
-            android:id="@+id/citLblProximaCita"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
-            android:fontFamily="@font/poppins_semibold"
-            android:text="@string/citLblProximaCita"
-            android:textColor="@color/titulo"
-            android:textSize="25sp" />
-
-        <TextView
-            android:id="@+id/citLblFechaProximaCita"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TESTTESTTEST"
-            android:textSize="15sp"
-            android:fontFamily="@font/poppins_semibold"
-            tools:ignore="TextSizeCheck" />
-
-        <TextView
-            android:id="@+id/citLblDetalleProximaCita"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SERVICIO / SEDE / MASCOTA / VETERINARIO(SI HAY)"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:fontFamily="@font/poppins_semibold"
-            android:padding="15dp"
-            android:textAlignment="center"
-            android:background="@color/fondoMisCitas"
-            tools:ignore="TextSizeCheck" />
-
-    </LinearLayout>
-</ScrollView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/frgMisCitas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </ScrollView>
 </FrameLayout>

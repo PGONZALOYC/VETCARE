@@ -7,16 +7,21 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vetcare.R;
+import com.example.vetcare.adaptadores.CitaAdapter;
+import com.example.vetcare.clases.VistaCita;
 import com.example.vetcare.modelo.Cita;
 import com.example.vetcare.modelo.Sede;
 import com.example.vetcare.modelo.Usuario;
@@ -30,13 +35,12 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class MisCitasFragment extends Fragment {
-    private TextView citLblFechaCita, citLblDetalleCita;
-
     boolean conexionExitosa = false;
     private ProgressDialog progressDialog;
     private Toast toastActual;
 
-    ArrayList<Cita> citasList;
+    RecyclerView recVistaCita;
+    ArrayList<VistaCita> citasList;
     Usuario usuarioPerfil;
 
 
@@ -85,9 +89,9 @@ public class MisCitasFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mis_citas, container, false);
         //Inicializar vistas
-        citLblFechaCita = view.findViewById(R.id.citLblFechaCita);
-        citLblDetalleCita = view.findViewById(R.id.citLblDetalleCita);
-
+        recVistaCita = view.findViewById(R.id.frgMisCitas);
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        recVistaCita.setLayoutManager(manager);
         new MisCitasFragment.ConexionTask().execute();
         showLoadingDialog();
         // Ejecutar tareas en un hilo separado
@@ -101,29 +105,7 @@ public class MisCitasFragment extends Fragment {
                         @Override
                         public void run() {
                             //CODIGO DESPUES DEL CONGELAMIENTO
-                            if (conexionExitosa) {
-                                // Verificar si hay citas y obtener la última
-                                if (conexionExitosa && citasList != null && !citasList.isEmpty()) {
-                                    Cita ultimaCita = citasList.get(citasList.size() - 1);  // Obtener la última cita de la lista
 
-                                    // Crear el detalle de la cita en el formato deseado
-                                    String detalleCita = ultimaCita.getServicio() + " / " +
-                                            ultimaCita.getSede() + " / " +
-                                            ultimaCita.getMascota();
-
-                                    // Si el servicio requiere veterinario, agregarlo al detalle
-                                    if (ultimaCita.getServicio().equalsIgnoreCase("Consulta médica") ||
-                                            ultimaCita.getServicio().equalsIgnoreCase("Castración") ||
-                                            ultimaCita.getServicio().equalsIgnoreCase("Desparasitación")) {
-                                        detalleCita += " / " + ultimaCita.getVeterinario();
-                                    }
-
-                                    // Asignar el detalle al TextView
-                                    citLblDetalleCita.setText(detalleCita);
-                                } else {
-                                    citLblDetalleCita.setText("No hay citas disponibles");
-                                }
-                            }
                         }
                     });
                 } catch (InterruptedException e) {
@@ -142,26 +124,24 @@ public class MisCitasFragment extends Fragment {
         protected Integer doInBackground(Void... voids) {
             //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
             Usuario usuario = new Usuario();
-            Cita cita = new Cita();
+            VistaCita vistaCita = new VistaCita();
             int cnx = 0;
             // Obtener el correo del usuario desde SharedPreferences
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
             String correo = sharedPreferences.getString("correo", null); // Si no existe, será¡ null
             //Almacenar todas las variables necesarias antes del cnx 1
             usuarioPerfil = usuario.obtenerInformacionUsuario(correo);
-            citasList = cita.obtenerCitasPorCorreo(usuarioPerfil.getCorreo());
+            citasList = vistaCita.obtenerCitasPorCorreo(usuarioPerfil.getCorreo());
             if (usuarioPerfil != null && citasList != null) {
                 cnx = 1;
-
                 // Mostrar las citas en el Log
-                for (Cita c : citasList) {
-                    Log.d("Cita", "ID Cita: " + c.getIdCita() +
+                for (VistaCita c : citasList) {
+                    Log.d("Cita", "ID Cita: " + c.getId() +
                             ", Fecha: " + c.getFecha() +
                             ", Servicio: " + c.getServicio() +
-                            ", Mascota: "+ c.getMascota() +
+                            ", Mascota: "+ c.getNombreMascota() +
                             ", Sede ID: " + c.getSede()+
-                            ", Veterinario: " + c.getVeterinario() +
-                            ", Estado: " + c.getEstado());
+                            ", Veterinario: " + c.getVeterinario());
                 }
             }
             return cnx;
@@ -170,6 +150,8 @@ public class MisCitasFragment extends Fragment {
         @Override
         protected void onPostExecute(Integer result) {
             if (result == 1) {
+                CitaAdapter adapter= new CitaAdapter(citasList);
+                recVistaCita.setAdapter(adapter);
                 hideLoadingDialog();
                 conexionExitosa = true;
             } else {

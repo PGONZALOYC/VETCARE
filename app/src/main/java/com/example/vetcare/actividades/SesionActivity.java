@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -36,6 +37,7 @@ import com.example.vetcare.modelo.Usuario;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.example.vetcare.servicios.FloatingButtonService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +90,19 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         btnSOS.setOnClickListener(this); // Listener para el botón SOS
         logTxtOlvidasteContrasena.setOnClickListener(this); // Listener para el olvido de contraseña
 
+        // Boton flotante
+        if (!Settings.canDrawOverlays(this)) {
+            // Solicitar permiso para mostrar vistas flotantes
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, 101); // 101 es un REQUEST_CODE arbitrario
+        } else {
+            // Iniciar el servicio flotante si el permiso ya está concedido
+            Intent intent = new Intent(this, FloatingButtonService.class);
+            startService(intent);
+        }
+
+
         if(sharedPreferences.getBoolean("recuerda", false)){
             new ConexionTask().execute();
 
@@ -116,8 +131,25 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 101) { // El mismo REQUEST_CODE que usaste al solicitar el permiso
+            if (Settings.canDrawOverlays(this)) {
+                // Permiso concedido, iniciar el servicio flotante
+                Intent intent = new Intent(this, FloatingButtonService.class);
+                startService(intent);
+            } else {
+                // Permiso denegado, mostrar mensaje al usuario
+                Toast.makeText(this, "Permiso necesario para mostrar el botón flotante", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    @Override
     public void onClick(View v) {
-// Usando if-else if para manejar los clics
+        // Usando if-else if para manejar los clics
         if (v.getId() == R.id.logBtnIngresar) {
             new ConexionTask().execute();
 
@@ -157,6 +189,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             redirigirSOS(); // Método para manejar el botón SOS
         }
     }
+
 
     private void iniciarSesion() {
         // Validar credenciales en base de datos o lógica específica

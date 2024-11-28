@@ -50,8 +50,9 @@ public class CitaAdapter extends RecyclerView.Adapter<CitaAdapter.ViewHolder> {
         holder.lblVeterinario.setText(vistaCita.getVeterinario());
         holder.lblSede.setText(vistaCita.getSede());
         Date fechaHora= vistaCita.getFecha();
-        DateFormat formato= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat formato= new SimpleDateFormat("dd-MM-yyyy");
         holder.lblFecha.setText(formato.format(fechaHora));
+        holder.lblHora.setText(vistaCita.getHorario());
     }
     @Override
     public int getItemCount() {
@@ -61,7 +62,7 @@ public class CitaAdapter extends RecyclerView.Adapter<CitaAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardItemCita;
         ImageView imgFoto;
-        TextView lblServicio, lblVeterinario, lblSede, lblFecha, lblMascota;
+        TextView lblServicio, lblVeterinario, lblSede, lblFecha,lblHora, lblMascota;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             cardItemCita= itemView.findViewById(R.id.itemCardItemCita);
@@ -70,6 +71,7 @@ public class CitaAdapter extends RecyclerView.Adapter<CitaAdapter.ViewHolder> {
             lblVeterinario=itemView.findViewById(R.id.itemlblVeterinario);
             lblSede=itemView.findViewById(R.id.itemlblSede);
             lblFecha=itemView.findViewById(R.id.itemlblFecha);
+            lblHora=itemView.findViewById(R.id.itemlblHora);
             lblMascota=itemView.findViewById(R.id.itemlblMascota);
         }
 

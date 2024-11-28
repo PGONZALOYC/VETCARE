@@ -113,13 +113,14 @@
     <string name="perNombMascota1">Max</string>
     <string name="perNombMascota2">Wilson</string>
 
-    <!--Mascota-->
+    <!--Perfil Mascota-->
     <string name="mascLblPerfilMascota">Información de la mascota</string>
     <string name="mascDescIconoMascota">Icono mascota</string>
     <string name="mascDescIconoEditar">Icono editar</string>
     <string name="mascTxtNombreMascota">Nombre</string>
-    <string name="mascTxtEdadMascota">Edad</string>
-    <string name="mascTipoMascota">Seleccione un tipo</string>
+    <string name="mascTxtEdadAniosMascota">Edad años</string>
+    <string name="mascTxtEdadMesesMascota">Edad meses</string>
+    <string name="mascTxtTipoMascota">Tipo</string>
     <string name="mascTxtRazaMascota">Raza</string>
 
     <!--Agregar Mascota-->
@@ -139,7 +140,8 @@
     <string name="itemlblVeterinario">Veterinario:</string>
     <string name="itemlblMascota">Boby</string>
     <string name="itemlblSede">Sede:</string>
-    <string name="itemlblFecha">Fecha y hora:</string>
+    <string name="itemlblFecha">Fecha:</string>
+    <string name="itemlblHora">Hora:</string>
     <string name="lblMisCitasTitulo">Mis Citas</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

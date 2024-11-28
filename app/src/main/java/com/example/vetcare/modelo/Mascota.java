@@ -216,4 +216,31 @@ public class Mascota {
         return exito;
     }
 
+    public boolean editarMascota(int idMascota, String nombre, String tipo, String raza,byte[] imagen, int edadAño, int edadMeses) {
+        boolean actualizado = false;
+        try {
+            // Llama al procedimiento almacenado
+            String sql = "{CALL EditarMascota(?, ?, ?, ?, ?, ?, ?, ?)}";
+            try (CallableStatement statement = connection.prepareCall(sql)) {
+                // Configura los parámetros
+                statement.setInt(1, idMascota);
+                statement.setString(2, nombre);
+                statement.setString(3, tipo);
+                statement.setString(4, raza);
+                Blob blob = connection.createBlob();
+                blob.setBytes(1, imagen);
+                statement.setBlob(5, blob);
+                statement.setInt(6, edadAño);
+                statement.setInt(7, edadMeses);
+
+                // Ejecuta la actualización
+                int filasActualizadas = statement.executeUpdate();
+                actualizado = filasActualizadas > 0; // True si se actualizó al menos una fila
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return actualizado;
+    }
+
 }

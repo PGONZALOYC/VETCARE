@@ -56,49 +56,107 @@
                 android:hint="@string/mascTxtNombreMascota"
                 android:maxLength="100"
                 android:fontFamily="@font/poppins_medium"
-                android:inputType="none"/>
+                android:inputType="text"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText
-                android:id="@+id/mascTxtEdadMascota"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/mascTxtEdadMascota"
-                android:layout_marginVertical="10dp"
-                android:maxLength="100"
-                android:fontFamily="@font/poppins_medium"
-                android:inputType="none"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_weight="1">
+                <EditText
+                    android:id="@+id/mascTxtEdadAniosMascota"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/mascTxtEdadAniosMascota"
+                    android:layout_marginVertical="10dp"
+                    android:maxLength="100"
+                    android:fontFamily="@font/poppins_medium"
+                    android:inputType="none"
+                    android:layout_marginRight="10dp"/>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <Spinner
-                android:id="@+id/mascCboTipoMascota"
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:fontFamily="@font/poppins_medium"
-                android:enabled="false"/>
+                android:layout_weight="1">
+                <EditText
+                    android:id="@+id/mascTxtEdadMesesMascota"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/mascTxtEdadMesesMascota"
+                    android:layout_marginVertical="10dp"
+                    android:maxLength="100"
+                    android:fontFamily="@font/poppins_medium"
+                    android:inputType="none"
+                    android:layout_marginLeft="10dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
 
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText
-                android:id="@+id/mascTxtRazaMascota"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/mascTxtRazaMascota"
-                android:layout_marginVertical="10dp"
-                android:maxLength="100"
-                android:fontFamily="@font/poppins_medium"
-                android:inputType="none"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_weight="1"
+                android:text="@string/mascTxtTipoMascota"
+                android:textSize="25sp"
+                android:fontFamily="@font/poppins_semibold"
+                android:layout_marginVertical="5dp"
+                android:textColor="@color/titulo"
+                android:layout_marginRight="10dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/mascTxtRazaMascota"
+                android:textSize="25sp"
+                android:fontFamily="@font/poppins_semibold"
+                android:layout_marginVertical="5dp"
+                android:textColor="@color/titulo"
+                android:layout_marginLeft="10dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <Spinner
+                    android:id="@+id/mascCboTipoMascota"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:layout_marginVertical="10dp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:enabled="false"
+                    android:layout_marginRight="10dp"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <Spinner
+                    android:id="@+id/mascCboRazaMascota"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:layout_marginVertical="10dp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:enabled="false"
+                    android:layout_marginLeft="10dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
     </LinearLayout>
 
 </FrameLayout>

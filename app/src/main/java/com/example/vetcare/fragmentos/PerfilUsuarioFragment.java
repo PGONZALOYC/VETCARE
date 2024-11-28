@@ -17,6 +17,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Base64;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -303,7 +304,7 @@ public class PerfilUsuarioFragment extends Fragment {
         editor.apply();
     }
 
-    private void agregarCard(GridLayout contenedor, Bitmap imageBitmap, String labelText, int mascotaId) {
+    private void agregarCard(GridLayout contenedor, Bitmap imageBitmap, String labelText, Mascota mascota) {
         // Crear LinearLayout principal
         LinearLayout linearLayout = new LinearLayout(this.getContext());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -325,6 +326,7 @@ public class PerfilUsuarioFragment extends Fragment {
             // Aquí puedes agregar la lógica para abrir el perfil de la mascota
             // Por ejemplo, usando el ID de la mascota o su nombre
             // startActivity(new Intent(getContext(), PerfilMascotaActivity.class));
+            guardarMascotaSeleccionada(mascota);
             Activity activity = getActivity();
             ((Menu)activity).onClickMenu(5);
 
@@ -381,7 +383,7 @@ public class PerfilUsuarioFragment extends Fragment {
             }
 
             // Agregar tarjeta al contenedor
-            agregarCard(contenedorMascotas, imagenBitmap, mascota.getNombre(), mascota.getId_Mascota());
+            agregarCard(contenedorMascotas, imagenBitmap, mascota.getNombre(), mascota);
         }
     }
 
@@ -400,6 +402,38 @@ public class PerfilUsuarioFragment extends Fragment {
             return new ArrayList<>();  // Retorna una lista vacía si no hay Mascota almacenados
         }
     }
+
+//    private void guardarMascotaSeleccionada(Mascota mascota) {
+//        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//        // Convertir el objeto Mascota a JSON usando Gson
+//        Gson gson = new Gson();
+//        String mascotaJson = gson.toJson(mascota);
+//
+//        // Guardar la cadena JSON en SharedPreferences
+//        editor.putString("mascotaSeleccionada", mascotaJson);
+//        editor.apply();
+//    }
+
+    private void guardarMascotaSeleccionada(Mascota mascota) {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Almacenar cada atributo de la mascota
+        editor.putInt("mascota_id", mascota.getId_Mascota());
+        editor.putString("mascota_nombre", mascota.getNombre());
+        editor.putString("mascota_tipo", mascota.getTipo());
+        editor.putString("mascota_raza", mascota.getRaza());
+        editor.putInt("mascota_edadAños", mascota.getEdadAño());
+        editor.putInt("mascota_edadMeses", mascota.getEdadMeses());
+        String mascotaImagenBase64 = Base64.encodeToString(mascota.getImagen(), Base64.DEFAULT);
+        editor.putString("mascota_imagen", mascotaImagenBase64);
+
+
+        editor.apply();
+    }
+
 
 
 

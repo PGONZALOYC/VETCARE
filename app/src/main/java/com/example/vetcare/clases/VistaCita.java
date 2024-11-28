@@ -18,6 +18,15 @@ public class VistaCita{
     private String veterinario;
     private String sede;
     private Date fecha;
+    private String horario;
+
+    public String getHorario() {
+        return horario;
+    }
+
+    public void setHorario(String horario) {
+        this.horario = horario;
+    }
 
     public VistaCita() {
         try {
@@ -112,6 +121,7 @@ public class VistaCita{
                         // Asignar los valores obtenidos del ResultSet a los atributos de la cita
                         vistaCita.setId(resultSet.getInt("id_Cita"));
                         vistaCita.setFecha(resultSet.getDate("Fecha"));
+                        vistaCita.setHorario(resultSet.getString("horario"));
                         vistaCita.setServicio(resultSet.getString("Servicio"));
                         // Obtener los nombres directamente
                         vistaCita.setNombreMascota(resultSet.getString("NombreMascota"));

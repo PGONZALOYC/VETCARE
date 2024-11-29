@@ -220,7 +220,7 @@ public class Mascota {
         boolean actualizado = false;
         try {
             // Llama al procedimiento almacenado
-            String sql = "{CALL EditarMascota(?, ?, ?, ?, ?, ?, ?, ?)}";
+            String sql = "{CALL EditarMascota(?, ?, ?, ?, ?, ?, ?)}";
             try (CallableStatement statement = connection.prepareCall(sql)) {
                 // Configura los parámetros
                 statement.setInt(1, idMascota);

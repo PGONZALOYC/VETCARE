@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Vetcare</string>
     <string name="bieLblSaludo">Hola: </string>
+    <string name="app_logo">Logo de Vetcare </string>
 
     <!--Sesión-->
     <string name="logTxtCorreo">Correo</string>

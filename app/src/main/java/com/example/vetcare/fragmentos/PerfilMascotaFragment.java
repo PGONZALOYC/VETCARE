@@ -1,5 +1,6 @@
 package com.example.vetcare.fragmentos;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -28,6 +29,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.vetcare.R;
+import com.example.vetcare.clases.Menu;
 import com.example.vetcare.modelo.Mascota;
 import com.example.vetcare.modelo.Usuario;
 import com.google.gson.Gson;
@@ -37,6 +39,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,8 +51,8 @@ public class PerfilMascotaFragment extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int CAPTURE_IMAGE_REQUEST = 2;
     private Uri imageUri;
-    ImageButton btnSubirImagen;
-    ImageView mascIconoMascota;
+    //ImageButton btnSubirImagen;
+    ImageButton mascIconoMascota;
     EditText mascTxtNombreMascota,mascTxtEdadAniosMascota,mascTxtEdadMesesMascota;
     Spinner mascCboTipoMascota, mascCboRazaMascota;
     //ImageButton mascIconoEditar;
@@ -60,11 +63,12 @@ public class PerfilMascotaFragment extends Fragment {
     int edadMeses=0;
     String tipoRecuperado="";
     String razaRecuperada="";
-    byte[] imgPerfil = new byte[10];
+    byte[] imgPerfil = new byte[1024];
     boolean conexionExitosa = false;
     private static Toast toastActual;
     private ProgressDialog progressDialog;
     View vista;
+    List<Mascota> listaMascotas;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -110,10 +114,8 @@ public class PerfilMascotaFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         vista = inflater.inflate(R.layout.fragment_perfil_mascota, container, false);
-//        btnSubirImagen = vista.findViewById(R.id.mascIconoMascota);
-//        // Configuramos el click listener para el ImageButton
-//        btnSubirImagen.setOnClickListener(v -> showImageSelectionDialog());
         mascIconoMascota=vista.findViewById(R.id.mascIconoMascota);
+        mascIconoMascota.setOnClickListener(v -> showImageSelectionDialog());
         mascTxtNombreMascota=vista.findViewById(R.id.mascTxtNombreMascota);
         mascTxtEdadAniosMascota=vista.findViewById(R.id.mascTxtEdadAniosMascota);
         mascTxtEdadMesesMascota=vista.findViewById(R.id.mascTxtEdadMesesMascota);
@@ -150,6 +152,11 @@ public class PerfilMascotaFragment extends Fragment {
                 byte[] imagenBytes = Base64.decode(imagenBase64, Base64.DEFAULT);
                 Bitmap imagenBitmap = BitmapFactory.decodeByteArray(imagenBytes, 0, imagenBytes.length);
                 mascIconoMascota.setImageBitmap(imagenBitmap);
+//                // Guardamos la URI de la imagen (en caso de que no haya selección nueva)
+//                imageUri = Uri.parse(imagenBase64);  // Usamos el Base64 como URI temporal
+
+                // Guardamos la imagen como un Bitmap o URI temporalmente si es necesario
+                imageUri = getImageUriFromBitmap(imagenBitmap);  // Convertimos el Bitmap a un URI
             } else {
                 // Si no hay imagen, podrías poner una imagen por defecto o dejarlo vacío
                 mascIconoMascota.setImageResource(R.drawable.user_mascota); // imagen por defecto
@@ -158,57 +165,59 @@ public class PerfilMascotaFragment extends Fragment {
             // Si no se encuentra el ID de la mascota, mostrar un mensaje o manejar el error
             Log.e("PerfilMascota", "No se encontró la mascota seleccionada.");
         }
+        camposEscritura(false);
+        editarPerfilMascota.setOnClickListener(new View.OnClickListener() {
 
-//        editarPerfilMascota.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View view) {
-//                if(escribe){
-//                    camposEscritura(true);
-//                    escribe = false;
-//                }else{
-//                    // Si ya está en modo edición, guarda los cambios
-//                    nombreMascota = mascTxtNombreMascota.getText().toString();
-//                    edadAnios = Integer.parseInt(mascTxtEdadAniosMascota.getText().toString());
-//                    edadMeses = Integer.parseInt(mascTxtEdadMesesMascota.getText().toString());
-//                    tipoRecuperado = mascCboTipoMascota.getSelectedItem().toString();
-//                    razaRecuperada = mascCboRazaMascota.getSelectedItem().toString();
-//                    imgPerfil = convertirImagenABlobs(imageUri);
-//
-//                    new PerfilMascotaFragment.ConexionTask().execute();
-//
-//                    showLoadingDialog();
-//
-//                    // Ejecutar tareas en un hilo separado
-//                    new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            try {
-//                                freezeExecution();
-//
-//                                getActivity().runOnUiThread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        //CODIGO DESPUES DEL CONGELAMIENTO
-//                                        if (conexionExitosa) {
-//
-//                                            Toast.makeText(getContext(), "Información de la mascota actualizada", Toast.LENGTH_SHORT).show();
-//                                            camposEscritura(false); // Deshabilita los campos
-//                                            escribe=true;
-//
-//                                        }else{
-//                                            Toast.makeText(getContext(), "Error al actualizar la información", Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    }
-//                                });
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }).start();
-//                }
-//            }
-//        });
+            @Override
+            public void onClick(View view) {
+                if(escribe){
+                    camposEscritura(true);
+                    escribe = false;
+                }else{
+                    // Si ya está en modo edición, guarda los cambios
+                    nombreMascota = mascTxtNombreMascota.getText().toString();
+                    edadAnios = Integer.parseInt(mascTxtEdadAniosMascota.getText().toString());
+                    edadMeses = Integer.parseInt(mascTxtEdadMesesMascota.getText().toString());
+                    tipoRecuperado = mascCboTipoMascota.getSelectedItem().toString();
+                    razaRecuperada = mascCboRazaMascota.getSelectedItem().toString();
+                    imgPerfil = convertirImagenABlobs(imageUri);
+
+                    new PerfilMascotaFragment.ConexionTask().execute();
+
+                    showLoadingDialog();
+
+                    // Ejecutar tareas en un hilo separado
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                freezeExecution();
+
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //CODIGO DESPUES DEL CONGELAMIENTO
+                                        if (conexionExitosa) {
+
+                                            Toast.makeText(getContext(), "Información de la mascota actualizada", Toast.LENGTH_SHORT).show();
+                                            camposEscritura(false); // Deshabilita los campos
+                                            escribe=true;
+                                            Activity activity = getActivity();
+                                            ((Menu) activity).onClickMenu(4);
+
+                                        }else{
+                                            Toast.makeText(getContext(), "Error al actualizar la información", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                }
+            }
+        });
         return vista;
     }
 
@@ -218,6 +227,7 @@ public class PerfilMascotaFragment extends Fragment {
         mascTxtEdadMesesMascota.setEnabled(esEscritura);
         mascCboTipoMascota.setEnabled(esEscritura);
         mascCboRazaMascota.setEnabled(esEscritura);
+        mascIconoMascota.setClickable(esEscritura);
 
 
     }
@@ -323,7 +333,7 @@ public class PerfilMascotaFragment extends Fragment {
             if (requestCode == PICK_IMAGE_REQUEST && data != null && data.getData() != null) {
                 // Manejo de la imagen seleccionada de la galería
                 imageUri = data.getData();
-                btnSubirImagen.setImageURI(imageUri);  // Mostrar la imagen seleccionada
+                mascIconoMascota.setImageURI(imageUri);  // Mostrar la imagen seleccionada
             } else if (requestCode == CAPTURE_IMAGE_REQUEST) {
                 // Verificar si la imagen fue capturada correctamente
                 if (data != null && data.getExtras() != null) {
@@ -331,7 +341,7 @@ public class PerfilMascotaFragment extends Fragment {
                     if (photo != null) {
                         // Si tienes una imagen, convierte el Bitmap en URI y actualiza el ImageButton
                         imageUri = getImageUriFromBitmap(photo);  // Convierte el Bitmap en una URI válida
-                        btnSubirImagen.setImageURI(imageUri);  // Muestra la imagen en el ImageButton
+                        mascIconoMascota.setImageURI(imageUri);  // Muestra la imagen en el ImageButton
                     }
                 } else {
                     // Si la imagen no se captura correctamente, muestra un mensaje
@@ -378,10 +388,11 @@ public class PerfilMascotaFragment extends Fragment {
             //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
             int cnx = 0;
             Mascota mascotaDAO = new Mascota();
-
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
             if(mascotaDAO.editarMascota(mascotaID, nombreMascota, tipoRecuperado, razaRecuperada, imgPerfil,edadAnios,edadMeses)){
-                //guardarCorreoEnSharedPreferences(userID, nombre, apellido, telefono, correo);
+                //listaMascotas = mascotaDAO.obtenerMascotasPorCorreo(sharedPreferences.getString("correo", null));
                 cnx = 1;
+
             }
             return cnx;
 
@@ -431,6 +442,24 @@ public class PerfilMascotaFragment extends Fragment {
             progressDialog.dismiss();
         }
     }
+
+//    private void guardarMascotaSeleccionada(Mascota mascota) {
+//        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//        // Almacenar cada atributo de la mascota
+//        editor.putInt("mascota_id", mascota.getId_Mascota());
+//        editor.putString("mascota_nombre", mascota.getNombre());
+//        editor.putString("mascota_tipo", mascota.getTipo());
+//        editor.putString("mascota_raza", mascota.getRaza());
+//        editor.putInt("mascota_edadAños", mascota.getEdadAño());
+//        editor.putInt("mascota_edadMeses", mascota.getEdadMeses());
+//        String mascotaImagenBase64 = Base64.encodeToString(mascota.getImagen(), Base64.DEFAULT);
+//        editor.putString("mascota_imagen", mascotaImagenBase64);
+//
+//
+//        editor.apply();
+//    }
 
 
 }

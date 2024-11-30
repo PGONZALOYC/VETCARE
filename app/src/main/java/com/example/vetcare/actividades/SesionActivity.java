@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -34,6 +36,13 @@ import com.example.vetcare.modelo.Sede;
 import com.example.vetcare.modelo.Veterinario;
 import com.example.vetcare.sqlite.Vetcare;
 import com.example.vetcare.modelo.Usuario;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -56,6 +65,9 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     ArrayList<Cita> listaCitas;
     ArrayList<Sede> listaSedes;
 
+    LoginButton btnFbLogin;
+    CallbackManager callbackManager;
+
 
 
 
@@ -64,6 +76,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_sesion);
 
         SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
@@ -73,6 +86,33 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        callbackManager = CallbackManager.Factory.create();
+
+        btnFbLogin = findViewById(R.id.logBtnFb);
+        btnFbLogin.setPermissions("email");
+
+        btnFbLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                AccessToken accessToken = loginResult.getAccessToken();
+                Log.d("Facebook", "User ID:" + accessToken.getUserId());
+
+                Intent bienvenida = new Intent(SesionActivity.this, BienvenidaActivity.class);
+                startActivity(bienvenida);
+                finish();
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d("Facebook", "Login cancelado");
+            }
+
+            @Override
+            public void onError(@NonNull FacebookException e) {
+                Log.d("Facebook", "ERROR: "+e.getMessage());
+            }
         });
 
         // Inicializar vistas
@@ -133,6 +173,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 101) { // El mismo REQUEST_CODE que usaste al solicitar el permiso
             if (Settings.canDrawOverlays(this)) {

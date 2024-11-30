@@ -147,4 +147,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="facebook_app_id">467051115994521</string>
+
+    <string name="facebook_client_token">2dc38accde8077b2f0a88209aefc8a28</string>
+
 </resources>

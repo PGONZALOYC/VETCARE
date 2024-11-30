@@ -40,6 +40,7 @@ import com.example.vetcare.clases.Menu;
 import com.example.vetcare.modelo.Mascota;
 import com.example.vetcare.modelo.Usuario;
 import com.example.vetcare.sqlite.Vetcare;
+import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -227,6 +228,7 @@ public class PerfilUsuarioFragment extends Fragment {
 
         requireActivity().finish();
 
+        LoginManager.getInstance().logOut();
         Intent intent = new Intent(requireContext(), SesionActivity.class);
         startActivity(intent);
     }

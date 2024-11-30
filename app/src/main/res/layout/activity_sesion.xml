@@ -89,6 +89,10 @@
                 android:backgroundTint="@color/btnPrimario"
                 android:fontFamily="@font/poppins_medium"/>
 
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/logBtnFb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <Button
                 android:layout_width="match_parent"

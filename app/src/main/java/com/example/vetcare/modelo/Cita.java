@@ -1,5 +1,7 @@
 package com.example.vetcare.modelo;
 
+import android.util.Log;
+
 import com.example.vetcare.clases.MySQLConnector;
 import com.google.gson.annotations.Expose;
 
@@ -240,6 +242,7 @@ public class Cita {
             try (CallableStatement statement = connection.prepareCall(sql)) {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
+                        Log.d("App", "CITA OBTENIDA");
                         cita = new Cita();
                         cita.setIdCita(resultSet.getInt("id_Cita"));
                         cita.setIdUsuario(resultSet.getInt("id_Usuario"));

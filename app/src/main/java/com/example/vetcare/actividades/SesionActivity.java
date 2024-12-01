@@ -207,7 +207,9 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
                             @Override
                             public void run() {
                                 //CODIGO DESPUES DEL CONGELAMIENTO
-                                iniciarSesion();
+                                if (conexionExitosa) {
+                                    iniciarSesion();
+                                }
 
                             }
                         });
@@ -234,7 +236,6 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
 
     private void iniciarSesion() {
         // Validar credenciales en base de datos o lógica específica
-        if (conexionExitosa) {
             //Intent bienvenida = new Intent(this, ReservaCitaActivity.class);
             Intent bienvenida = new Intent(SesionActivity.this, BienvenidaActivity.class);
             //bienvenida.putExtra("nombre", "Dinamita");
@@ -242,7 +243,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             SharedPreferences.Editor editor = sharedPreferences.edit();
             insertarMascotasEnSharedPreferences();
             insertarVeterinariosEnSharedPreferences();
-            insertarCitasEnSharedPreferences();
+            //insertarCitasEnSharedPreferences();
             insertarSedesEnSharedPreferences();
 
             if(chkRecordar.isChecked()){
@@ -254,7 +255,6 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             //vt.agregarUsuario(1,txtCorreo,txtClave,"Arturo","Romero Gonzales","78459612","04/09/2003","948156147","Masculino");
             startActivity(bienvenida);
             finish();
-        }
 
     }
 
@@ -277,6 +277,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     public class ConexionTask extends AsyncTask<Void, Void, Integer> {
         @Override
         protected Integer doInBackground(Void... voids) {
+
             SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
             //Instancia de usuario para usar su función loginUsuario (verificar Usuario.java)
             int cnx = 0;
@@ -297,12 +298,16 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             } else{
                 txtClav = txtClave.getText().toString();
             }
+
+
             Usuario user = usuarioDAO.obtenerInformacionUsuario(txtCorr);
+
+
             guardarCorreoEnSharedPreferences(user.getId_Usuario(), user.getNombres(), user.getApellidos(), user.getTelefono(), user.getCorreo(), user.getContraseña());
 
             //Cifrar la clave
             txtClav = hash.StringToHash(txtClav,"SHA256").toLowerCase();
-            if(usuarioDAO.loginUsuario(txtCorr, txtClav) && listaMascotas!=null && listaVeterinarios!=null && listaCitas!=null && listaSedes!=null){
+            if(usuarioDAO.loginUsuario(txtCorr, txtClav) && listaMascotas!=null && listaVeterinarios!=null && listaSedes!=null){
                 cnx = 1;
 
             }
@@ -312,6 +317,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
 
         @Override
         protected void onPostExecute(Integer result) {
+
             if (result == 1) {
                 hideLoadingDialog();
                 conexionExitosa = true;
@@ -323,16 +329,25 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
     }
 
     private void guardarCorreoEnSharedPreferences(int id_usuario, String nombre, String apellido, String telefono, String correo, String clave) {
+
+
         SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        Log.d("App", "CONEXION RECIEN INICIADA 1");
         Mascota mascotaDAO = new Mascota();
         Veterinario veterinarioDAO = new Veterinario();
         Cita citaDAO = new Cita();
         Sede sedeDAO = new Sede();
+        Log.d("App", "CONEXION RECIEN INICIADA 2");
+
         listaMascotas = mascotaDAO.obtenerMascotasPorCorreo(correo);
+        Log.d("App", "MASCOTAS OBTENIDAS");
         listaVeterinarios = veterinarioDAO.obtenerVeterinarios();
-        listaCitas = citaDAO.obtenerCitas();
+        Log.d("App", "VETERINARIOS OBTENIDOS");
+        //listaCitas = citaDAO.obtenerCitas();
+        Log.d("App", "CITAS OBTENIDAS");
         listaSedes = sedeDAO.obtenerSedes();
+        Log.d("App", "SEDES OBTENIDAS");
 
         if(!sharedPreferences.getBoolean("recuerda", false)){
             editor.putInt("id_usuario", id_usuario);
@@ -402,6 +417,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         editor.apply();
     }
 
+    /*
     public void insertarCitasEnSharedPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences("Sistema", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -413,7 +429,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         // Guardar el JSON en SharedPreferences
         editor.putString("listaCitasGenerales", json);
         editor.apply();
-    }
+    }*/
 
     public void insertarSedesEnSharedPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences("Sistema", Context.MODE_PRIVATE);

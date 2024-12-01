@@ -48,7 +48,7 @@ public class MyApp extends Application {
         IntentFilter filter = new IntentFilter();
         filter.addAction("ACTUALIZAR_TEXTO");
         filter.addAction("RESTAURAR_TEXTO");
-        registerReceiver(globalReceiver, filter, null, null); // Evitar que sea accesible externamente
+        registerReceiver(globalReceiver, filter);
 
         // Registrar el rastreador de actividad
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {

@@ -192,16 +192,8 @@ public class PerfilUsuarioFragment extends Fragment {
         agreMascota.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Verificar si ya hay 5 mascotas
-                if (mascotaLista.size() >= 5) {
-                    // Mostrar un mensaje al usuario
-                    Toast.makeText(getActivity(), "Solo puede registrar 5 mascotas.", Toast.LENGTH_SHORT).show();
-                } else {
-                    // Permitir agregar una nueva mascota
-                    Activity activity = getActivity();
-                    ((Menu) activity).onClickMenu(7);
-                }
-
+                Activity activity = getActivity();
+                ((Menu)activity).onClickMenu(7);
             }
         });
 
@@ -250,7 +242,7 @@ public class PerfilUsuarioFragment extends Fragment {
             int cnx = 0;
             Usuario usuarioDAO = new Usuario();
 
-            if(usuarioDAO.editarUsuario(userID, nombre, apellido, telefono, correo,null)){
+            if(usuarioDAO.editarUsuario(userID, nombre, apellido, telefono, correo)){
                 guardarCorreoEnSharedPreferences(userID, nombre, apellido, telefono, correo);
                 cnx = 1;
             }

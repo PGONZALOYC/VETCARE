@@ -289,19 +289,6 @@ public class AgregarMascotaFragment extends Fragment {
     }
 
 
-
-
-    //    private void llenarTipoMascota() {
-//        String[] tipos = {"--Seleccione el tipo de mascota--", "Perro", "Gato", "Otro"};
-//        spinnerTipoMascota.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, tipos));
-//
-//    }
-//
-//    private void llenarTipoRaza() {
-//        String[] raza = {};
-//        spinnerRazaMascota.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, tipos));
-//
-//    }
     private void llenarTipoMascota() {
         String[] tipos = {"Tipo de mascota", "Perro", "Gato"};
         ArrayAdapter<String> adapterTipo = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, tipos);
@@ -359,7 +346,16 @@ public class AgregarMascotaFragment extends Fragment {
             raza= spinnerRazaMascota.getSelectedItem().toString();
             edadAnios = Integer.parseInt(edtEdadAnios.getText().toString());
             edadMeses = Integer.parseInt(edtEdadMeses.getText().toString());
-            imgPerfil = convertirImagenABlobs(imageUri);
+            //imgPerfil = convertirImagenABlobs(imageUri);
+            // Si no se selecciona ninguna imagen, usar la imagen predeterminada
+            if (imageUri == null) {
+                imageUri = Uri.parse("android.resource://" + getContext().getPackageName() + "/" + R.drawable.user_mascota);
+                //btnSubirImagen.setImageURI(imageUri); // Muestra la imagen predeterminada en el ImageButton
+                imgPerfil = convertirImagenABlobs(imageUri);
+            }else{
+                imgPerfil = convertirImagenABlobs(imageUri);
+            }
+
             if(mascotaDAO.agregarMascota(sharedPreferences.getInt("id_usuario", -1), edtNombre.getText().toString(), tipo, raza, fechaNacimiento,imgPerfil,edadAnios,edadMeses)){
                 listaMascotas = mascotaDAO.obtenerMascotasPorCorreo(sharedPreferences.getString("correo", null));
                 insertarMascotasEnSharedPreferences();

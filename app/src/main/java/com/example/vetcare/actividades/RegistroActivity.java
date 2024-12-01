@@ -111,6 +111,7 @@ public class RegistroActivity extends AppCompatActivity implements View.OnClickL
                                     Toast.makeText(RegistroActivity.this, "Usuario registrado", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(RegistroActivity.this, SesionActivity.class);
                                     startActivity(intent);
+                                    finish();
 
                                 }else{
                                     Toast.makeText(RegistroActivity.this, "Error al registrar el usuario", Toast.LENGTH_SHORT).show();

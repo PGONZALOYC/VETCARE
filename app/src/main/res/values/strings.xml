@@ -43,9 +43,9 @@
     <string name="regRbtRegistroSinDefinir">Sin definir</string>
     <string name="regRbtRegistroFemenino">Femenino</string>
     <string name="regRbtRegistroMasculino">Masculino</string>
-    <string name="regTxtRegistroContrasena">ContraseÃ±a</string>
+    <string name="regTxtRegistroContrasena">Contraseña</string>
     <string name="regTxtRegistroConfirmarContrasena">Confirmar contraseña</string>
-    <string name="regTxtRegistroTerminosCondiciones">Términos y Condiciones</string>
+    <string name="regTxtRegistroTerminosCondiciones">Acepto Términos y Condiciones</string>
     <string name="regDescIconoSiguiente">Icono siguiente</string>
 
     <!--Registro de primera mascota-->

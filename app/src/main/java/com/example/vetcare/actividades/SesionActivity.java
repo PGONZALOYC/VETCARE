@@ -80,7 +80,6 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         setContentView(R.layout.activity_sesion);
 
         SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -144,29 +143,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
 
 
         if(sharedPreferences.getBoolean("recuerda", false)){
-            new ConexionTask().execute();
-
-            showLoadingDialog();
-
-            // Ejecutar tareas en un hilo separado
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        freezeExecution();
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                //CODIGO DESPUES DEL CONGELAMIENTO
-                                iniciarSesion();
-                            }
-                        });
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
+            iniciarSesion();
         }
     }
 
@@ -243,10 +220,12 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
             //bienvenida.putExtra("nombre", "Dinamita");
             SharedPreferences sharedPreferences = getSharedPreferences("Sistema", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            insertarMascotasEnSharedPreferences();
-            insertarVeterinariosEnSharedPreferences();
-            //insertarCitasEnSharedPreferences();
-            insertarSedesEnSharedPreferences();
+            if(!sharedPreferences.getBoolean("recuerda", false)){
+                insertarMascotasEnSharedPreferences();
+                insertarVeterinariosEnSharedPreferences();
+                insertarCitasEnSharedPreferences();
+                insertarSedesEnSharedPreferences();
+            }
 
             if(chkRecordar.isChecked()){
                 editor.putString("correo", txtCorreo.getText().toString());
@@ -309,7 +288,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
 
             //Cifrar la clave
             txtClav = hash.StringToHash(txtClav,"SHA256").toLowerCase();
-            if(usuarioDAO.loginUsuario(txtCorr, txtClav) && listaMascotas!=null && listaVeterinarios!=null && listaSedes!=null){
+            if(usuarioDAO.loginUsuario(txtCorr, txtClav) && listaMascotas!=null && listaCitas!=null && listaVeterinarios!=null && listaSedes!=null){
                 cnx = 1;
 
             }
@@ -346,7 +325,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         Log.d("App", "MASCOTAS OBTENIDAS");
         listaVeterinarios = veterinarioDAO.obtenerVeterinarios();
         Log.d("App", "VETERINARIOS OBTENIDOS");
-        //listaCitas = citaDAO.obtenerCitas();
+        listaCitas = citaDAO.obtenerCitas();
         Log.d("App", "CITAS OBTENIDAS");
         listaSedes = sedeDAO.obtenerSedes();
         Log.d("App", "SEDES OBTENIDAS");
@@ -419,7 +398,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         editor.apply();
     }
 
-    /*
+
     public void insertarCitasEnSharedPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences("Sistema", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -431,7 +410,7 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         // Guardar el JSON en SharedPreferences
         editor.putString("listaCitasGenerales", json);
         editor.apply();
-    }*/
+    }
 
     public void insertarSedesEnSharedPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences("Sistema", Context.MODE_PRIVATE);

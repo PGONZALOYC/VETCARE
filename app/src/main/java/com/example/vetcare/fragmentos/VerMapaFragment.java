@@ -37,6 +37,7 @@ public class VerMapaFragment extends Fragment {
          */
         @Override
         public void onMapReady(GoogleMap googleMap) {
+            googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             //LatLng sydney = new LatLng(-34, 151);
             // Lista de ubicaciones de veterinarias con nombre y coordenadas
             List<LatLng> veterinarias = Arrays.asList(
@@ -87,5 +88,6 @@ public class VerMapaFragment extends Fragment {
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
+
     }
 }

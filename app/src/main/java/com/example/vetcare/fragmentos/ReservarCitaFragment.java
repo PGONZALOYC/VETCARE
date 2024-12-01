@@ -177,7 +177,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
                                     public void run() {
                                         //CODIGO DESPUES DEL CONGELAMIENTO
                                         if (conexionExitosa) {
-                                            mostrarToast(nuevaCita.getIdVeterinario()+"");
+                                            mostrarToast("Cita registrada con éxito");
                                         }
                                     }
                                 });

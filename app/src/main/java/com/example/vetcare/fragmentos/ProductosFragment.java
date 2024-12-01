@@ -361,7 +361,7 @@ public class ProductosFragment extends Fragment {
         editor.putString("carrito", json);
         editor.apply();
 
-        mostrarToast(carritoLista.get(carritoLista.size()-1).getNombre());
+        mostrarToast(carritoLista.get(carritoLista.size()-1).getNombre()+" agregado al carrito");
     }
 
     public ArrayList<Producto> obtenerListaEnSharedPreferences() {

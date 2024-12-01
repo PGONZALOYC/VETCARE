@@ -158,8 +158,10 @@ public class AgregarMascotaFragment extends Fragment {
                                         //CODIGO DESPUES DEL CONGELAMIENTO
                                         if (conexionExitosa) {
                                             Toast.makeText(getContext(), "Mascota registrada", Toast.LENGTH_SHORT).show();
+                                            closeFragment();
                                             Activity activity = getActivity();
                                             ((Menu) activity).onClickMenu(4);
+
 
                                         }else{
                                             Toast.makeText(getContext(), "Error al registrar mascota", Toast.LENGTH_SHORT).show();
@@ -420,6 +422,12 @@ public class AgregarMascotaFragment extends Fragment {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
+    }
+
+    private void closeFragment() {
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .remove(this)
+                .commit();
     }
 
 }

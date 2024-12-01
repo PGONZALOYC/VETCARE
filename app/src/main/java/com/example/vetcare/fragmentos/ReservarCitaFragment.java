@@ -1,6 +1,5 @@
 package com.example.vetcare.fragmentos;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,21 +24,16 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.example.vetcare.R;
-import com.example.vetcare.clases.Menu;
 import com.example.vetcare.modelo.Cita;
 import com.example.vetcare.modelo.Mascota;
 import com.example.vetcare.modelo.Sede;
-import com.example.vetcare.modelo.Usuario;
 import com.example.vetcare.modelo.Veterinario;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 import java.util.TimeZone;
 
 /**
@@ -65,7 +58,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
     ArrayList<Sede> sedesList;
     Cita nuevaCita;
 
-
+    long fechaSeleccionada;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -122,6 +115,17 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
         cboReservaVeterinario =view.findViewById(R.id.resCboReservaVeterinario);
         btnReservarCita.setOnClickListener(this);
 
+        calendReserva.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+                // Crea un objeto Calendar con la fecha seleccionada
+                Calendar c = Calendar.getInstance();
+                c.set(year, month, dayOfMonth);
+
+                // Convierte la fecha seleccionada a milisegundos
+                fechaSeleccionada = c.getTimeInMillis();
+            }
+        });
         cboReservaServicio.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int posicion, long longitud) {
@@ -399,7 +403,7 @@ public class ReservarCitaFragment extends Fragment implements View.OnClickListen
             c_id_usuario = sharedPreferences.getInt("id_usuario", -1);
 
             long fechaEnMilisegundos = calendReserva.getDate(); // Supongo que esto es un long
-            Date fecha = new Date(fechaEnMilisegundos);
+            Date fecha = new Date(fechaSeleccionada);
             java.sql.Date fechaSql = new java.sql.Date(fecha.getTime());
 
             c_fecha = fechaSql;

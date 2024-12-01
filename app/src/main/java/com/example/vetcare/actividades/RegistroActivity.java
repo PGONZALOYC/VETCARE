@@ -109,7 +109,7 @@ public class RegistroActivity extends AppCompatActivity implements View.OnClickL
                                 //CODIGO DESPUES DEL CONGELAMIENTO
                                 if (conexionExitosa) {
                                     Toast.makeText(RegistroActivity.this, "Usuario registrado", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(RegistroActivity.this, RegistroPrimeraMascotaActivity.class);
+                                    Intent intent = new Intent(RegistroActivity.this, SesionActivity.class);
                                     startActivity(intent);
 
                                 }else{
@@ -312,7 +312,7 @@ public class RegistroActivity extends AppCompatActivity implements View.OnClickL
             }
 
             if(usuarioDAO.agregarUsuario(dni, nombre, apellido, telefono, correo,contrasenaHash,null,fechaNacimiento,sexo)){
-                guardarCorreoEnSharedPreferences(usuarioDAO.obtenerInformacionUsuario(txtCorr).getId_Usuario(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getNombres(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getApellidos(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getTelefono(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getCorreo(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getContraseña());
+                //guardarCorreoEnSharedPreferences(usuarioDAO.obtenerInformacionUsuario(txtCorr).getId_Usuario(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getNombres(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getApellidos(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getTelefono(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getCorreo(), usuarioDAO.obtenerInformacionUsuario(txtCorr).getContraseña());
                 cnx = 1;
             }
             return cnx;

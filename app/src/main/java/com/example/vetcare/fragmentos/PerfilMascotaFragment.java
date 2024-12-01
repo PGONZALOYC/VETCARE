@@ -33,6 +33,7 @@ import com.example.vetcare.clases.Menu;
 import com.example.vetcare.modelo.Mascota;
 import com.example.vetcare.modelo.Usuario;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -390,7 +391,7 @@ public class PerfilMascotaFragment extends Fragment {
             Mascota mascotaDAO = new Mascota();
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
             if(mascotaDAO.editarMascota(mascotaID, nombreMascota, tipoRecuperado, razaRecuperada, imgPerfil,edadAnios,edadMeses)){
-                //listaMascotas = mascotaDAO.obtenerMascotasPorCorreo(sharedPreferences.getString("correo", null));
+                listaMascotas = mascotaDAO.obtenerMascotasPorCorreo(sharedPreferences.getString("correo", null));
                 cnx = 1;
 
             }
@@ -441,6 +442,19 @@ public class PerfilMascotaFragment extends Fragment {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
+    }
+
+    public void insertarMascotasEnSharedPreferences() {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Sistema", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Crear un objeto Gson con la configuración de @Expose
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String json = gson.toJson(listaMascotas);
+
+        // Guardar el JSON en SharedPreferences
+        editor.putString("listaMascotas", json);
+        editor.apply();
     }
 
 //    private void guardarMascotaSeleccionada(Mascota mascota) {

@@ -36,7 +36,9 @@ public class MyApp extends Application {
                 }
             }
         }
+        
     };
+
 
     @Override
     public void onCreate() {
@@ -115,7 +117,10 @@ public class MyApp extends Application {
                 restaurarTamanoOriginal((ViewGroup) child); // Recurre a los hijos
             }
         }
+
     }
+
+
 
 
 

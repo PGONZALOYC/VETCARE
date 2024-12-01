@@ -24,6 +24,7 @@
         android:roundIcon="@mipmap/ic_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Vetcare"
+        android:name=".MyApp"
         tools:targetApi="31">
 
         <!--

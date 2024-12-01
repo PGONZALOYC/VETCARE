@@ -187,6 +187,8 @@ public class SesionActivity extends AppCompatActivity  implements View.OnClickLi
         }
     }
 
+    
+
 
     @Override
     public void onClick(View v) {

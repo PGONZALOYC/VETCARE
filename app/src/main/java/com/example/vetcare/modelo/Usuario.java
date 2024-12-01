@@ -183,11 +183,11 @@ public class Usuario {
         return usuario;
     }
 
-    public boolean editarUsuario(int id, String nombres, String apellidos, String telefono, String correo) {
+    public boolean editarUsuario(int id, String nombres, String apellidos, String telefono, String correo, byte[] imagen) {
         boolean actualizado = false;
         try {
             // Llama al procedimiento almacenado
-            String sql = "{CALL EditarUsuario(?, ?, ?, ?, ?)}";
+            String sql = "{CALL EditarUsuario(?, ?, ?, ?, ?, ?)}";
             try (CallableStatement statement = connection.prepareCall(sql)) {
                 // Configura los parámetros
                 statement.setInt(1, id);
@@ -195,7 +195,7 @@ public class Usuario {
                 statement.setString(3, apellidos);
                 statement.setString(4, telefono);
                 statement.setString(5, correo);
-
+                statement.setBytes(6, imagen);
                 // Ejecuta la actualización
                 int filasActualizadas = statement.executeUpdate();
                 actualizado = filasActualizadas > 0; // True si se actualizó al menos una fila
